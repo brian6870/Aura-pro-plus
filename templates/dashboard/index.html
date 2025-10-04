@@ -1,0 +1,442 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Welcome Section - Compact with Fixed Width -->
+    <div class="row mb-4 fade-in-up">
+        <div class="col-lg-8 position-relative">
+            <div class="glass-card p-3 welcome-banner">
+                <div class="row align-items-center">
+                    <div class="col-md-10">
+                        <h4 class="fw-bold mb-1">Welcome back, {{ current_user.username }}! 🌱</h4>
+                        <p class="mb-0 text-light small">Your sustainability journey is making a difference.</p>
+                    </div>
+                    <div class="col-md-2 text-center">
+                        <!-- Streak Flame - Compact -->
+                        <div class="streak-compact">
+                            <div class="fire-container-sm">
+                                <div class="fire-sm"></div>
+                            </div>
+                            <div class="text-center">
+                                <div class="fw-bold text-white" style="font-size: 1.2rem; text-shadow: 0 2px 8px rgba(0,0,0,0.7);">{{ current_streak }}</div>
+                                <small class="text-light" style="text-shadow: 0 1px 4px rgba(0,0,0,0.7); font-size: 0.8rem;">Day Streak</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Left Column - Stats, Charts, Recent Analyses -->
+        <div class="col-lg-8">
+            <!-- Stats Overview -->
+            <div class="dashboard-grid mb-4">
+                <div class="glow-card">
+                    <i class="fas fa-trophy fa-2x mb-2 text-warning"></i>
+                    <div class="stat-number">{{ total_points }}</div>
+                    <small class="text-light">Total Points</small>
+                </div>
+                
+                <div class="glow-card">
+                    <i class="fas fa-search fa-2x mb-2 text-info"></i>
+                    <div class="stat-number">{{ total_analyses }}</div>
+                    <small class="text-light">Products Analyzed</small>
+                </div>
+                
+                <div class="glow-card">
+                    <i class="fas fa-fire fa-2x mb-2 text-danger"></i>
+                    <div class="stat-number">{{ current_streak }}</div>
+                    <small class="text-light">Current Streak</small>
+                </div>
+                
+                <div class="glow-card">
+                    <i class="fas fa-chart-line fa-2x mb-2 text-success"></i>
+                    <div class="stat-number">{{ recent_points }}</div>
+                    <small class="text-light">Recent Points (30d)</small>
+                </div>
+            </div>
+
+            <!-- Rating Distribution Chart -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="chart-container fade-in-up">
+                        <h5 class="mb-3"><i class="fas fa-chart-bar me-2 text-info"></i>Product Rating Distribution</h5>
+                        
+                        {% set rating_counts = {'friendly': 0, 'moderate': 0, 'harmful': 0, 'hazardous': 0} %}
+                        {% for rating, count in rating_distribution %}
+                            {% if rating_counts.update({rating: count}) %}{% endif %}
+                        {% endfor %}
+                        
+                        {% set max_count = [rating_counts.friendly, rating_counts.moderate, rating_counts.harmful, rating_counts.hazardous] | max %}
+                        
+                        <div class="chart-bar">
+                            <div class="chart-label">🌿 Friendly</div>
+                            <div class="chart-bar-inner">
+                                <div class="chart-fill chart-friendly" style="width: {{ (rating_counts.friendly / max_count * 100) if max_count > 0 else 0 }}%;"></div>
+                            </div>
+                            <div class="chart-count">{{ rating_counts.friendly }}</div>
+                        </div>
+                        
+                        <div class="chart-bar">
+                            <div class="chart-label">⚖️ Moderate</div>
+                            <div class="chart-bar-inner">
+                                <div class="chart-fill chart-moderate" style="width: {{ (rating_counts.moderate / max_count * 100) if max_count > 0 else 0 }}%;"></div>
+                            </div>
+                            <div class="chart-count">{{ rating_counts.moderate }}</div>
+                        </div>
+                        
+                        <div class="chart-bar">
+                            <div class="chart-label">⚠️ Harmful</div>
+                            <div class="chart-bar-inner">
+                                <div class="chart-fill chart-harmful" style="width: {{ (rating_counts.harmful / max_count * 100) if max_count > 0 else 0 }}%;"></div>
+                            </div>
+                            <div class="chart-count">{{ rating_counts.harmful }}</div>
+                        </div>
+                        
+                        <div class="chart-bar">
+                            <div class="chart-label">🚫 Hazardous</div>
+                            <div class="chart-bar-inner">
+                                <div class="chart-fill chart-hazardous" style="width: {{ (rating_counts.hazardous / max_count * 100) if max_count > 0 else 0 }}%;"></div>
+                            </div>
+                            <div class="chart-count">{{ rating_counts.hazardous }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Analyses -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="glass-card p-4 h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0"><i class="fas fa-clock me-2 text-info"></i>Recent Analyses</h5>
+                            <a href="{{ url_for('analysis.history') }}" class="btn btn-sm btn-modern">View All</a>
+                        </div>
+                        {% if recent_analyses %}
+                            {% for analysis in recent_analyses %}
+                            <div class="leaderboard-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <span class="rating-badge rating-{{ analysis.environmental_rating }} me-3">
+                                            {{ analysis.environmental_rating|title }}
+                                        </span>
+                                        <small class="text-muted">{{ analysis.created_at.strftime('%b %d') }}</small>
+                                    </div>
+                                    <span class="badge bg-success fs-6">{{ analysis.points_awarded }} pts</span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="text-center py-3">
+                                <i class="fas fa-search fa-2x text-muted mb-2"></i>
+                                <p class="text-muted mb-2">No analyses yet</p>
+                                <a href="{{ url_for('analysis.input_form') }}" class="btn btn-modern btn-sm">Analyze First Product</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column - Leaderboard -->
+        <div class="col-lg-4">
+            <!-- Podium Leaderboard -->
+            <div class="glass-card p-3 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0"><i class="fas fa-trophy me-2 text-warning"></i>Top Contributors</h5>
+                    <span class="badge bg-primary">Global</span>
+                </div>
+                
+                {% if leaderboard %}
+                <div class="podium-container">
+                    {% if leaderboard|length >= 3 %}
+                        <!-- 2nd Place -->
+                        <div class="podium-item" data-user="{{ leaderboard[1].username }}" data-points="{{ leaderboard[1].total_points }}">
+                            <div class="podium-rank podium-2">
+                                <i class="fas fa-trophy"></i>
+                                <div class="podium-number">2</div>
+                            </div>
+                            <div class="podium-avatar">
+                                {% if leaderboard[1].avatar_url and leaderboard[1].avatar_url != '/static/images/avatars/default.png' %}
+                                <img src="{{ leaderboard[1].avatar_url }}" alt="{{ leaderboard[1].username }}" class="rounded-circle">
+                                {% else %}
+                                <div class="avatar-fallback">{{ leaderboard[1].username[0]|upper }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="podium-user">{{ leaderboard[1].username }}</div>
+                            <div class="podium-points">{{ leaderboard[1].total_points }} pts</div>
+                        </div>
+                        
+                        <!-- 1st Place -->
+                        <div class="podium-item" data-user="{{ leaderboard[0].username }}" data-points="{{ leaderboard[0].total_points }}">
+                            <div class="podium-rank podium-1">
+                                <i class="fas fa-crown"></i>
+                                <div class="podium-number">1</div>
+                            </div>
+                            <div class="podium-avatar">
+                                {% if leaderboard[0].avatar_url and leaderboard[0].avatar_url != '/static/images/avatars/default.png' %}
+                                <img src="{{ leaderboard[0].avatar_url }}" alt="{{ leaderboard[0].username }}" class="rounded-circle">
+                                {% else %}
+                                <div class="avatar-fallback">{{ leaderboard[0].username[0]|upper }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="podium-user">{{ leaderboard[0].username }}</div>
+                            <div class="podium-points">{{ leaderboard[0].total_points }} pts</div>
+                        </div>
+                        
+                        <!-- 3rd Place -->
+                        <div class="podium-item" data-user="{{ leaderboard[2].username }}" data-points="{{ leaderboard[2].total_points }}">
+                            <div class="podium-rank podium-3">
+                                <i class="fas fa-medal"></i>
+                                <div class="podium-number">3</div>
+                            </div>
+                            <div class="podium-avatar">
+                                {% if leaderboard[2].avatar_url and leaderboard[2].avatar_url != '/static/images/avatars/default.png' %}
+                                <img src="{{ leaderboard[2].avatar_url }}" alt="{{ leaderboard[2].username }}" class="rounded-circle">
+                                {% else %}
+                                <div class="avatar-fallback">{{ leaderboard[2].username[0]|upper }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="podium-user">{{ leaderboard[2].username }}</div>
+                            <div class="podium-points">{{ leaderboard[2].total_points }} pts</div>
+                        </div>
+                    
+                    {% elif leaderboard|length == 2 %}
+                        <!-- Only 2 users -->
+                        <div class="podium-item" data-user="{{ leaderboard[1].username }}" data-points="{{ leaderboard[1].total_points }}">
+                            <div class="podium-rank podium-2">
+                                <i class="fas fa-trophy"></i>
+                                <div class="podium-number">2</div>
+                            </div>
+                            <div class="podium-avatar">
+                                {% if leaderboard[1].avatar_url and leaderboard[1].avatar_url != '/static/images/avatars/default.png' %}
+                                <img src="{{ leaderboard[1].avatar_url }}" alt="{{ leaderboard[1].username }}" class="rounded-circle">
+                                {% else %}
+                                <div class="avatar-fallback">{{ leaderboard[1].username[0]|upper }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="podium-user">{{ leaderboard[1].username }}</div>
+                            <div class="podium-points">{{ leaderboard[1].total_points }} pts</div>
+                        </div>
+                        
+                        <div class="podium-item" data-user="{{ leaderboard[0].username }}" data-points="{{ leaderboard[0].total_points }}">
+                            <div class="podium-rank podium-1">
+                                <i class="fas fa-crown"></i>
+                                <div class="podium-number">1</div>
+                            </div>
+                            <div class="podium-avatar">
+                                {% if leaderboard[0].avatar_url and leaderboard[0].avatar_url != '/static/images/avatars/default.png' %}
+                                <img src="{{ leaderboard[0].avatar_url }}" alt="{{ leaderboard[0].username }}" class="rounded-circle">
+                                {% else %}
+                                <div class="avatar-fallback">{{ leaderboard[0].username[0]|upper }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="podium-user">{{ leaderboard[0].username }}</div>
+                            <div class="podium-points">{{ leaderboard[0].total_points }} pts</div>
+                        </div>
+                        
+                        <!-- Empty 3rd place -->
+                        <div class="podium-item">
+                            <div class="podium-rank" style="background: rgba(255,255,255,0.1); color: #666; height: 70px;">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="podium-avatar">
+                                <div class="avatar-fallback">?</div>
+                            </div>
+                            <div class="podium-user" style="color: #666;">Waiting...</div>
+                            <div class="podium-points" style="color: #666;">0 pts</div>
+                        </div>
+                    
+                    {% elif leaderboard|length == 1 %}
+                        <!-- Only 1 user -->
+                        <div class="podium-item">
+                            <div class="podium-rank" style="background: rgba(255,255,255,0.1); color: #666; height: 70px;">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="podium-avatar">
+                                <div class="avatar-fallback">?</div>
+                            </div>
+                            <div class="podium-user" style="color: #666;">Waiting...</div>
+                            <div class="podium-points" style="color: #666;">0 pts</div>
+                        </div>
+                        
+                        <div class="podium-item" data-user="{{ leaderboard[0].username }}" data-points="{{ leaderboard[0].total_points }}">
+                            <div class="podium-rank podium-1">
+                                <i class="fas fa-crown"></i>
+                                <div class="podium-number">1</div>
+                            </div>
+                            <div class="podium-avatar">
+                                {% if leaderboard[0].avatar_url and leaderboard[0].avatar_url != '/static/images/avatars/default.png' %}
+                                <img src="{{ leaderboard[0].avatar_url }}" alt="{{ leaderboard[0].username }}" class="rounded-circle">
+                                {% else %}
+                                <div class="avatar-fallback">{{ leaderboard[0].username[0]|upper }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="podium-user">{{ leaderboard[0].username }}</div>
+                            <div class="podium-points">{{ leaderboard[0].total_points }} pts</div>
+                        </div>
+                        
+                        <!-- Empty 3rd place -->
+                        <div class="podium-item">
+                            <div class="podium-rank" style="background: rgba(255,255,255,0.1); color: #666; height: 70px;">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="podium-avatar">
+                                <div class="avatar-fallback">?</div>
+                            </div>
+                            <div class="podium-user" style="color: #666;">Waiting...</div>
+                            <div class="podium-points" style="color: #666;">0 pts</div>
+                        </div>
+                    
+                    {% endif %}
+                </div>
+                
+                <!-- Full Leaderboard List -->
+                <div class="leaderboard-full mt-3">
+                    <h6 class="mb-2 text-center">Global Rankings</h6>
+                    
+                    <!-- Current User's Rank (if not in top 3) -->
+                    {% set current_user_rank = namespace(found=false) %}
+                    {% for user in leaderboard %}
+                        {% if user.username == current_user.username %}
+                            {% set current_user_rank.found = true %}
+                            <div class="leaderboard-item current-user-rank" style="background: rgba(16, 185, 129, 0.2); border-color: rgba(16, 185, 129, 0.5);">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <div class="rank-badge rank-current me-2">
+                                            {{ loop.index }}
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            {% if current_user.avatar_url and current_user.avatar_url != '/static/images/avatars/default.png' %}
+                                            <img src="{{ current_user.avatar_url }}" alt="{{ current_user.username }}" class="rounded-circle me-2" width="28" height="28">
+                                            {% else %}
+                                            <div class="avatar-fallback-small me-2">{{ current_user.username[0]|upper }}</div>
+                                            {% endif %}
+                                            <div>
+                                                <strong style="font-size: 0.9rem;">You</strong>
+                                                <br>
+                                                <small class="text-muted" style="font-size: 0.7rem;">{{ current_user.username }}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span class="badge bg-success" style="font-size: 0.8rem;">{{ user.total_points }} pts</span>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    <!-- Other Users (excluding current user if already shown) -->
+                    {% for user in leaderboard %}
+                        {% if user.username != current_user.username or not current_user_rank.found %}
+                            {% if loop.index > 3 or leaderboard|length <= 3 %}
+                            <div class="leaderboard-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <div class="rank-badge rank-{{ loop.index }} me-2">
+                                            {{ loop.index }}
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            {% if user.avatar_url and user.avatar_url != '/static/images/avatars/default.png' %}
+                                            <img src="{{ user.avatar_url }}" alt="{{ user.username }}" class="rounded-circle me-2" width="28" height="28">
+                                            {% else %}
+                                            <div class="avatar-fallback-small me-2">{{ user.username[0]|upper }}</div>
+                                            {% endif %}
+                                            <div>
+                                                <strong style="font-size: 0.9rem;">{{ user.username }}</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span class="badge bg-success" style="font-size: 0.8rem;">{{ user.total_points }} pts</span>
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if leaderboard|length == 0 %}
+                        <div class="text-center py-3">
+                            <i class="fas fa-users fa-2x text-muted mb-2"></i>
+                            <p class="text-muted small mb-1">Be the first to join the leaderboard!</p>
+                            <p class="text-muted small">Analyze products to earn points.</p>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                {% else %}
+                <!-- No leaderboard data at all -->
+                <div class="text-center py-3">
+                    <i class="fas fa-users fa-2x text-muted mb-2"></i>
+                    <p class="text-muted small">No users on the leaderboard yet</p>
+                    <p class="text-muted small">Be the first to analyze products!</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Animate chart bars on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate chart bars
+    setTimeout(() => {
+        const chartFills = document.querySelectorAll('.chart-fill');
+        chartFills.forEach(fill => {
+            const currentWidth = fill.style.width;
+            fill.style.width = '0%';
+            setTimeout(() => {
+                fill.style.width = currentWidth;
+            }, 100);
+        });
+    }, 500);
+    
+    // Add glowing effect to stats on hover
+    const glowCards = document.querySelectorAll('.glow-card');
+    glowCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-8px) scale(1.02)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+    
+    // Trigger confetti for achievements and podium
+    const currentStreak = {{ current_streak }};
+    if (currentStreak >= 7) {
+        setTimeout(() => {
+            triggerAchievementConfetti();
+        }, 2000);
+    }
+    
+    // Add podium interactions
+    const podiumItems = document.querySelectorAll('.podium-item[data-user]');
+    podiumItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const username = this.getAttribute('data-user');
+            const points = this.getAttribute('data-points');
+            triggerPodiumConfetti();
+        });
+        
+        item.style.cursor = 'pointer';
+        item.title = 'Click to celebrate!';
+    });
+    
+    // Auto-trigger podium confetti on page load for top 3
+    setTimeout(() => {
+        if (podiumItems.length > 0) {
+            triggerPodiumConfetti();
+        }
+    }, 3000);
+    
+    // Add subtle animation to empty podium spots
+    const emptyPodiums = document.querySelectorAll('.podium-rank:not(.podium-1):not(.podium-2):not(.podium-3)');
+    emptyPodiums.forEach(podium => {
+        podium.style.animation = 'pulse 3s infinite';
+    });
+});
+</script>
+{% endblock %}

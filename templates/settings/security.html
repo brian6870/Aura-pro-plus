@@ -1,0 +1,390 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Header -->
+            <div class="glass-card p-4 mb-4">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h2 class="fw-bold mb-2"><i class="fas fa-shield-alt me-2 text-success"></i>Security Settings</h2>
+                        <p class="text-light mb-0">Manage your password and account security</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div class="stat-card" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.3);">
+                            <div class="stat-number" style="font-size: 1.5rem;">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                            <small class="text-light">Account Secure</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Left Column - Password Change -->
+                <div class="col-lg-6">
+                    <div class="glass-card p-4 h-100">
+                        <h5 class="mb-4"><i class="fas fa-key me-2 text-warning"></i>Change Password</h5>
+                        
+                        <form method="POST" action="{{ url_for('settings.security') }}">
+                            <div class="mb-3">
+                                <label for="current_password" class="form-label text-light">Current Password</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control form-control-modern" id="current_password" 
+                                           name="current_password" required>
+                                    <span class="input-group-text bg-transparent border-start-0">
+                                        <i class="fas fa-eye-slash text-muted"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="new_password" class="form-label text-light">New Password</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control form-control-modern" id="new_password" 
+                                           name="new_password" required>
+                                    <span class="input-group-text bg-transparent border-start-0">
+                                        <i class="fas fa-eye-slash text-muted"></i>
+                                    </span>
+                                </div>
+                                <div class="form-text text-muted">
+                                    Must be at least 8 characters with uppercase, lowercase, and numbers
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="confirm_password" class="form-label text-light">Confirm New Password</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control form-control-modern" id="confirm_password" 
+                                           name="confirm_password" required>
+                                    <span class="input-group-text bg-transparent border-start-0">
+                                        <i class="fas fa-eye-slash text-muted"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-modern">
+                                    <i class="fas fa-lock me-2"></i>Update Password
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Right Column - Security Info -->
+                <div class="col-lg-6">
+                    <!-- Security Status -->
+                    <div class="glass-card p-4 mb-4">
+                        <h5 class="mb-3"><i class="fas fa-user-shield me-2 text-info"></i>Security Status</h5>
+                        <div class="security-status">
+                            <div class="status-item status-good">
+                                <div class="status-icon">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="status-info">
+                                    <div class="status-title">Strong Password</div>
+                                    <div class="status-desc">Your password meets security requirements</div>
+                                </div>
+                            </div>
+                            
+                            <div class="status-item status-good">
+                                <div class="status-icon">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="status-info">
+                                    <div class="status-title">Email Verified</div>
+                                    <div class="status-desc">Your email address is confirmed</div>
+                                </div>
+                            </div>
+                            
+                            {% if current_user.google_id %}
+                            <div class="status-item status-good">
+                                <div class="status-icon">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="status-info">
+                                    <div class="status-title">Google OAuth</div>
+                                    <div class="status-desc">Secure login with Google</div>
+                                </div>
+                            </div>
+                            {% else %}
+                            <div class="status-item status-info">
+                                <div class="status-icon">
+                                    <i class="fas fa-info-circle"></i>
+                                </div>
+                                <div class="status-info">
+                                    <div class="status-title">Google OAuth Available</div>
+                                    <div class="status-desc">Connect Google for easier login</div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Security Tips -->
+                    <div class="glass-card p-4">
+                        <h5 class="mb-3"><i class="fas fa-lightbulb me-2 text-warning"></i>Security Tips</h5>
+                        <div class="tips-list">
+                            <div class="tip-item">
+                                <div class="tip-icon">
+                                    <i class="fas fa-check text-success"></i>
+                                </div>
+                                <div class="tip-text">Use a unique password for your Aura account</div>
+                            </div>
+                            
+                            <div class="tip-item">
+                                <div class="tip-icon">
+                                    <i class="fas fa-check text-success"></i>
+                                </div>
+                                <div class="tip-text">Enable two-factor authentication if available</div>
+                            </div>
+                            
+                            <div class="tip-item">
+                                <div class="tip-icon">
+                                    <i class="fas fa-check text-success"></i>
+                                </div>
+                                <div class="tip-text">Never share your password with anyone</div>
+                            </div>
+                            
+                            <div class="tip-item">
+                                <div class="tip-icon">
+                                    <i class="fas fa-check text-success"></i>
+                                </div>
+                                <div class="tip-text">Log out from shared devices</div>
+                            </div>
+                            
+                            <div class="tip-item">
+                                <div class="tip-icon">
+                                    <i class="fas fa-check text-success"></i>
+                                </div>
+                                <div class="tip-text">Regularly update your password</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Session Management -->
+            <div class="glass-card p-4 mt-4">
+                <h5 class="mb-3"><i class="fas fa-clock me-2 text-purple"></i>Session Management</h5>
+                <div class="session-info">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="info-item">
+                                <div class="info-label">Current Session</div>
+                                <div class="info-value">Active now</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-item">
+                                <div class="info-label">Last Activity</div>
+                                <div class="info-value">Just now</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-modern">
+                            <i class="fas fa-sign-out-alt me-2"></i>Log Out of All Sessions
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.text-purple {
+    color: #8b5cf6 !important;
+}
+
+/* Security Status */
+.security-status {
+    display: grid;
+    gap: 1rem;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.status-good {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: rgba(16, 185, 129, 0.3);
+}
+
+.status-info {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.status-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.status-good .status-icon {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+}
+
+.status-info .status-icon {
+    background: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+}
+
+.status-info {
+    flex: 1;
+}
+
+.status-title {
+    font-weight: 600;
+    color: white;
+    margin-bottom: 0.2rem;
+}
+
+.status-desc {
+    color: #94a3b8;
+    font-size: 0.8rem;
+}
+
+/* Tips List */
+.tips-list {
+    display: grid;
+    gap: 0.8rem;
+}
+
+.tip-item {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0;
+}
+
+.tip-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(16, 185, 129, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.8rem;
+    flex-shrink: 0;
+}
+
+.tip-icon i {
+    font-size: 0.7rem;
+    color: #10b981;
+}
+
+.tip-text {
+    color: #e2e8f0;
+    font-size: 0.9rem;
+}
+
+/* Session Info */
+.session-info {
+    text-align: center;
+}
+
+.info-item {
+    margin-bottom: 1rem;
+}
+
+.info-label {
+    color: #94a3b8;
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+}
+
+.info-value {
+    color: white;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+/* Password Input Groups */
+.input-group-text {
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-left: none !important;
+    color: #94a3b8 !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .status-item {
+        padding: 0.8rem;
+    }
+    
+    .status-icon {
+        width: 35px;
+        height: 35px;
+        margin-right: 0.8rem;
+    }
+    
+    .tip-item {
+        padding: 0.4rem 0;
+    }
+}
+</style>
+
+<script>
+// Toggle password visibility
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleIcons = document.querySelectorAll('.input-group-text i');
+    
+    toggleIcons.forEach(icon => {
+        icon.addEventListener('click', function() {
+            const input = this.closest('.input-group').querySelector('input');
+            const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+            input.setAttribute('type', type);
+            
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+    });
+    
+    // Add password strength indicator
+    const newPasswordInput = document.getElementById('new_password');
+    if (newPasswordInput) {
+        newPasswordInput.addEventListener('input', function() {
+            const password = this.value;
+            const strength = checkPasswordStrength(password);
+            updatePasswordStrength(strength);
+        });
+    }
+});
+
+function checkPasswordStrength(password) {
+    let strength = 0;
+    
+    if (password.length >= 8) strength++;
+    if (password.match(/[a-z]/)) strength++;
+    if (password.match(/[A-Z]/)) strength++;
+    if (password.match(/[0-9]/)) strength++;
+    if (password.match(/[^a-zA-Z0-9]/)) strength++;
+    
+    return strength;
+}
+
+function updatePasswordStrength(strength) {
+    // You can implement a visual password strength indicator here
+    console.log('Password strength:', strength);
+}
+</script>
+{% endblock %}

@@ -1,0 +1,763 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+.pybuilder/
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+#   For a library or package, you might want to ignore these files since the code is
+#   intended to run in multiple environments; otherwise, check them in:
+# .python-version
+
+# pipenv
+#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
+#   However, in case of collaboration, if having platform-specific dependencies or dependencies
+#   having no cross-platform support, pipenv may install dependencies that don't work, or not
+#   install all needed dependencies.
+#Pipfile.lock
+
+# poetry
+#   Similar to Pipfile.lock, it is generally recommended to include poetry.lock in version control.
+#   This is especially recommended for binary packages to ensure reproducibility, and is more
+#   commonly ignored for libraries.
+#   https://python-poetry.org/docs/basic-usage/#commit-your-poetrylock-file-to-version-control
+#poetry.lock
+
+# pdm
+#   Similar to Pipfile.lock, it is generally recommended to include pdm.lock in version control.
+#pdm.lock
+#   pdm stores project-wide configurations in .pdm.toml, but it is recommended to not include it
+#   in version control.
+#   https://pdm.fming.dev/#use-with-ide
+.pdm.toml
+
+# PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# PyCharm
+#  JetBrains template
+.idea/
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+/instance/
+/aura.db
+/backups/
+
+# API Keys and Secrets
+*.env
+.env.local
+.env.production
+.env.development
+.env.test
+secrets.json
+credentials.json
+*.key
+*.pem
+*.crt
+
+# Logs
+*.log
+logs/
+flask.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Windows
+# Windows thumbnail cache files
+Thumbs.db
+ehthumbs.db
+
+# Dump file
+*.stackdump
+
+# Folder config file
+[Dd]esktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+# macOS
+*.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must end with two \r
+Icon
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Linux
+*~
+
+# temporary files which can be created if a process still has a handle open of a deleted file
+.fuse_hidden*
+
+# KDE directory preferences
+.directory
+
+# Linux trash folder which might appear on any partition or disk
+.Trash-*
+
+# .nfs files are created when an open file is removed but is still being accessed
+.nfs*
+
+# Session files
+*.session
+*.session-journal
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+temp/
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.save
+*~
+
+# Cache files
+.cache/
+*.cache
+
+# Package files
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Media files (optional - include if you don't want to track media)
+*.mp4
+*.avi
+*.mov
+*.mp3
+*.wav
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.tiff
+*.ico
+
+# Document files (optional)
+*.pdf
+*.doc
+*.docx
+*.xls
+*.xlsx
+*.ppt
+*.pptx
+
+# SQL dump files
+*.sql
+*.dump
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# RStudio files
+.Rproj.user/
+*.Rproj
+
+# LaTeX files
+*.aux
+*.log
+*.out
+*.toc
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+
+# SASS/SCSS
+.sass-cache/
+
+# Node.js (if you have any frontend build tools)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.lock-wscript
+
+# Coverage reports
+.coverage
+.coverage.*
+htmlcov/
+
+# PyTest
+.pytest_cache/
+test-results.xml
+
+# ML model files (if you add ML models later)
+*.pkl
+*.joblib
+*.h5
+*.model
+
+# OCR temporary files (if using local OCR)
+*.tessdata
+/tessdata/
+
+# Flask debug toolbar
+debug_toolbar_*
+
+# Flask session files
+flask_session/
+
+# SQLAlchemy migration files (if using migrations)
+migrations/versions/*.py
+!migrations/versions/.keep
+
+# Jupyter
+.jupyter/
+
+# VS Code
+.vscode/settings.json
+.vscode/launch.json
+.vscode/tasks.json
+
+# PyCharm
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries
+.idea/vcs.xml
+.idea/jsLibraryMappings.xml
+.idea/dataSources.ids
+.idea/dataSources.xml
+.idea/dataSources.local.xml
+.idea/sqlDataSources.xml
+.idea/dynamic.xml
+.idea/uiDesigner.xml
+.idea/aws.xml
+
+# Eclipse
+.classpath
+.project
+.settings/
+bin/
+
+# NetBeans
+/nbproject/private/
+/nbproject/project.xml
+/nbproject/project.properties
+/build/
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Gradle
+.gradle
+/build/
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+replay_pid*
+
+# Application specific
+/static/uploads/
+/temp_uploads/
+/user_uploads/
+/analysis_cache/
+/model_cache/
+
+# Docker
+Dockerfile.dev
+docker-compose.override.yml
+
+# Heroku
+*.heroku
+
+# Fly.io
+.fly/
+
+# Railway
+.railway/
+
+# Production SSL certificates
+ssl/
+*.crt
+*.key
+
+# Local development overrides
+local_config.py
+config_local.py
+
+# IDE specific (comprehensive)
+*.swp
+*.swo
+*~
+.~lock.*
+
+# Application runtime files
+*.pid
+*.state
+*.lock
+
+# Message brokers (if used)
+.rabbitmq/
+.redis/
+
+# Webpack (if used)
+webpack-stats.json
+
+# Bower (if used)
+bower_components/
+
+# Grunt (if used)
+.grunt/
+
+# Bower dependency directory (https://bower.io/)
+bower_components
+
+# node_modules (if any frontend dependencies)
+node_modules/
+
+# Yarn Integrity file
+.yarn-integrity
+
+# parcel-bundler cache (https://parceljs.org/)
+.cache
+.parcel-cache
+
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test
+
+# ESLint cache
+.eslintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional stylelint cache
+.stylelintcache
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variable files
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+# Storybook build outputs
+.out
+.storybook-out
+
+# Temporary folders
+tmp/
+temp/
+
+# Editor directories and files
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Local History for Visual Studio Code
+.history/
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+# End of https://www.toptal.com/developers/gitignore/api/python,flask,windows,macos,linux,node
+# Aura-specific ignores
+/static/images/uploads/
+/static/images/processed/
+/temp_ocr/
+/user_sessions/
+/analysis_results/
+/exported_data/
+/backup_database/
+/migration_backups/
+
+# ML model files (if you add environmental impact models)
+/models/trained/
+/models/pretrained/
+
+# API rate limit tracking
+/rate_limits/
+/api_usage/
+
+# User-generated content
+/user_content/
+/product_images/
+/ingredient_scans/
+
+# Cache directories
+/template_cache/
+/static_cache/
+/api_cache/
+
+# Temporary analysis files
+/temp_analysis/
+/batch_processing/
+
+# Export files
+/exports/
+/reports/
+/analytics_exports/
+
+# Backup files from database operations
+/db_backups/
+/migration_backups/
+
+# SSL and security files (never commit these)
+/ssl_certs/
+/private_keys/
+/certificates/
+
+# Monitoring and logs
+/monitoring/
+/metrics/
+/performance_logs/
+
+# Testing data
+/test_data/
+/fixtures/
+/mock_data/
+
+# Documentation builds
+/docs/_build/
+/site/
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Environment variables
+.env
+.env.production
+.env.local
+.env.*.local
+
+# Instance files
+/instance/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Log files
+*.log
+logs/
+
+# Build and distribution directories
+/build/
+/dist/
+/eggs/
+/.eggs/
+/lib/
+/lib64/
+/parts/
+/sdist/
+/var/
+/wheels/
+/pip-wheel-metadata/
+/share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+/htmlcov/
+/.tox/
+/.nox/
+/.coverage
+.coverage.*
+/.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# celery
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# Docker
+.docker/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Specific to your project
+clean_env/

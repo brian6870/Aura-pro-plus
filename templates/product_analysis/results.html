@@ -1,0 +1,113 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Results Header -->
+            <div class="glass-card mb-4">
+                <div class="card-body text-center">
+                    <h2 class="mb-3">Analysis Results</h2>
+                    
+                    {% if analysis.product_name %}
+                    <h4 class="text-light mb-3">"{{ analysis.product_name }}"</h4>
+                    {% endif %}
+                    
+                    <!-- Rating Badge -->
+                    <div class="mb-3">
+                        <span class="rating-badge rating-{{ analysis.environmental_rating }} fs-5 p-3">
+                            <i class="fas fa-{% if analysis.environmental_rating == 'friendly' %}leaf{% elif analysis.environmental_rating == 'moderate' %}balance-scale{% elif analysis.environmental_rating == 'harmful' %}exclamation-triangle{% else %}radiation{% endif %} me-2"></i>
+                            {{ analysis.environmental_rating|upper }}
+                        </span>
+                    </div>
+                    
+                    <p class="lead">{{ rating_description }}</p>
+                    
+                    <!-- Points Awarded -->
+                    <div class="alert alert-info">
+                        <h4 class="alert-heading">
+                            <i class="fas fa-trophy me-2"></i>{{ analysis.points_awarded }} Points Awarded!
+                        </h4>
+                        <p class="mb-0">Your total points: {{ current_user.get_total_points() }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Analysis -->
+            <div class="glass-card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Environmental Impact Analysis</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0">{{ analysis.analysis_result }}</p>
+                </div>
+            </div>
+
+            <!-- Alternative Suggestions -->
+            <div class="glass-card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-lightbulb me-2"></i>Eco-Friendly Alternatives</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0">{{ analysis.alternative_suggestions }}</p>
+                </div>
+            </div>
+
+            <!-- Ingredients Reviewed -->
+            <div class="glass-card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-list me-2"></i>Ingredients Reviewed</h5>
+                </div>
+                <div class="card-body">
+                    <div class="ingredients-text bg-dark p-3 rounded">
+                        {{ analysis.ingredients_text|replace('\n', '<br>')|safe }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="text-center">
+                <a href="{{ url_for('analysis.input_form') }}" class="btn btn-modern me-2">
+                    <i class="fas fa-search me-2"></i>Analyze Another Product
+                </a>
+                <a href="{{ url_for('analysis.history') }}" class="btn btn-modern me-2">
+                    <i class="fas fa-history me-2"></i>View History
+                </a>
+                <a href="{{ url_for('dashboard.index') }}" class="btn btn-outline-light">
+                    <i class="fas fa-home me-2"></i>Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Trigger confetti on results page
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        triggerConfetti();
+    }, 1000);
+});
+</script>
+
+<style>
+.ingredients-text {
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+    line-height: 1.4;
+    color: #e2e8f0;
+    background: rgba(0, 0, 0, 0.3) !important;
+}
+
+.btn-outline-light {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e2e8f0;
+}
+
+.btn-outline-light:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: white;
+}
+</style>
+{% endblock %}

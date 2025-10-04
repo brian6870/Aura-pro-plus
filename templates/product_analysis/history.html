@@ -1,0 +1,379 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="glass-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0"><i class="fas fa-history me-2"></i>Analysis History</h4>
+                    <a href="{{ url_for('analysis.input_form') }}" class="btn btn-modern btn-sm">
+                        <i class="fas fa-plus me-1"></i>New Analysis
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if analyses.items %}
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Product</th>
+                                        <th>Rating</th>
+                                        <th>Points</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for analysis in analyses.items %}
+                                    <tr>
+                                        <td>{{ analysis.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                        <td>
+                                            {% if analysis.product_name %}
+                                                <strong>{{ analysis.product_name }}</strong>
+                                            {% else %}
+                                                <span class="text-muted">Unnamed Product</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <span class="rating-badge rating-{{ analysis.environmental_rating }}">
+                                                {{ analysis.environmental_rating|title }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="points-badge">{{ analysis.points_awarded }}</span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <button class="btn btn-outline-light btn-sm" data-bs-toggle="modal" data-bs-target="#analysisModal{{ analysis.id }}">
+                                                    <i class="fas fa-eye me-1"></i>View
+                                                </button>
+                                                <button class="btn btn-outline-info btn-sm" onclick="copyAnalysisLink({{ analysis.id }})" title="Copy shareable link">
+                                                    <i class="fas fa-link"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Pagination -->
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <div class="text-muted">
+                                Showing {{ analyses.items|length }} of {{ analyses.total }} analyses
+                            </div>
+                            <nav aria-label="Analysis history pagination">
+                                <ul class="pagination justify-content-center mb-0">
+                                    {% if analyses.has_prev %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ url_for('analysis.history', page=analyses.prev_num ) }}">
+                                            <i class="fas fa-chevron-left"></i>
+                                        </a>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link"><i class="fas fa-chevron-left"></i></span>
+                                    </li>
+                                    {% endif %}
+                                    
+                                    {% for page_num in analyses.iter_pages(left_edge=2, left_current=2, right_current=2, right_edge=2) %}
+                                        {% if page_num %}
+                                            <li class="page-item {% if page_num == analyses.page %}active{% endif %}">
+                                                <a class="page-link" href="{{ url_for('analysis.history', page=page_num) }}">{{ page_num }}</a>
+                                            </li>
+                                        {% else %}
+                                            <li class="page-item disabled"><span class="page-link">…</span></li>
+                                        {% endif %}
+                                    {% endfor %}
+                                    
+                                    {% if analyses.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ url_for('analysis.history', page=analyses.next_num ) }}">
+                                            <i class="fas fa-chevron-right"></i>
+                                        </a>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link"><i class="fas fa-chevron-right"></i></span>
+                                    </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No analyses yet</h5>
+                            <p class="text-muted mb-4">Start by analyzing your first product to see your history here.</p>
+                            <a href="{{ url_for('analysis.input_form') }}" class="btn btn-modern">
+                                <i class="fas fa-plus me-1"></i>Analyze First Product
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modals placed outside the main content for better functionality -->
+{% for analysis in analyses.items %}
+<div class="modal fade" id="analysisModal{{ analysis.id }}" tabindex="-1" aria-labelledby="analysisModalLabel{{ analysis.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="analysisModalLabel{{ analysis.id }}">
+                    {% if analysis.product_name %}
+                        {{ analysis.product_name }}
+                    {% else %}
+                        Product Analysis
+                    {% endif %}
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body bg-dark text-light">
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-3">
+                        <div class="analysis-info-card bg-secondary bg-opacity-25 p-3 rounded">
+                            <h6 class="text-info"><i class="fas fa-star me-2"></i>Rating</h6>
+                            <span class="rating-badge rating-{{ analysis.environmental_rating }} large">
+                                {{ analysis.environmental_rating|title }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="analysis-info-card bg-secondary bg-opacity-25 p-3 rounded">
+                            <h6 class="text-warning"><i class="fas fa-trophy me-2"></i>Points Awarded</h6>
+                            <span class="points-badge large">{{ analysis.points_awarded }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <h6 class="text-primary"><i class="fas fa-chart-bar me-2"></i>Analysis</h6>
+                    <div class="analysis-content bg-dark border border-secondary rounded p-3">
+                        {{ analysis.analysis_result }}
+                    </div>
+                </div>
+                
+                {% if analysis.alternative_suggestions %}
+                <div class="mb-4">
+                    <h6 class="text-success"><i class="fas fa-lightbulb me-2"></i>Alternative Suggestions</h6>
+                    <div class="analysis-content bg-dark border border-secondary rounded p-3">
+                        {{ analysis.alternative_suggestions }}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <div class="mb-4">
+                    <h6 class="text-light"><i class="fas fa-list me-2"></i>Ingredients</h6>
+                    <div class="ingredients-box bg-black border border-secondary rounded p-3">
+                        <pre class="text-light mb-0">{{ analysis.ingredients_text }}</pre>
+                    </div>
+                </div>
+                
+                <div class="text-muted small">
+                    <i class="fas fa-clock me-1"></i>Analyzed on {{ analysis.created_at.strftime('%B %d, %Y at %H:%M') }}
+                </div>
+            </div>
+            <div class="modal-footer bg-dark">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-modern" onclick="copyAnalysisLink({{ analysis.id }})">
+                    <i class="fas fa-share-alt me-1"></i>Share Analysis
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<style>
+.table-dark {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table-dark th {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.1);
+    font-weight: 600;
+    padding: 1rem 0.75rem;
+}
+
+.table-dark td, .table-dark th {
+    border-color: rgba(255, 255, 255, 0.1);
+    padding: 1rem 0.75rem;
+    vertical-align: middle;
+}
+
+.page-link {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e2e8f0;
+    margin: 0 2px;
+    border-radius: 6px;
+}
+
+.page-link:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+.page-item.active .page-link {
+    background: var(--gradient-1);
+    border-color: transparent;
+}
+
+pre {
+    white-space: pre-wrap;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+    margin: 0;
+}
+
+/* Enhanced rating badges */
+.rating-badge {
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-block;
+}
+
+.rating-badge.large {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+}
+
+.rating-excellent {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+}
+
+.rating-good {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+}
+
+.rating-fair {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+}
+
+.rating-poor {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+}
+
+/* Points badge */
+.points-badge {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #ffd700;
+}
+
+.points-badge.large {
+    padding: 0.5rem 1rem;
+    font-size: 1.1rem;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* Modal fixes */
+.modal-content {
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+    border-bottom: 1px solid #444;
+}
+
+.modal-footer {
+    border-top: 1px solid #444;
+}
+
+/* Button group improvements */
+.btn-group .btn {
+    border-radius: 6px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .table-responsive {
+        font-size: 0.9rem;
+    }
+    
+    .table-dark td, .table-dark th {
+        padding: 0.75rem 0.5rem;
+    }
+    
+    .btn-group .btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.8rem;
+    }
+    
+    .pagination {
+        margin-top: 1rem;
+    }
+    
+    .d-flex.justify-content-between {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .d-flex.justify-content-between > div {
+        margin-bottom: 1rem;
+    }
+    
+    .modal-dialog {
+        margin: 1rem;
+    }
+}
+</style>
+
+<script>
+function copyAnalysisLink(analysisId) {
+    // In a real implementation, this would generate a shareable link
+    const link = window.location.origin + '/analysis/' + analysisId;
+    
+    // Copy to clipboard
+    navigator.clipboard.writeText(link).then(function() {
+        // Show a temporary notification
+        showNotification('Analysis link copied to clipboard!');
+    }).catch(function(err) {
+        console.error('Failed to copy: ', err);
+        showNotification('Failed to copy link. Please try again.', 'error');
+    });
+}
+
+function showNotification(message, type) {
+    if (type === undefined) type = 'success';
+    
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = 'alert alert-' + (type === 'success' ? 'success' : 'danger') + ' position-fixed';
+    notification.style.cssText = 'top: 20px; right: 20px; z-index: 1060; min-width: 250px;';
+    notification.textContent = message;
+    
+    // Add to page
+    document.body.appendChild(notification);
+    
+    // Remove after 3 seconds
+    setTimeout(function() {
+        if (notification.parentNode) {
+            notification.remove();
+        }
+    }, 3000);
+}
+</script>
+{% endblock %}

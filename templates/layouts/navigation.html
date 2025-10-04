@@ -1,0 +1,266 @@
+<nav class="navbar navbar-expand-lg navbar-modern">
+    <div class="container">
+        <a class="navbar-brand" href="{{ url_for('dashboard.index') }}">
+            <i class="fas fa-leaf me-2"></i>Aura
+        </a>
+        
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon">
+                <i class="fas fa-bars text-white"></i>
+            </span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarNav">
+            {% if current_user.is_authenticated %}
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if request.endpoint == 'dashboard.index' }}" href="{{ url_for('dashboard.index') }}">
+                        <i class="fas fa-home me-2"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if request.endpoint in ['analysis.input_form', 'analysis.analyze_ingredients', 'analysis.process_ocr'] }}" href="{{ url_for('analysis.input_form') }}">
+                        <i class="fas fa-search me-2"></i> Analyze Product
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if 'chat' in request.endpoint }}" href="{{ url_for('chat.index') }}">
+                        <i class="fas fa-robot me-2"></i> AI Assistant
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if request.endpoint == 'analysis.history' }}" href="{{ url_for('analysis.history') }}">
+                        <i class="fas fa-history me-2"></i> History
+                    </a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" style="z-index: 1001;">
+                        <img src="{{ current_user.avatar_url }}" alt="Avatar" class="rounded-circle me-2" width="32" height="32" onerror="this.src='/static/images/avatars/default.png'">
+                        <span>{{ current_user.username }}</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" style="
+                        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
+                        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+                        border-radius: 12px !important;
+                        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+                        padding: 0.5rem 0 !important;
+                        min-width: 200px !important;
+                        z-index: 1100 !important;
+                        backdrop-filter: none !important;
+                    ">
+                        <li>
+                            <a class="dropdown-item text-white d-flex align-items-center" href="{{ url_for('settings.profile') }}" style="
+                                padding: 0.75rem 1rem !important;
+                                border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+                                transition: all 0.3s ease !important;
+                            ">
+                                <i class="fas fa-user me-3" style="width: 20px; text-align: center;"></i>
+                                <span>Profile Settings</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item text-white d-flex align-items-center" href="{{ url_for('settings.security') }}" style="
+                                padding: 0.75rem 1rem !important;
+                                border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+                                transition: all 0.3s ease !important;
+                            ">
+                                <i class="fas fa-shield-alt me-3" style="width: 20px; text-align: center;"></i>
+                                <span>Security</span>
+                            </a>
+                        </li>
+                        <li><hr class="my-2" style="border-color: rgba(255, 255, 255, 0.1) !important; margin: 0.5rem 0 !important;"></li>
+                        <li>
+                            <a class="dropdown-item text-white d-flex align-items-center" href="{{ url_for('auth.logout') }}" style="
+                                padding: 0.75rem 1rem !important;
+                                transition: all 0.3s ease !important;
+                                color: #ef4444 !important;
+                            ">
+                                <i class="fas fa-sign-out-alt me-3" style="width: 20px; text-align: center;"></i>
+                                <span>Logout</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            {% else %}
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('auth.login') }}">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('auth.register') }}">
+                        <i class="fas fa-user-plus me-2"></i>Register
+                    </a>
+                </li>
+            </ul>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+<style>
+/* Active state for navigation */
+.navbar-modern .nav-link.active {
+    background: var(--gradient-1);
+    color: white !important;
+    box-shadow: 0 5px 20px rgba(59, 130, 246, 0.4);
+}
+
+/* Dropdown Hover Effects */
+.dropdown-item:hover {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+    transform: translateX(5px) !important;
+    border-radius: 8px !important;
+    margin: 0 0.5rem !important;
+}
+
+.dropdown-item:active {
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%) !important;
+}
+
+/* Ensure dropdown stays above everything */
+.navbar .dropdown-menu {
+    z-index: 1100 !important;
+}
+
+/* Fix dropdown positioning */
+.dropdown-menu-end {
+    right: 0 !important;
+    left: auto !important;
+}
+
+/* Mobile responsiveness for dropdown */
+@media (max-width: 991.98px) {
+    .navbar-nav .dropdown-menu {
+        position: static !important;
+        float: none !important;
+        width: auto !important;
+        margin-top: 0 !important;
+        background: rgba(15, 23, 42, 0.95) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+    
+    .navbar-nav .dropdown-item {
+        padding: 0.75rem 1rem !important;
+    }
+}
+
+/* Prevent text overflow in dropdown */
+.dropdown-item span {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 140px !important;
+    display: inline-block !important;
+}
+
+/* Smooth dropdown animations */
+.dropdown-menu {
+    animation: dropdownFadeIn 0.3s ease-out !important;
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Ensure proper spacing in dropdown */
+.dropdown-divider {
+    margin: 0.5rem 0 !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Fix for Bootstrap dropdown arrow */
+.navbar .dropdown-toggle::after {
+    margin-left: 0.5rem !important;
+    vertical-align: middle !important;
+}
+
+/* Ensure dropdown items are properly aligned */
+.dropdown-item i {
+    width: 20px !important;
+    text-align: center !important;
+    margin-right: 0.75rem !important;
+}
+</style>
+
+<script>
+// Enhanced dropdown functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdownToggle = document.querySelector('.dropdown-toggle');
+    const dropdownMenu = document.querySelector('.dropdown-menu');
+    
+    if (dropdownToggle && dropdownMenu) {
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const isClickInside = dropdownToggle.contains(event.target) || dropdownMenu.contains(event.target);
+            if (!isClickInside) {
+                const bootstrapDropdown = bootstrap.Dropdown.getInstance(dropdownToggle);
+                if (bootstrapDropdown) {
+                    bootstrapDropdown.hide();
+                }
+            }
+        });
+        
+        // Add smooth hover effects
+        dropdownToggle.addEventListener('mouseenter', function() {
+            const bootstrapDropdown = bootstrap.Dropdown.getInstance(this);
+            if (bootstrapDropdown && window.innerWidth >= 992) { // Desktop only
+                bootstrapDropdown.show();
+            }
+        });
+        
+        // Keep dropdown open when hovering over it
+        dropdownMenu.addEventListener('mouseenter', function() {
+            const bootstrapDropdown = bootstrap.Dropdown.getInstance(dropdownToggle);
+            if (bootstrapDropdown && window.innerWidth >= 992) {
+                bootstrapDropdown.show();
+            }
+        });
+        
+        // Hide dropdown when mouse leaves both toggle and menu
+        function hideDropdown() {
+            const bootstrapDropdown = bootstrap.Dropdown.getInstance(dropdownToggle);
+            if (bootstrapDropdown && window.innerWidth >= 992) {
+                setTimeout(() => {
+                    if (!dropdownToggle.matches(':hover') && !dropdownMenu.matches(':hover')) {
+                        bootstrapDropdown.hide();
+                    }
+                }, 100);
+            }
+        }
+        
+        dropdownToggle.addEventListener('mouseleave', hideDropdown);
+        dropdownMenu.addEventListener('mouseleave', hideDropdown);
+    }
+    
+    // Fix dropdown on mobile
+    function handleMobileDropdown() {
+        const dropdowns = document.querySelectorAll('.navbar-nav .dropdown-menu');
+        if (window.innerWidth < 992) {
+            dropdowns.forEach(menu => {
+                menu.style.position = 'static';
+                menu.style.float = 'none';
+            });
+        } else {
+            dropdowns.forEach(menu => {
+                menu.style.position = '';
+                menu.style.float = '';
+            });
+        }
+    }
+    
+    handleMobileDropdown();
+    window.addEventListener('resize', handleMobileDropdown);
+});
+</script>

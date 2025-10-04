@@ -1,0 +1,77 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <a class="navbar-brand" href="{{ url_for('dashboard.index') }}">
+                <i class="fas fa-leaf me-2"></i>Aura
+            </a>
+            <h4>Create Account</h4>
+        </div>
+
+        <div class="auth-body">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="auth-alert alert-{{ 'error' if category == 'error' else category }}">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-{% if category == 'success' %}check-circle{% elif category == 'error' %}exclamation-triangle{% else %}info-circle{% endif %} me-3"></i>
+                                <span>{{ message }}</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('auth.register') }}" class="auth-form">
+                <div class="form-group">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" placeholder="Choose a username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Create a password" required>
+                    <div class="form-text">
+                        Must be at least 8 characters with uppercase, lowercase, and numbers
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm_password" class="form-label">Confirm Password</label>
+                    <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirm your password" required>
+                </div>
+
+                <button type="submit" class="btn btn-auth">
+                    <i class="fas fa-user-plus me-2"></i>Create Account
+                </button>
+            </form>
+
+            <div class="auth-divider">
+                <span>Or sign up with</span>
+            </div>
+
+            <a href="{{ url_for('auth.google_login') }}" class="btn btn-google">
+                <i class="fab fa-google me-2"></i>Google
+            </a>
+
+            <div class="auth-text">
+                Already have an account? <a href="{{ url_for('auth.login') }}" class="auth-link">Sign in here</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Additional register-specific styles */
+.auth-container {
+    padding: 2rem 1rem;
+}
+</style>
+{% endblock %}

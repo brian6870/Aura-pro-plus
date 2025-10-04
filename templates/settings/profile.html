@@ -1,0 +1,411 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Profile Header -->
+            <div class="glass-card p-4 mb-4 fade-in-up">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h4 class="fw-bold mb-2"><i class="fas fa-user-cog me-2 text-primary"></i>Profile Settings</h4>
+                        <p class="text-light mb-0">Manage your account information and preferences</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div class="stat-card-sm">
+                            <div class="stat-number-sm">{{ current_user.get_total_points() }}</div>
+                            <small class="text-light">Total Points</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Form -->
+            <div class="glass-card p-4 fade-in-up">
+                <form method="POST" action="{{ url_for('settings.profile') }}" class="needs-validation" novalidate>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="username" class="form-label text-light fw-semibold">
+                                <i class="fas fa-user me-2"></i>Username
+                            </label>
+                            <input type="text" class="form-control-modern" id="username" name="username" 
+                                   value="{{ current_user.username }}" required>
+                            <div class="invalid-feedback">
+                                Please choose a username.
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label text-light fw-semibold">
+                                <i class="fas fa-envelope me-2"></i>Email Address
+                            </label>
+                            <input type="email" class="form-control-modern" id="email" name="email" 
+                                   value="{{ current_user.email }}" required>
+                            <div class="invalid-feedback">
+                                Please provide a valid email.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Avatar Section -->
+                    <div class="mb-4">
+                        <label class="form-label text-light fw-semibold">
+                            <i class="fas fa-image me-2"></i>Profile Avatar
+                        </label>
+                        <div class="d-flex align-items-center">
+                            <div class="avatar-preview me-4">
+                                <img src="{{ current_user.avatar_url or '/static/images/avatars/default.png' }}" 
+                                     alt="Current Avatar" class="rounded-circle avatar-large" 
+                                     onerror="this.src='/static/images/avatars/default.png'">
+                            </div>
+                            <div class="flex-grow-1">
+                                <p class="text-muted mb-2 small">
+                                    {% if current_user.google_id %}
+                                        <i class="fas fa-google text-danger me-1"></i> Avatar managed through Google OAuth
+                                    {% else %}
+                                        <i class="fas fa-info-circle text-info me-1"></i> Default Aura avatar
+                                    {% endif %}
+                                </p>
+                                <div class="avatar-options">
+                                    {% if not current_user.google_id %}
+                                    <button type="button" class="btn btn-modern btn-sm me-2" data-bs-toggle="modal" data-bs-target="#avatarModal">
+                                        <i class="fas fa-sync me-1"></i>Change Avatar
+                                    </button>
+                                    {% endif %}
+                                    <span class="text-muted small">
+                                        {{ "Connected with Google" if current_user.google_id else "Upload custom avatar" }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Account Statistics -->
+                    <div class="stats-grid mb-4">
+                        <div class="stat-item">
+                            <div class="stat-icon">
+                                <i class="fas fa-calendar-alt text-info"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">{{ current_user.created_at.strftime('%B %d, %Y') }}</div>
+                                <div class="stat-label">Member Since</div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon">
+                                <i class="fas fa-sign-in-alt text-success"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">
+                                    {% if current_user.last_login %}
+                                        {{ current_user.last_login.strftime('%b %d, %Y') }}
+                                    {% else %}
+                                        Never
+                                    {% endif %}
+                                </div>
+                                <div class="stat-label">Last Login</div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon">
+                                <i class="fas fa-fire text-danger"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">{{ current_user.current_streak }} days</div>
+                                <div class="stat-label">Current Streak</div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon">
+                                <i class="fas fa-search text-warning"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">
+                                    {{ analysis_count }}
+                                </div>
+                                <div class="stat-label">Products Analyzed</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex gap-3">
+                        <button type="submit" class="btn btn-modern flex-fill">
+                            <i class="fas fa-save me-2"></i>Update Profile
+                        </button>
+                        <a href="{{ url_for('dashboard.index') }}" class="btn btn-outline-light flex-fill">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Account Status Card -->
+            <div class="glass-card p-4 mt-4 fade-in-up">
+                <h6 class="fw-bold mb-3 text-light">
+                    <i class="fas fa-shield-alt me-2 text-success"></i>Account Status
+                </h6>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="status-item">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <span class="text-light">Email Verified</span>
+                            <span class="badge bg-success ms-2">Active</span>
+                        </div>
+                        <div class="status-item mt-2">
+                            <i class="fas fa-user-clock text-info me-2"></i>
+                            <span class="text-light">Account Created</span>
+                            <span class="text-muted ms-2">{{ current_user.created_at.strftime('%Y-%m-%d') }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="status-item">
+                            {% if current_user.google_id %}
+                                <i class="fab fa-google text-danger me-2"></i>
+                                <span class="text-light">Google OAuth</span>
+                                <span class="badge bg-primary ms-2">Connected</span>
+                            {% else %}
+                                <i class="fas fa-envelope text-warning me-2"></i>
+                                <span class="text-light">Email Login</span>
+                                <span class="badge bg-secondary ms-2">Standard</span>
+                            {% endif %}
+                        </div>
+                        <div class="status-item mt-2">
+                            <i class="fas fa-trophy text-warning me-2"></i>
+                            <span class="text-light">Global Rank</span>
+                            <span class="badge bg-info ms-2">#{{ user_rank if user_rank else 'N/A' }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Avatar Modal (Placeholder for future feature) -->
+<div class="modal fade" id="avatarModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content glass-card border-0">
+            <div class="modal-header border-0">
+                <h5 class="modal-title text-light">
+                    <i class="fas fa-user-circle me-2"></i>Change Avatar
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <i class="fas fa-cogs fa-3x text-muted mb-3"></i>
+                <p class="text-light">Avatar customization coming soon!</p>
+                <p class="text-muted small">We're working on bringing you more avatar options in the next update.</p>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-modern" data-bs-dismiss="modal">Got it!</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Profile-specific styles */
+.avatar-large {
+    width: 80px;
+    height: 80px;
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.avatar-preview {
+    position: relative;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+.stat-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+}
+
+.stat-icon {
+    font-size: 1.5rem;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.stat-content {
+    flex: 1;
+}
+
+.stat-value {
+    font-weight: 700;
+    color: white;
+    font-size: 0.9rem;
+}
+
+.stat-label {
+    color: #94a3b8;
+    font-size: 0.8rem;
+}
+
+.stat-card-sm {
+    text-align: center;
+    padding: 0.5rem;
+}
+
+.stat-number-sm {
+    font-size: 1.8rem;
+    font-weight: 800;
+    background: var(--gradient-1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0;
+}
+
+.btn-outline-light {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-light:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: white;
+    transform: translateY(-1px);
+}
+
+/* Form enhancements */
+.form-label {
+    margin-bottom: 0.5rem;
+}
+
+.needs-validation .form-control-modern:invalid {
+    border-color: #ef4444 !important;
+}
+
+.needs-validation .form-control-modern:valid {
+    border-color: #10b981 !important;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .avatar-large {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .stat-item {
+        padding: 0.8rem;
+    }
+    
+    .stat-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+}
+</style>
+
+<script>
+// Profile page specific JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    // Form validation
+    const form = document.querySelector('.needs-validation');
+    if (form) {
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    }
+
+    // Avatar preview enhancement
+    const avatarImg = document.querySelector('.avatar-preview img');
+    if (avatarImg) {
+        avatarImg.addEventListener('error', function() {
+            this.src = '/static/images/avatars/default.png';
+        });
+    }
+
+    // Add hover effects to stat items
+    const statItems = document.querySelectorAll('.stat-item');
+    statItems.forEach(item => {
+        item.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-3px)';
+        });
+        
+        item.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+
+    // Modal enhancement
+    const avatarModal = document.getElementById('avatarModal');
+    if (avatarModal) {
+        avatarModal.addEventListener('show.bs.modal', function() {
+            // Future feature placeholder
+            console.log('Avatar modal opened - feature coming soon!');
+        });
+    }
+
+    // Input focus effects
+    const inputs = document.querySelectorAll('.form-control-modern');
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.classList.add('focused');
+        });
+        
+        input.addEventListener('blur', function() {
+            this.parentElement.classList.remove('focused');
+        });
+    });
+});
+
+// Utility function for profile page
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(function() {
+        // Show success message
+        const toast = document.createElement('div');
+        toast.className = 'alert-modern position-fixed';
+        toast.style.cssText = 'top: 20px; right: 20px; z-index: 10000;';
+        toast.innerHTML = '<i class="fas fa-check me-2"></i>Copied to clipboard!';
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.remove();
+        }, 2000);
+    });
+}
+</script>
+{% endblock %}

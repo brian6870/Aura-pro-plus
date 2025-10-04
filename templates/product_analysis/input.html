@@ -1,0 +1,448 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Header Card -->
+            <div class="glass-card p-4 mb-4 text-center">
+                <h1 class="display-6 fw-bold mb-3"><i class="fas fa-search me-3 text-info"></i>Analyze Product Ingredients</h1>
+                <p class="lead text-light mb-0">Discover the environmental impact of your products and make sustainable choices</p>
+            </div>
+
+            <div class="row">
+                <!-- Main Input Card -->
+                <div class="col-lg-8 mb-4">
+                    <div class="glass-card p-4 h-100">
+                        <h4 class="mb-4"><i class="fas fa-edit me-2 text-primary"></i>Enter Product Information</h4>
+                        
+                        <form id="analysisForm" method="POST" action="{{ url_for('analysis.analyze_ingredients') }}" enctype="multipart/form-data">
+                            <!-- Product Name Input -->
+                            <div class="mb-4">
+                                <label for="product_name" class="form-label fw-semibold text-light mb-3">
+                                    <i class="fas fa-tag me-2"></i>Product Name
+                                </label>
+                                <input type="text" class="form-control form-control-modern" id="product_name" name="product_name" 
+                                       placeholder="Enter the product name (e.g., 'Organic Shampoo', 'Eco-Friendly Cleaner')" required>
+                                <div class="form-text text-muted mt-2">
+                                    <i class="fas fa-info-circle me-1"></i>This helps provide more personalized analysis results
+                                </div>
+                            </div>
+
+                            <!-- Text Input Section -->
+                            <div class="mb-4">
+                                <label for="ingredients" class="form-label fw-semibold text-light mb-3">
+                                    <i class="fas fa-font me-2"></i>Ingredient List
+                                </label>
+                                <textarea class="form-control form-control-modern" id="ingredients" name="ingredients" rows="8" 
+                                          placeholder="Enter or paste the list of ingredients here...&#10;&#10;Example:&#10;Water, Organic Aloe Vera Leaf Juice, Citric Acid, Potassium Sorbate, Sodium Benzoate, Natural Preservatives" required></textarea>
+                                <div class="form-text text-muted mt-2">
+                                    <i class="fas fa-info-circle me-1"></i>Be as detailed as possible for accurate analysis
+                                </div>
+                            </div>
+
+                            <!-- OR Divider -->
+                            <div class="position-relative my-4">
+                                <hr class="my-4" style="border-color: rgba(255,255,255,0.2);">
+                                <div class="position-absolute top-50 start-50 translate-middle px-3">
+                                    <span class="bg-dark text-muted px-2 py-1 rounded">OR</span>
+                                </div>
+                            </div>
+
+                            <!-- Image Upload Section -->
+                            <div class="mb-4">
+                                <label for="imageUpload" class="form-label fw-semibold text-light mb-3">
+                                    <i class="fas fa-camera me-2"></i>Upload Ingredient Label
+                                </label>
+                                <div class="file-upload-area glass-card p-4 text-center border-dashed">
+                                    <input class="form-control form-control-modern" type="file" id="imageUpload" name="image" accept="image/*" style="display: none;">
+                                    <div class="upload-placeholder">
+                                        <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                                        <h5 class="text-light">Drag & Drop or Click to Upload</h5>
+                                        <p class="text-muted mb-3">Supports JPG, PNG, GIF, BMP - Max 5MB</p>
+                                        <button type="button" class="btn btn-modern" id="chooseImageBtn">
+                                            <i class="fas fa-folder-open me-2"></i>Choose Image
+                                        </button>
+                                    </div>
+                                    <div class="upload-preview d-none">
+                                        <i class="fas fa-image fa-3x text-success mb-3"></i>
+                                        <h5 class="text-light">Image Ready for OCR</h5>
+                                        <p class="text-muted mb-3">Click analyze to process the image</p>
+                                        <div class="d-flex gap-2 justify-content-center">
+                                            <button type="button" class="btn btn-outline-light btn-sm" onclick="clearImage()">
+                                                <i class="fas fa-times me-1"></i>Change
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="fileInfo" class="mt-2 text-center"></div>
+                            </div>
+
+                            <!-- Extracted Text Display -->
+                            <div id="extractedTextSection" class="mb-4" style="display: none;">
+                                <label class="form-label fw-semibold text-light mb-3">
+                                    <i class="fas fa-text-height me-2"></i>Extracted Text
+                                </label>
+                                <div class="alert alert-info alert-modern mb-3">
+                                    <i class="fas fa-lightbulb me-2"></i>
+                                    <strong>Review & Edit:</strong> Check the extracted text and make any necessary corrections
+                                </div>
+                                <textarea class="form-control form-control-modern" id="extractedText" name="extracted_text" rows="6" placeholder="Extracted text will appear here..."></textarea>
+                                <div class="d-flex gap-2 mt-3">
+                                    <button type="button" id="useExtractedText" class="btn btn-success">
+                                        <i class="fas fa-check me-2"></i>Use This Text
+                                    </button>
+                                    <button type="button" id="retryOcr" class="btn btn-outline-light">
+                                        <i class="fas fa-redo me-2"></i>Retry OCR
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-modern btn-lg py-3">
+                                    <i class="fas fa-leaf me-2"></i>Analyze Environmental Impact
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Tips & Info Sidebar -->
+                <div class="col-lg-4">
+                    <!-- Tips Card -->
+                    <div class="glass-card p-4 mb-4">
+                        <h5 class="mb-3"><i class="fas fa-lightbulb me-2 text-warning"></i>Tips for Better Analysis</h5>
+                        <div class="tips-list">
+                            <div class="tip-item d-flex align-items-start mb-3">
+                                <i class="fas fa-tag text-primary mt-1 me-3"></i>
+                                <div>
+                                    <strong>Product Name</strong>
+                                    <p class="text-muted mb-0 small">Include the specific product name for personalized results</p>
+                                </div>
+                            </div>
+                            <div class="tip-item d-flex align-items-start mb-3">
+                                <i class="fas fa-camera text-info mt-1 me-3"></i>
+                                <div>
+                                    <strong>Clear Photos</strong>
+                                    <p class="text-muted mb-0 small">Take well-lit, focused pictures of ingredient labels</p>
+                                </div>
+                            </div>
+                            <div class="tip-item d-flex align-items-start mb-3">
+                                <i class="fas fa-list text-success mt-1 me-3"></i>
+                                <div>
+                                    <strong>Complete Lists</strong>
+                                    <p class="text-muted mb-0 small">Include all ingredients for accurate assessment</p>
+                                </div>
+                            </div>
+                            <div class="tip-item d-flex align-items-start">
+                                <i class="fas fa-search text-warning mt-1 me-3"></i>
+                                <div>
+                                    <strong>Check Details</strong>
+                                    <p class="text-muted mb-0 small">Look for hidden ingredients and preservatives</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- History Quick Access -->
+                    <div class="glass-card p-4">
+                        <h5 class="mb-3"><i class="fas fa-history me-2 text-info"></i>Analysis History</h5>
+                        <p class="text-muted small mb-3">View your previous product analyses and track your progress.</p>
+                        <a href="{{ url_for('analysis.history') }}" class="btn btn-outline-light w-100">
+                            <i class="fas fa-clock me-2"></i>View History
+                        </a>
+                    </div>
+
+                    <!-- Environmental Impact Info -->
+                    <div class="glass-card p-4 mt-4">
+                        <h5 class="mb-3"><i class="fas fa-seedling me-2 text-success"></i>Why Analyze?</h5>
+                        <div class="impact-info">
+                            <div class="impact-item d-flex align-items-center mb-2">
+                                <i class="fas fa-recycle text-success me-2"></i>
+                                <span class="small">Reduce carbon footprint</span>
+                            </div>
+                            <div class="impact-item d-flex align-items-center mb-2">
+                                <i class="fas fa-tint text-info me-2"></i>
+                                <span class="small">Conserve water resources</span>
+                            </div>
+                            <div class="impact-item d-flex align-items-center mb-2">
+                                <i class="fas fa-wind text-warning me-2"></i>
+                                <span class="small">Minimize pollution</span>
+                            </div>
+                            <div class="impact-item d-flex align-items-center">
+                                <i class="fas fa-heart text-danger me-2"></i>
+                                <span class="small">Support sustainable brands</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.file-upload-area {
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.file-upload-area:hover {
+    border-color: rgba(16, 185, 129, 0.5);
+    background: rgba(16, 185, 129, 0.05);
+}
+
+.file-upload-area.dragover {
+    border-color: #10b981;
+    background: rgba(16, 185, 129, 0.1);
+}
+
+.upload-placeholder, .upload-preview {
+    transition: all 0.3s ease;
+}
+
+.tips-list .tip-item {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tips-list .tip-item:last-child {
+    border-bottom: none;
+}
+
+.impact-info .impact-item {
+    padding: 0.3rem 0;
+}
+
+.form-control-modern {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 12px !important;
+    color: white !important;
+    padding: 1rem !important;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control-modern:focus {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.25) !important;
+    color: white !important;
+}
+
+.form-control-modern::placeholder {
+    color: #94a3b8 !important;
+    font-style: italic;
+}
+</style>
+
+<script>
+// File upload functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const fileUpload = document.getElementById('imageUpload');
+    const chooseImageBtn = document.getElementById('chooseImageBtn');
+    const uploadArea = document.querySelector('.file-upload-area');
+    const uploadPlaceholder = document.querySelector('.upload-placeholder');
+    const uploadPreview = document.querySelector('.upload-preview');
+    const fileInfo = document.getElementById('fileInfo');
+    const productNameInput = document.getElementById('product_name');
+
+    // Fix: Use button click to trigger file input
+    chooseImageBtn.addEventListener('click', function(e) {
+        e.stopPropagation(); // Prevent event bubbling
+        fileUpload.click();
+    });
+
+    // Drag and drop functionality
+    uploadArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        this.classList.add('dragover');
+    });
+
+    uploadArea.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        this.classList.remove('dragover');
+    });
+
+    uploadArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.classList.remove('dragover');
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            handleFileSelect(files[0]);
+        }
+    });
+
+    // File input change - FIXED: This now works on first selection
+    fileUpload.addEventListener('change', function(e) {
+        if (this.files && this.files.length > 0) {
+            handleFileSelect(this.files[0]);
+        }
+    });
+
+    function handleFileSelect(file) {
+        // Validate file type
+        const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/bmp'];
+        if (!validTypes.includes(file.type)) {
+            showMessage('Please select a valid image file (JPEG, PNG, GIF, BMP).', 'error');
+            return;
+        }
+
+        // Validate file size (5MB)
+        const maxSize = 5 * 1024 * 1024;
+        if (file.size > maxSize) {
+            showMessage('Image too large. Please select an image smaller than 5MB.', 'error');
+            return;
+        }
+
+        // Show preview
+        uploadPlaceholder.classList.add('d-none');
+        uploadPreview.classList.remove('d-none');
+        
+        // Show file info
+        fileInfo.innerHTML = `
+            <div class="alert alert-success alert-modern">
+                <i class="fas fa-check-circle me-2"></i>
+                <strong>Ready for OCR:</strong> ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)
+            </div>
+        `;
+
+        // Process OCR automatically
+        processOCR(file);
+    }
+
+    function clearImage() {
+        fileUpload.value = '';
+        uploadPlaceholder.classList.remove('d-none');
+        uploadPreview.classList.add('d-none');
+        fileInfo.innerHTML = '';
+        document.getElementById('extractedTextSection').style.display = 'none';
+    }
+
+    function processOCR(file) {
+        const formData = new FormData();
+        formData.append('image', file);
+
+        // Show loading state
+        const submitBtn = document.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing Image...';
+
+        // Show progress
+        fileInfo.innerHTML = `
+            <div class="alert alert-info alert-modern">
+                <i class="fas fa-sync fa-spin me-2"></i>
+                <strong>Processing OCR:</strong> Extracting text from image...
+            </div>
+        `;
+
+        fetch('{{ url_for("analysis.process_ocr") }}', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                showMessage('OCR Error: ' + data.error, 'error');
+            } else {
+                document.getElementById('extractedText').value = data.extracted_text;
+                document.getElementById('extractedTextSection').style.display = 'block';
+                
+                // Scroll to extracted text
+                document.getElementById('extractedTextSection').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+
+                showMessage('Text extracted successfully! Review and edit if needed.', 'success');
+            }
+        })
+        .catch(error => {
+            console.error('OCR Error:', error);
+            showMessage('Network error during OCR processing. Please try again.', 'error');
+        })
+        .finally(() => {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        });
+    }
+
+    document.getElementById('useExtractedText').addEventListener('click', function() {
+        document.getElementById('ingredients').value = document.getElementById('extractedText').value;
+        document.getElementById('extractedTextSection').style.display = 'none';
+        showMessage('Text copied to analysis field!', 'success');
+    });
+
+    document.getElementById('retryOcr').addEventListener('click', function() {
+        if (fileUpload.files.length > 0) {
+            processOCR(fileUpload.files[0]);
+        }
+    });
+
+    function showMessage(message, type) {
+        const alertClass = type === 'error' ? 'alert-danger' : 'alert-success';
+        fileInfo.innerHTML = `
+            <div class="alert ${alertClass} alert-modern">
+                <i class="fas fa-${type === 'error' ? 'exclamation-triangle' : 'check-circle'} me-2"></i>
+                ${message}
+            </div>
+        `;
+    }
+
+    // Form submission enhancement
+    document.getElementById('analysisForm').addEventListener('submit', function(e) {
+        const productName = productNameInput.value.trim();
+        const ingredients = document.getElementById('ingredients').value.trim();
+        const hasImage = fileUpload.files.length > 0;
+        
+        // Validate product name
+        if (!productName) {
+            e.preventDefault();
+            showMessage('Please enter a product name for personalized analysis.', 'error');
+            productNameInput.focus();
+            return;
+        }
+        
+        if (!ingredients && !hasImage) {
+            e.preventDefault();
+            showMessage('Please either enter ingredients or upload an image.', 'error');
+            return;
+        }
+
+        if (ingredients || hasImage) {
+            // Show loading state
+            const submitBtn = document.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Analyzing Environmental Impact...';
+        }
+    });
+
+    // Auto-focus product name field
+    productNameInput.focus();
+});
+
+// Clear image function (needs to be global for onclick)
+function clearImage() {
+    const fileUpload = document.getElementById('imageUpload');
+    const uploadPlaceholder = document.querySelector('.upload-placeholder');
+    const uploadPreview = document.querySelector('.upload-preview');
+    const fileInfo = document.getElementById('fileInfo');
+    
+    fileUpload.value = '';
+    uploadPlaceholder.classList.remove('d-none');
+    uploadPreview.classList.add('d-none');
+    fileInfo.innerHTML = '';
+    document.getElementById('extractedTextSection').style.display = 'none';
+}
+</script>
+{% endblock %}
