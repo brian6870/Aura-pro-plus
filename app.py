@@ -35,9 +35,7 @@ def create_app():
     if env == 'production':
         app.config.from_object('config.ProductionConfig')
         print("🚀 Production mode enabled")
-    else:
-        app.config.from_object('config.DevelopmentConfig')
-        print("🔧 Development mode enabled")
+   
     
     # Setup logging
     setup_logging()
