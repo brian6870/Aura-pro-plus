@@ -5,7 +5,6 @@ For production deployment with Apache/Nginx
 """
 import sys
 import os
-import logging
 
 # Configure the application
 def setup_environment():
@@ -33,33 +32,10 @@ try:
     from app import create_app
     application = create_app()
     
-    # Configure production logging
-    if not application.debug:
-        import logging
-        from logging.handlers import RotatingFileHandler
-        
-        # Ensure log directory exists
-        log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logs')
-        if not os.path.exists(log_dir):
-            os.makedirs(log_dir)
-        
-        # File handler for errors
-        file_handler = RotatingFileHandler(
-            os.path.join(log_dir, 'aura.log'),
-            maxBytes=1024 * 1024 * 10,  # 10MB
-            backupCount=10
-        )
-        file_handler.setLevel(logging.WARNING)
-        file_handler.setFormatter(logging.Formatter(
-            '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
-        ))
-        application.logger.addHandler(file_handler)
-        application.logger.setLevel(logging.INFO)
-        application.logger.info('Aura application startup')
-        
+    # No file logging - only console logging for production
+    # This prevents the "/var/log/aura/error.log isn't writable" error
+    
 except Exception as e:
-    # Log any startup errors
-    import logging
-    logging.basicConfig(level=logging.ERROR)
-    logging.error(f"Failed to start Aura application: {str(e)}")
+    # Log any startup errors to console only
+    print(f"ERROR: Failed to start Aura application: {str(e)}")
     raise
