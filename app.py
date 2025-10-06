@@ -13,19 +13,7 @@ login_manager = LoginManager()
 csrf = CSRFProtect()  # Only one CSRFProtect instance
 flask_session = Session()
 
-def setup_logging():
-    """Setup application logging"""
-    if not os.path.exists('logs'):
-        os.mkdir('logs')
-    
-    logging.basicConfig(
-        level=logging.INFO,
-        format='%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]',
-        handlers=[
-            logging.FileHandler('logs/aura.log'),
-            logging.StreamHandler()
-        ]
-    )
+
 
 def create_app():
     app = Flask(__name__)
@@ -44,8 +32,7 @@ def create_app():
         app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-key-change-in-production')
         print("⚠️  Using default SECRET_KEY - change in production!")
     
-    # Setup logging
-    setup_logging()
+   
     
     # Initialize extensions
     db.init_app(app)
