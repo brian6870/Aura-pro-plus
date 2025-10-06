@@ -53,6 +53,11 @@ class Config:
     # Google OAuth
     GOOGLE_OAUTH_CLIENT_ID = os.environ.get('GOOGLE_OAUTH_CLIENT_ID')
     GOOGLE_OAUTH_CLIENT_SECRET = os.environ.get('GOOGLE_OAUTH_CLIENT_SECRET')
+     # Dynamic redirect URI - uses Render URL in production
+    if os.environ.get('RENDER'):
+        GOOGLE_OAUTH_REDIRECT_URI = 'https://aura-pro-plus.onrender.com/auth/google/callback'
+    else:
+        GOOGLE_OAUTH_REDIRECT_URI = 'http://localhost:5000/auth/google/callback'
     
     # API Endpoints
     GROQ_BASE_URL = "https://api.groq.com/openai/v1"

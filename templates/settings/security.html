@@ -29,6 +29,8 @@
                         <h5 class="mb-4"><i class="fas fa-key me-2 text-warning"></i>Change Password</h5>
                         
                         <form method="POST" action="{{ url_for('settings.security') }}">
+                             <!-- Add CSRF Token -->
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <div class="mb-3">
                                 <label for="current_password" class="form-label text-light">Current Password</label>
                                 <div class="input-group">

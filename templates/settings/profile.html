@@ -23,6 +23,8 @@
             <!-- Profile Form -->
             <div class="glass-card p-4 fade-in-up">
                 <form method="POST" action="{{ url_for('settings.profile') }}" class="needs-validation" novalidate>
+                     <!-- Add CSRF Token -->
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="username" class="form-label text-light fw-semibold">
