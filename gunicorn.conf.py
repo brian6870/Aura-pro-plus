@@ -32,13 +32,6 @@ umask = 0
 user = "www-data"
 group = "www-data"
 
-# Logging - extensive in production
-accesslog = "/var/log/aura/access.log"
-errorlog = "/var/log/aura/error.log"
-loglevel = "warning"
-
-# Log format
-access_log_format = '%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"'
 
 # Process management
 max_requests = 1000
