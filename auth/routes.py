@@ -6,6 +6,15 @@ from models.user import User
 from auth.utils import validate_email, validate_password
 import requests
 from urllib.parse import urlencode
+import os
+
+def get_google_redirect_uri():
+    """Get the correct Google OAuth redirect URI based on environment"""
+    # Check if we're running on Render
+    if os.environ.get('RENDER') or os.environ.get('PRODUCTION'):
+        return 'https://aura-pro-plus.onrender.com/auth/google/callback'
+    else:
+        return 'http://localhost:5000/auth/google/callback'
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
@@ -90,9 +99,12 @@ def logout():
 def google_login():
     from config import Config
     
+    # Use dynamic redirect URI
+    redirect_uri = get_google_redirect_uri()
+    
     params = {
         'client_id': Config.GOOGLE_OAUTH_CLIENT_ID,
-        'redirect_uri': 'http://localhost:5000/auth/google/callback',
+        'redirect_uri': redirect_uri,
         'scope': 'profile email',
         'response_type': 'code'
     }
@@ -109,13 +121,16 @@ def google_callback():
         flash('Google authentication failed', 'error')
         return redirect(url_for('auth.login'))
     
+    # Use dynamic redirect URI
+    redirect_uri = get_google_redirect_uri()
+    
     # Exchange code for tokens
     token_data = {
         'client_id': Config.GOOGLE_OAUTH_CLIENT_ID,
         'client_secret': Config.GOOGLE_OAUTH_CLIENT_SECRET,
         'code': code,
         'grant_type': 'authorization_code',
-        'redirect_uri': 'http://localhost:5000/auth/google/callback'
+        'redirect_uri': redirect_uri
     }
     
     token_response = requests.post('https://oauth2.googleapis.com/token', data=token_data)
