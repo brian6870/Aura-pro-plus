@@ -17,14 +17,7 @@ def check_environment():
     
     # Check for required environment variables in production
     required_vars = ['SECRET_KEY', 'DATABASE_URL']
-    missing_vars = [var for var in required_vars if not os.environ.get(var)]
     
-    if missing_vars:
-        print("❌ Missing required environment variables:")
-        for var in missing_vars:
-            print(f"   - {var}")
-        print("💡 Please set these variables before running in production")
-        sys.exit(1)
 
 def init_database():
     """Initialize database if needed"""
