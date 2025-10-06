@@ -26,7 +26,7 @@
                                 </thead>
                                 <tbody>
                                     {% for analysis in analyses.items %}
-                                    <tr>
+                                    <tr class="analysis-row" data-analysis-id="{{ analysis.id }}">
                                         <td>{{ analysis.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
                                         <td>
                                             {% if analysis.product_name %}
@@ -45,12 +45,69 @@
                                         </td>
                                         <td>
                                             <div class="btn-group" role="group">
-                                                <button class="btn btn-outline-light btn-sm" data-bs-toggle="modal" data-bs-target="#analysisModal{{ analysis.id }}">
+                                                <button class="btn btn-outline-light btn-sm view-analysis-btn" data-analysis-id="{{ analysis.id }}">
                                                     <i class="fas fa-eye me-1"></i>View
                                                 </button>
                                                 <button class="btn btn-outline-info btn-sm" onclick="copyAnalysisLink({{ analysis.id }})" title="Copy shareable link">
                                                     <i class="fas fa-link"></i>
                                                 </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="analysis-details-row" id="details-{{ analysis.id }}" style="display: none;">
+                                        <td colspan="5" class="p-0">
+                                            <div class="analysis-details bg-dark border-top border-secondary">
+                                                <div class="p-4">
+                                                    <div class="row mb-4">
+                                                        <div class="col-md-6 mb-3">
+                                                            <div class="analysis-info-card bg-secondary bg-opacity-25 p-3 rounded">
+                                                                <h6 class="text-info"><i class="fas fa-star me-2"></i>Rating</h6>
+                                                                <span class="rating-badge rating-{{ analysis.environmental_rating }} large">
+                                                                    {{ analysis.environmental_rating|title }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <div class="analysis-info-card bg-secondary bg-opacity-25 p-3 rounded">
+                                                                <h6 class="text-warning"><i class="fas fa-trophy me-2"></i>Points Awarded</h6>
+                                                                <span class="points-badge large">{{ analysis.points_awarded }}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="mb-4">
+                                                        <h6 class="text-primary"><i class="fas fa-chart-bar me-2"></i>Analysis</h6>
+                                                        <div class="analysis-content bg-dark border border-secondary rounded p-3">
+                                                            {{ analysis.analysis_result }}
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    {% if analysis.alternative_suggestions %}
+                                                    <div class="mb-4">
+                                                        <h6 class="text-success"><i class="fas fa-lightbulb me-2"></i>Alternative Suggestions</h6>
+                                                        <div class="analysis-content bg-dark border border-secondary rounded p-3">
+                                                            {{ analysis.alternative_suggestions }}
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                    
+                                                    <div class="mb-4">
+                                                        <h6 class="text-light"><i class="fas fa-list me-2"></i>Ingredients</h6>
+                                                        <div class="ingredients-box bg-black border border-secondary rounded p-3">
+                                                            <pre class="text-light mb-0">{{ analysis.ingredients_text }}</pre>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="text-muted small">
+                                                        <i class="fas fa-clock me-1"></i>Analyzed on {{ analysis.created_at.strftime('%B %d, %Y at %H:%M') }}
+                                                    </div>
+                                                    
+                                                    <div class="mt-4 d-flex justify-content-end">
+                                                        <button class="btn btn-secondary btn-sm" onclick="closeAnalysisDetails({{ analysis.id }})">
+                                                            Close Details
+                                                        </button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </td>
                                     </tr>
@@ -117,77 +174,6 @@
         </div>
     </div>
 </div>
-
-<!-- Modals placed outside the main content for better functionality -->
-{% for analysis in analyses.items %}
-<div class="modal fade" id="analysisModal{{ analysis.id }}" tabindex="-1" aria-labelledby="analysisModalLabel{{ analysis.id }}" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-dark text-white">
-                <h5 class="modal-title" id="analysisModalLabel{{ analysis.id }}">
-                    {% if analysis.product_name %}
-                        {{ analysis.product_name }}
-                    {% else %}
-                        Product Analysis
-                    {% endif %}
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body bg-dark text-light">
-                <div class="row mb-4">
-                    <div class="col-md-6 mb-3">
-                        <div class="analysis-info-card bg-secondary bg-opacity-25 p-3 rounded">
-                            <h6 class="text-info"><i class="fas fa-star me-2"></i>Rating</h6>
-                            <span class="rating-badge rating-{{ analysis.environmental_rating }} large">
-                                {{ analysis.environmental_rating|title }}
-                            </span>
-                        </div>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <div class="analysis-info-card bg-secondary bg-opacity-25 p-3 rounded">
-                            <h6 class="text-warning"><i class="fas fa-trophy me-2"></i>Points Awarded</h6>
-                            <span class="points-badge large">{{ analysis.points_awarded }}</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mb-4">
-                    <h6 class="text-primary"><i class="fas fa-chart-bar me-2"></i>Analysis</h6>
-                    <div class="analysis-content bg-dark border border-secondary rounded p-3">
-                        {{ analysis.analysis_result }}
-                    </div>
-                </div>
-                
-                {% if analysis.alternative_suggestions %}
-                <div class="mb-4">
-                    <h6 class="text-success"><i class="fas fa-lightbulb me-2"></i>Alternative Suggestions</h6>
-                    <div class="analysis-content bg-dark border border-secondary rounded p-3">
-                        {{ analysis.alternative_suggestions }}
-                    </div>
-                </div>
-                {% endif %}
-                
-                <div class="mb-4">
-                    <h6 class="text-light"><i class="fas fa-list me-2"></i>Ingredients</h6>
-                    <div class="ingredients-box bg-black border border-secondary rounded p-3">
-                        <pre class="text-light mb-0">{{ analysis.ingredients_text }}</pre>
-                    </div>
-                </div>
-                
-                <div class="text-muted small">
-                    <i class="fas fa-clock me-1"></i>Analyzed on {{ analysis.created_at.strftime('%B %d, %Y at %H:%M') }}
-                </div>
-            </div>
-            <div class="modal-footer bg-dark">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-modern" onclick="copyAnalysisLink({{ analysis.id }})">
-                    <i class="fas fa-share-alt me-1"></i>Share Analysis
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-{% endfor %}
 
 <style>
 .table-dark {
@@ -288,18 +274,24 @@ pre {
     background: rgba(255, 255, 255, 0.15);
 }
 
-/* Modal fixes */
-.modal-content {
+/* Analysis details styling */
+.analysis-details {
+    background: rgba(0, 0, 0, 0.3);
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.analysis-details-row {
     border: none;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
-.modal-header {
-    border-bottom: 1px solid #444;
+.analysis-details-row td {
+    border: none;
+    padding: 0;
 }
 
-.modal-footer {
-    border-top: 1px solid #444;
+.analysis-row.active {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 /* Button group improvements */
@@ -335,8 +327,8 @@ pre {
         margin-bottom: 1rem;
     }
     
-    .modal-dialog {
-        margin: 1rem;
+    .analysis-details .p-4 {
+        padding: 1.5rem !important;
     }
 }
 </style>
@@ -374,6 +366,43 @@ function showNotification(message, type) {
             notification.remove();
         }
     }, 3000);
+}
+
+// Dropdown functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Add click event listeners to all view buttons
+    document.querySelectorAll('.view-analysis-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const analysisId = this.getAttribute('data-analysis-id');
+            toggleAnalysisDetails(analysisId);
+        });
+    });
+});
+
+function toggleAnalysisDetails(analysisId) {
+    const detailsRow = document.getElementById('details-' + analysisId);
+    const isCurrentlyVisible = detailsRow.style.display !== 'none';
+    
+    // Close all other open details
+    document.querySelectorAll('.analysis-details-row').forEach(row => {
+        row.style.display = 'none';
+    });
+    
+    // Remove active class from all rows
+    document.querySelectorAll('.analysis-row').forEach(row => {
+        row.classList.remove('active');
+    });
+    
+    // If the clicked details weren't already visible, show them
+    if (!isCurrentlyVisible) {
+        detailsRow.style.display = 'table-row';
+        document.querySelector('.analysis-row[data-analysis-id="' + analysisId + '"]').classList.add('active');
+    }
+}
+
+function closeAnalysisDetails(analysisId) {
+    document.getElementById('details-' + analysisId).style.display = 'none';
+    document.querySelector('.analysis-row[data-analysis-id="' + analysisId + '"]').classList.remove('active');
 }
 </script>
 {% endblock %}

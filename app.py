@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, session, request
+from flask_wtf.csrf import CSRFProtect
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
-from flask_wtf.csrf import CSRFProtect
 from flask_session import Session
 import os
 from datetime import timedelta
@@ -10,7 +10,7 @@ import logging
 # Initialize extensions
 db = SQLAlchemy()
 login_manager = LoginManager()
-csrf = CSRFProtect()
+csrf = CSRFProtect()  # Only one CSRFProtect instance
 flask_session = Session()
 
 def setup_logging():
@@ -35,7 +35,14 @@ def create_app():
     if env == 'production':
         app.config.from_object('config.ProductionConfig')
         print("🚀 Production mode enabled")
-   
+    else:
+        app.config.from_object('config.DevelopmentConfig')
+        print("🔧 Development mode enabled")
+    
+    # Ensure SECRET_KEY is set for CSRF
+    if not app.config.get('SECRET_KEY'):
+        app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-key-change-in-production')
+        print("⚠️  Using default SECRET_KEY - change in production!")
     
     # Setup logging
     setup_logging()
@@ -49,7 +56,7 @@ def create_app():
     login_manager.login_message_category = 'warning'
     login_manager.session_protection = "strong"  # Enhanced session protection
     
-    # CSRF Protection
+    # CSRF Protection - Initialize with app
     csrf.init_app(app)
     
     # Session configuration
@@ -107,7 +114,18 @@ def create_app():
             response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-CSRFToken'
         
         return response
-   
+    
+    # Error handler for CSRF errors
+    @app.errorhandler(400)
+    def handle_csrf_error(e):
+        if 'CSRF' in str(e):
+            app.logger.warning(f"CSRF validation failed: {e}")
+            return {
+                'error': 'CSRF token missing or invalid',
+                'message': 'Please refresh the page and try again'
+            }, 400
+        return e
+    
     # Health check endpoint
     @app.route('/health')
     def health_check():

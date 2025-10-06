@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, jsonify, flash, redirect, url_for
 from flask_login import login_required, current_user
+from flask_wtf.csrf import validate_csrf, CSRFError
 from app import db
 from models.product_analysis import ProductAnalysis
 from models.points import PointsHistory
@@ -18,18 +19,64 @@ def input_form():
 @analysis_bp.route('/process-ocr', methods=['POST'])
 @login_required
 def process_ocr():
+    try:
+        # Validate CSRF token from form data or headers
+        csrf_token = request.form.get('csrf_token') or request.headers.get('X-CSRFToken')
+        if not csrf_token:
+            return jsonify({
+                'success': False,
+                'error': 'CSRF token missing',
+                'extracted_text': None
+            }), 400
+            
+        validate_csrf(csrf_token)
+        
+    except CSRFError as e:
+        print(f"❌ CSRF validation failed: {e}")
+        return jsonify({
+            'success': False,
+            'error': 'CSRF token invalid',
+            'extracted_text': None
+        }), 400
+    except Exception as e:
+        print(f"❌ CSRF validation error: {e}")
+        return jsonify({
+            'success': False,
+            'error': 'CSRF validation failed',
+            'extracted_text': None
+        }), 400
+    
     if 'image' not in request.files:
-        return jsonify({'error': 'No image file provided'}), 400
+        return jsonify({
+            'success': False,
+            'error': 'No image file provided',
+            'extracted_text': None
+        }), 400
     
     image_file = request.files['image']
     if image_file.filename == '':
-        return jsonify({'error': 'No image selected'}), 400
+        return jsonify({
+            'success': False,
+            'error': 'No image selected',
+            'extracted_text': None
+        }), 400
     
-    extracted_text = ocr_service.process_image(image_file)
-    if extracted_text is None:
-        return jsonify({'error': 'OCR processing failed'}), 500
+    # Process OCR and get result dict
+    ocr_result = ocr_service.process_image(image_file)
     
-    return jsonify({'extracted_text': extracted_text})
+    # Return the OCR result directly
+    if ocr_result['success']:
+        return jsonify({
+            'success': True,
+            'error': None,
+            'extracted_text': ocr_result['text']
+        })
+    else:
+        return jsonify({
+            'success': False,
+            'error': ocr_result['error'],
+            'extracted_text': None
+        }), 500
 
 @analysis_bp.route('/analyze', methods=['POST'])
 @login_required
@@ -43,12 +90,12 @@ def analyze_ingredients():
     
     print(f"🧪 Starting analysis for user {current_user.id}")
     print(f"📦 Product: {product_name}")
-    print(f"📝 Ingredients length: {len(ingredients_text)} characters")
+    print(f"📝 Ingredients: {ingredients_text}")
     
-    # Analyze with Groq API (now includes product name)
+    # Analyze with Groq API
     analysis_result = groq_client.analyze_ingredients(product_name, ingredients_text)
     
-    print(f"📊 Analysis result: {analysis_result['detected_product_name']} - {analysis_result['rating']} - {analysis_result['points']} points")
+    print(f"📊 Analysis result: {analysis_result.get('detected_product_name', 'N/A')} - {analysis_result['rating']} - {analysis_result['points']} points")
     
     # Calculate final points
     final_points = points_calculator.calculate_points(
@@ -56,7 +103,7 @@ def analyze_ingredients():
         analysis_result['points']
     )
     
-    # ENSURE all data is in correct format for database (extra safety)
+    # ENSURE all data is in correct format for database
     analysis_text = str(analysis_result.get('analysis', 'No analysis available')).strip()
     alternatives_text = str(analysis_result.get('alternatives', 'No alternatives suggested')).strip()
     rating = str(analysis_result.get('rating', 'moderate')).strip()

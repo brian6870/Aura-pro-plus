@@ -56,6 +56,8 @@
                 <!-- Chat Input Area -->
                 <div class="chat-input-container p-4 border-top border-light border-opacity-10">
                     <form id="chatForm" class="chat-form">
+                        
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <div class="input-group input-group-lg">
                             <textarea 
                                 id="messageInput" 
@@ -147,6 +149,7 @@
     text-align: center;
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
+    cursor: pointer;
 }
 
 .suggestion-item:hover {
@@ -170,6 +173,7 @@
 .message {
     margin-bottom: 1.5rem;
     animation: fadeInUp 0.3s ease-out;
+    position: relative;
 }
 
 .message-user {
@@ -231,6 +235,71 @@
     opacity: 0.7;
     margin-top: 0.5rem;
     text-align: right;
+}
+
+/* Message Actions */
+.message-actions {
+    position: absolute;
+    top: -10px;
+    right: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    display: flex;
+    gap: 5px;
+}
+
+.message-user .message-actions {
+    right: auto;
+    left: 10px;
+}
+
+.message:hover .message-actions {
+    opacity: 1;
+}
+
+.message-action-btn {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.message-action-btn:hover {
+    background: white;
+    transform: scale(1.1);
+}
+
+/* Edit Message Input */
+.edit-message-input {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    color: white;
+    padding: 0.75rem 1rem;
+    width: 100%;
+    font-size: 0.9rem;
+    resize: vertical;
+    min-height: 60px;
+}
+
+.edit-message-input:focus {
+    outline: none;
+    border-color: var(--primary-green);
+}
+
+.edit-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    justify-content: flex-end;
 }
 
 /* Chat Input Styles */
@@ -316,6 +385,10 @@
         height: 60px;
         font-size: 1.5rem;
     }
+    
+    .message-actions {
+        opacity: 1; /* Always show on mobile */
+    }
 }
 
 /* Animation */
@@ -339,6 +412,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const messageInput = document.getElementById('messageInput');
     const sendButton = document.getElementById('sendButton');
     const clearChatBtn = document.getElementById('clearChat');
+    let messageHistory = [];
 
     // Auto-resize textarea
     messageInput.addEventListener('input', function() {
@@ -346,19 +420,60 @@ document.addEventListener('DOMContentLoaded', function() {
         this.style.height = (this.scrollHeight) + 'px';
     });
 
+    // Clean AI response text
+    function cleanResponse(text) {
+        return text
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Convert **bold** to <strong>
+            .replace(/\*(.*?)\*/g, '<em>$1</em>') // Convert *italic* to <em>
+            .replace(/\n\n/g, '</p><p>') // Convert double newlines to paragraphs
+            .replace(/\n/g, '<br>') // Convert single newlines to line breaks
+            .replace(/```[\s\S]*?```/g, '') // Remove code blocks
+            .replace(/`(.*?)`/g, '<code>$1</code>') // Convert inline code
+            .replace(/\#\#\# (.*?)(?:\n|$)/g, '<h3>$1</h3>') // Convert ### headers
+            .replace(/\#\# (.*?)(?:\n|$)/g, '<h2>$1</h2>') // Convert ## headers
+            .replace(/\# (.*?)(?:\n|$)/g, '<h1>$1</h1>') // Convert # headers
+            .replace(/\-\s(.*?)(?:\n|$)/g, '<li>$1</li>') // Convert bullet points
+            .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>') // Wrap lists
+            .replace(/\d+\.\s(.*?)(?:\n|$)/g, '<li>$1</li>') // Convert numbered lists
+            .replace(/(<li>.*<\/li>)/s, '<ol>$1</ol>'); // Wrap ordered lists
+    }
+
     // Add message to chat
-    function addMessage(content, isUser = false, timestamp = null) {
+    function addMessage(content, isUser = false, timestamp = null, messageId = null) {
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${isUser ? 'message-user' : 'message-ai'}`;
+        messageId = messageId || Date.now().toString();
+        messageDiv.dataset.messageId = messageId;
         
         const timestampText = timestamp || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const displayContent = isUser ? content : cleanResponse(content);
         
-        messageDiv.innerHTML = `
+        let messageHTML = `
             <div class="message-bubble ${isUser ? 'user-bubble' : 'ai-bubble'}">
-                <div class="message-content">${content}</div>
+                <div class="message-content">${displayContent}</div>
                 <div class="message-time">${timestampText}</div>
             </div>
         `;
+        
+        // Add edit/delete buttons for user messages
+        if (isUser) {
+            messageHTML = `
+                <div class="message-bubble user-bubble">
+                    <div class="message-content">${content}</div>
+                    <div class="message-time">${timestampText}</div>
+                    <div class="message-actions">
+                        <button class="message-action-btn edit-btn" title="Edit message">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="message-action-btn resend-btn" title="Resend message">
+                            <i class="fas fa-redo"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        messageDiv.innerHTML = messageHTML;
         
         // Remove welcome message if it's the first user message
         const welcomeMessage = document.querySelector('.chat-welcome');
@@ -368,6 +483,132 @@ document.addEventListener('DOMContentLoaded', function() {
         
         chatMessages.appendChild(messageDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
+        
+        // Add to history if it's a user message
+        if (isUser) {
+            messageHistory.push({
+                id: messageId,
+                content: content,
+                timestamp: timestampText,
+                isUser: true
+            });
+            
+            // Add event listeners for action buttons
+            const editBtn = messageDiv.querySelector('.edit-btn');
+            const resendBtn = messageDiv.querySelector('.resend-btn');
+            
+            if (editBtn) {
+                editBtn.addEventListener('click', () => editMessage(messageId, content));
+            }
+            
+            if (resendBtn) {
+                resendBtn.addEventListener('click', () => resendMessage(messageId));
+            }
+        }
+        
+        return messageId;
+    }
+
+    // Edit message
+    function editMessage(messageId, currentContent) {
+        const messageDiv = document.querySelector(`[data-message-id="${messageId}"]`);
+        const messageBubble = messageDiv.querySelector('.message-bubble');
+        
+        messageBubble.innerHTML = `
+            <textarea class="edit-message-input">${currentContent}</textarea>
+            <div class="edit-actions">
+                <button class="btn btn-sm btn-modern save-edit">Save</button>
+                <button class="btn btn-sm btn-outline-light cancel-edit">Cancel</button>
+            </div>
+        `;
+        
+        const textarea = messageBubble.querySelector('.edit-message-input');
+        const saveBtn = messageBubble.querySelector('.save-edit');
+        const cancelBtn = messageBubble.querySelector('.cancel-edit');
+        
+        textarea.focus();
+        textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+        
+        saveBtn.addEventListener('click', () => {
+            const newContent = textarea.value.trim();
+            if (newContent && newContent !== currentContent) {
+                // Update message in history
+                const messageIndex = messageHistory.findIndex(msg => msg.id === messageId);
+                if (messageIndex !== -1) {
+                    messageHistory[messageIndex].content = newContent;
+                }
+                
+                // Re-render the message
+                messageDiv.remove();
+                addMessage(newContent, true, messageHistory[messageIndex].timestamp, messageId);
+                
+                // Auto-resend if it's the last message
+                const isLastMessage = messageIndex === messageHistory.length - 1;
+                if (isLastMessage) {
+                    setTimeout(() => resendMessage(messageId), 500);
+                }
+            }
+        });
+        
+        cancelBtn.addEventListener('click', () => {
+            messageDiv.remove();
+            addMessage(currentContent, true, messageHistory.find(msg => msg.id === messageId)?.timestamp, messageId);
+        });
+    }
+
+    // Resend message
+    function resendMessage(messageId) {
+        const message = messageHistory.find(msg => msg.id === messageId);
+        if (message) {
+            // Remove all messages after this one
+            const messageIndex = messageHistory.findIndex(msg => msg.id === messageId);
+            messageHistory = messageHistory.slice(0, messageIndex + 1);
+            
+            // Remove corresponding message elements from DOM
+            const allMessages = document.querySelectorAll('.message');
+            for (let i = allMessages.length - 1; i >= 0; i--) {
+                const msgId = allMessages[i].dataset.messageId;
+                if (msgId && messageHistory.findIndex(msg => msg.id === msgId) === -1) {
+                    allMessages[i].remove();
+                }
+            }
+            
+            // Resend the message
+            sendMessageToAI(message.content);
+        }
+    }
+
+    // Send message to AI
+    async function sendMessageToAI(messageContent) {
+        // Show typing indicator
+        showTypingIndicator();
+        
+        try {
+            // Get CSRF token
+            const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+            
+            const response = await fetch('{{ url_for("chat.send_message") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({ message: messageContent })
+            });
+            
+            const data = await response.json();
+            
+            hideTypingIndicator();
+            
+            if (data.error) {
+                addMessage('Sorry, I encountered an error. Please try again.', false);
+            } else {
+                addMessage(data.response, false);
+            }
+        } catch (error) {
+            hideTypingIndicator();
+            addMessage('Sorry, I\'m having trouble responding right now. Please try again later.', false);
+        }
     }
 
     // Show typing indicator
@@ -407,7 +648,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!message) return;
         
         // Add user message
-        addMessage(message, true);
+        const messageId = addMessage(message, true);
         messageInput.value = '';
         messageInput.style.height = 'auto';
         
@@ -415,41 +656,21 @@ document.addEventListener('DOMContentLoaded', function() {
         sendButton.disabled = true;
         messageInput.disabled = true;
         
-        // Show typing indicator
-        showTypingIndicator();
+        // Send to AI
+        await sendMessageToAI(message);
         
-        try {
-            const response = await fetch('{{ url_for("chat.send_message") }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ message: message })
-            });
-            
-            const data = await response.json();
-            
-            hideTypingIndicator();
-            
-            if (data.error) {
-                addMessage('Sorry, I encountered an error. Please try again.', false);
-            } else {
-                addMessage(data.response, false);
-            }
-        } catch (error) {
-            hideTypingIndicator();
-            addMessage('Sorry, I\'m having trouble responding right now. Please try again later.', false);
-        } finally {
-            // Re-enable form
-            sendButton.disabled = false;
-            messageInput.disabled = false;
-            messageInput.focus();
-        }
+        // Re-enable form
+        sendButton.disabled = false;
+        messageInput.disabled = false;
+        messageInput.focus();
     });
 
     // Clear chat
     clearChatBtn.addEventListener('click', async () => {
         if (confirm('Clear all chat messages?')) {
+            // Clear history
+            messageHistory = [];
+            
             // Remove all messages except welcome
             const messages = document.querySelectorAll('.message');
             messages.forEach(msg => msg.remove());
@@ -490,8 +711,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Clear server-side history
+            const csrfToken = document.querySelector('input[name="csrf_token"]').value;
             await fetch('{{ url_for("chat.clear_chat") }}', {
-                method: 'POST'
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken
+                }
             });
             
             chatMessages.scrollTop = 0;

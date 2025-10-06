@@ -24,5 +24,6 @@ psycopg2-binary>=2.9.7
 
 # Production
 gunicorn>=21.2.0
+
 # Session management
 Flask-Session>=0.4.0

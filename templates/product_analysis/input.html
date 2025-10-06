@@ -17,6 +17,9 @@
                         <h4 class="mb-4"><i class="fas fa-edit me-2 text-primary"></i>Enter Product Information</h4>
                         
                         <form id="analysisForm" method="POST" action="{{ url_for('analysis.analyze_ingredients') }}" enctype="multipart/form-data">
+                            <!-- Add CSRF Token -->
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            
                             <!-- Product Name Input -->
                             <div class="mb-4">
                                 <label for="product_name" class="form-label fw-semibold text-light mb-3">
@@ -35,7 +38,7 @@
                                     <i class="fas fa-font me-2"></i>Ingredient List
                                 </label>
                                 <textarea class="form-control form-control-modern" id="ingredients" name="ingredients" rows="8" 
-                                          placeholder="Enter or paste the list of ingredients here...&#10;&#10;Example:&#10;Water, Organic Aloe Vera Leaf Juice, Citric Acid, Potassium Sorbate, Sodium Benzoate, Natural Preservatives" required></textarea>
+                                          placeholder="Enter or paste the list of ingredients here...&#10;&#10;Example:&#10;Water, Organic Aloe Vera Leaf Juice, Citric Acid, Potassium Sorbate, Sodium Benzoate, Natural Preservatives"></textarea>
                                 <div class="form-text text-muted mt-2">
                                     <i class="fas fa-info-circle me-1"></i>Be as detailed as possible for accurate analysis
                                 </div>
@@ -255,6 +258,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const uploadPreview = document.querySelector('.upload-preview');
     const fileInfo = document.getElementById('fileInfo');
     const productNameInput = document.getElementById('product_name');
+    const ingredientsTextarea = document.getElementById('ingredients');
+
+    // Get CSRF token from the form
+    const csrfToken = document.querySelector('input[name="csrf_token"]')?.value;
 
     // Fix: Use button click to trigger file input
     chooseImageBtn.addEventListener('click', function(e) {
@@ -332,6 +339,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const formData = new FormData();
         formData.append('image', file);
 
+        // Add CSRF token to the FormData
+        if (csrfToken) {
+            formData.append('csrf_token', csrfToken);
+        }
+
         // Show loading state
         const submitBtn = document.querySelector('button[type="submit"]');
         const originalText = submitBtn.innerHTML;
@@ -348,13 +360,29 @@ document.addEventListener('DOMContentLoaded', function() {
 
         fetch('{{ url_for("analysis.process_ocr") }}', {
             method: 'POST',
-            body: formData
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': csrfToken || ''  // Add CSRF token to headers
+            }
         })
-        .then(response => response.json())
+        .then(response => {
+            // First check if response is OK
+            if (!response.ok) {
+                // Handle HTTP errors (404, 500, etc.)
+                throw new Error(`Server error: ${response.status} ${response.statusText}`);
+            }
+            
+            // Then check if response is JSON
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                // Handle non-JSON responses (HTML error pages)
+                throw new Error('Server returned non-JSON response. The OCR service may be unavailable.');
+            }
+            return response.json();
+        })
         .then(data => {
-            if (data.error) {
-                showMessage('OCR Error: ' + data.error, 'error');
-            } else {
+            if (data.success) {
                 document.getElementById('extractedText').value = data.extracted_text;
                 document.getElementById('extractedTextSection').style.display = 'block';
                 
@@ -364,12 +392,24 @@ document.addEventListener('DOMContentLoaded', function() {
                     block: 'center' 
                 });
 
-                showMessage('Text extracted successfully! Review and edit if needed.', 'success');
+                const serviceName = data.service || 'OCR service';
+                showMessage(`Text extracted successfully using ${serviceName}! Review and edit if needed.`, 'success');
+                
+                // Trigger confetti for successful OCR
+                triggerConfetti();
+            } else {
+                showMessage('OCR Error: ' + (data.error || 'Unknown error occurred'), 'error');
             }
         })
         .catch(error => {
             console.error('OCR Error:', error);
-            showMessage('Network error during OCR processing. Please try again.', 'error');
+            if (error.message.includes('non-JSON')) {
+                showMessage('OCR service temporarily unavailable. Please type the ingredients manually or try again later.', 'error');
+            } else if (error.message.includes('Server error')) {
+                showMessage('Server error: ' + error.message, 'error');
+            } else {
+                showMessage('Network error during OCR processing. Please check your connection and try again.', 'error');
+            }
         })
         .finally(() => {
             submitBtn.disabled = false;
@@ -378,14 +418,21 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     document.getElementById('useExtractedText').addEventListener('click', function() {
-        document.getElementById('ingredients').value = document.getElementById('extractedText').value;
+        const extractedText = document.getElementById('extractedText').value;
+        document.getElementById('ingredients').value = extractedText;
         document.getElementById('extractedTextSection').style.display = 'none';
-        showMessage('Text copied to analysis field!', 'success');
+        
+        // Remove required attribute since we now have ingredients
+        ingredientsTextarea.removeAttribute('required');
+        
+        showMessage('Text copied to analysis field! You can now analyze the product.', 'success');
     });
 
     document.getElementById('retryOcr').addEventListener('click', function() {
         if (fileUpload.files.length > 0) {
             processOCR(fileUpload.files[0]);
+        } else {
+            showMessage('No image selected. Please choose an image first.', 'error');
         }
     });
 
@@ -397,6 +444,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 ${message}
             </div>
         `;
+        
+        // Auto-hide success messages after 5 seconds
+        if (type === 'success') {
+            setTimeout(() => {
+                if (fileInfo.innerHTML.includes('alert-success')) {
+                    fileInfo.innerHTML = '';
+                }
+            }, 5000);
+        }
     }
 
     // Form submission enhancement
@@ -413,12 +469,14 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
+        // Validate that we have either ingredients or an image
         if (!ingredients && !hasImage) {
             e.preventDefault();
-            showMessage('Please either enter ingredients or upload an image.', 'error');
+            showMessage('Please either enter ingredients or upload an image for analysis.', 'error');
             return;
         }
 
+        // If we have ingredients or image, proceed with submission
         if (ingredients || hasImage) {
             // Show loading state
             const submitBtn = document.querySelector('button[type="submit"]');
@@ -429,6 +487,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Auto-focus product name field
     productNameInput.focus();
+    
+    // Make ingredients textarea not required initially (since image upload is an alternative)
+    ingredientsTextarea.removeAttribute('required');
 });
 
 // Clear image function (needs to be global for onclick)
@@ -437,12 +498,18 @@ function clearImage() {
     const uploadPlaceholder = document.querySelector('.upload-placeholder');
     const uploadPreview = document.querySelector('.upload-preview');
     const fileInfo = document.getElementById('fileInfo');
+    const ingredientsTextarea = document.getElementById('ingredients');
     
     fileUpload.value = '';
     uploadPlaceholder.classList.remove('d-none');
     uploadPreview.classList.add('d-none');
     fileInfo.innerHTML = '';
     document.getElementById('extractedTextSection').style.display = 'none';
+    
+    // Re-add required attribute if no ingredients are present
+    if (!ingredientsTextarea.value.trim()) {
+        ingredientsTextarea.setAttribute('required', 'required');
+    }
 }
 </script>
 {% endblock %}

@@ -18,7 +18,7 @@ var/
 wheels/
 share/python-wheels/
 *.egg-info/
-.installed.cfg
+.installed-cfg
 *.egg
 MANIFEST
 
@@ -220,7 +220,7 @@ $RECYCLE.BIN/
 .LSOverride
 
 # Icon must end with two \r
-Icon
+
 
 # Thumbnails
 ._*
@@ -288,19 +288,6 @@ temp/
 *.zip
 
 # Media files (optional - include if you don't want to track media)
-*.mp4
-*.avi
-*.mov
-*.mp3
-*.wav
-*.png
-*.jpg
-*.jpeg
-*.gif
-*.bmp
-*.tiff
-*.ico
-
 # Document files (optional)
 *.pdf
 *.doc
@@ -579,8 +566,8 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/python,flask,windows,macos,linux,node
 # Aura-specific ignores
-/static/images/uploads/
-/static/images/processed/
+
+
 /temp_ocr/
 /user_sessions/
 /analysis_results/
@@ -597,9 +584,6 @@ $RECYCLE.BIN/
 /api_usage/
 
 # User-generated content
-/user_content/
-/product_images/
-/ingredient_scans/
 
 # Cache directories
 /template_cache/
@@ -696,7 +680,7 @@ logs/
 /pip-wheel-metadata/
 /share/python-wheels/
 *.egg-info/
-.installed.cfg
+.installed-cfg
 *.egg
 
 # PyInstaller
