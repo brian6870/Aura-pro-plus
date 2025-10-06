@@ -64,9 +64,6 @@ class ProductionConfig(Config):
     REMEMBER_COOKIE_SECURE = True
     WTF_CSRF_SSL_STRICT = True
     
-    # Production logging
-    LOG_LEVEL = 'WARNING'
-    
     # Production database settings
     SQLALCHEMY_ENGINE_OPTIONS = {
         'pool_recycle': 300,
@@ -81,9 +78,6 @@ class DevelopmentConfig(Config):
     SESSION_COOKIE_SECURE = False
     REMEMBER_COOKIE_SECURE = False
     WTF_CSRF_SSL_STRICT = False
-    
-    # Development logging
-    LOG_LEVEL = 'DEBUG'
     
     # Development database settings
     SQLALCHEMY_ENGINE_OPTIONS = {
