@@ -7,12 +7,56 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
     <style>
         :root {
             --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             --eco-gradient: linear-gradient(135deg, #10b981, #059669, #047857);
             --hero-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #1e293b 100%);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--hero-gradient);
+            color: white;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Animated Background Bubbles */
+        .bubbles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, rgba(139, 92, 246, 0.05) 70%);
+            animation: float 15s infinite ease-in-out;
+            filter: blur(1px);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            25% { transform: translateY(-20px) translateX(10px); }
+            50% { transform: translateY(-40px) translateX(-10px); }
+            75% { transform: translateY(-20px) translateX(10px); }
+        }
+
+        /* Main Content Container */
+        .main-content {
+            position: relative;
+            z-index: 10;
         }
 
         /* FIXED NAVBAR STYLES */
@@ -22,6 +66,7 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             padding: 0.8rem 0;
+            z-index: 1000;
         }
 
         .navbar-brand {
@@ -102,7 +147,7 @@
             margin-left: 0.5rem;
         }
 
-        /* Mobile Responsive */
+        /* Mobile Responsive Navbar */
         @media (max-width: 991px) {
             .navbar-collapse {
                 background: rgba(15, 23, 42, 0.95);
@@ -125,12 +170,14 @@
             }
         }
 
-        /* Rest of the styles remain exactly the same */
+        /* Hero Section */
         .landing-hero {
             min-height: 100vh;
-            background: var(--hero-gradient);
             position: relative;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            padding: 100px 0 50px;
         }
 
         .hero-content {
@@ -138,44 +185,13 @@
             z-index: 20;
         }
 
-        /* Enhanced Floating Elements */
-        .floating-elements {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-        }
-
-        .floating-element {
-            position: absolute;
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, rgba(139, 92, 246, 0.1) 70%);
-            border-radius: 50%;
-            animation: floatEnhanced 8s ease-in-out infinite;
-            filter: blur(1px);
-        }
-
-        .floating-element:nth-child(1) { width: 120px; height: 120px; top: 15%; left: 5%; animation-delay: 0s; }
-        .floating-element:nth-child(2) { width: 180px; height: 180px; top: 65%; left: 85%; animation-delay: 2s; }
-        .floating-element:nth-child(3) { width: 100px; height: 100px; top: 85%; left: 15%; animation-delay: 4s; }
-        .floating-element:nth-child(4) { width: 150px; height: 150px; top: 25%; left: 75%; animation-delay: 1s; }
-        .floating-element:nth-child(5) { width: 110px; height: 110px; top: 75%; left: 45%; animation-delay: 3s; }
-
-        /* Particle Background */
-        .particles-container {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-        }
-
-        .particle {
-            position: absolute;
-            background: rgba(16, 185, 129, 0.3);
-            border-radius: 50%;
-            animation: particleFloat 15s linear infinite;
+        /* Make "Track Your" green on mobile */
+        @media (max-width: 768px) {
+            .track-your-text {
+                color: #10b981 !important;
+                -webkit-text-fill-color: #10b981 !important;
+                background: none !important;
+            }
         }
 
         /* Enhanced Feature Cards */
@@ -190,6 +206,7 @@
             height: 100%;
             position: relative;
             overflow: hidden;
+            margin-bottom: 1.5rem;
         }
 
         .feature-card::before {
@@ -239,6 +256,7 @@
             overflow: hidden;
             border: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(20px);
+            margin: 3rem 0;
         }
 
         .cta-section::before {
@@ -499,6 +517,36 @@
             text-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
         }
 
+        /* Form Styling */
+        .form-control-modern {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            color: white;
+            padding: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control-modern:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(16, 185, 129, 0.5);
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+            color: white;
+        }
+
+        .form-control-modern::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Glass Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            padding: 2rem;
+        }
+
         /* Mobile Optimizations */
         @media (max-width: 768px) {
             .hero-phone-mockup {
@@ -507,8 +555,8 @@
                 margin-top: 2rem;
             }
             
-            .display-3 {
-                font-size: 2.5rem;
+            .display-2, .display-3, .display-4 {
+                font-size: 2.5rem !important;
             }
             
             .stats-counter {
@@ -522,269 +570,366 @@
             .cta-section {
                 padding: 3rem 1.5rem;
             }
+            
+            .timeline {
+                padding-left: 1.5rem;
+            }
+            
+            .timeline-icon {
+                width: 3rem;
+                height: 3rem;
+                font-size: 1rem;
+            }
+            
+            .interactive-demo {
+                padding: 1.5rem;
+            }
+            
+            .btn-hero {
+                padding: 0.8rem 1.5rem;
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+            
+            .d-flex.flex-wrap.gap-3 {
+                flex-direction: column;
+            }
+            
+            /* CHANGED: Reorder columns for mobile - text first, then phone mockup */
+            .hero-content .row .col-lg-6:first-child {
+                order: 1;
+            }
+            
+            .hero-content .row .col-lg-6:last-child {
+                order: 2;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .display-2, .display-3, .display-4 {
+                font-size: 2rem !important;
+            }
+            
+            .lead {
+                font-size: 1rem !important;
+            }
+            
+            .feature-card {
+                padding: 1.5rem 1rem;
+            }
+            
+            .cta-section {
+                padding: 2rem 1rem;
+            }
+            
+            .interactive-demo {
+                padding: 1rem;
+            }
+        }
+
+        /* Section Spacing */
+        section {
+            padding: 5rem 0;
+            position: relative;
+            z-index: 10;
+        }
+
+        section:nth-child(even) {
+            background: rgba(15, 23, 42, 0.5);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(15, 23, 42, 0.9);
+            padding: 3rem 0;
+            position: relative;
+            z-index: 10;
         }
     </style>
 </head>
 <body>
-    <!-- Animated Background -->
-    <div class="bubbles"></div>
-    <div class="particles-container" id="particles"></div>
+    <!-- Animated Background Bubbles -->
+    <div class="bubbles" id="bubbles"></div>
 
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
-        <div class="container">
-            <a class="navbar-brand fw-900" href="{{ url_for('landing.index') }}">
-                <i class="fas fa-leaf me-2 glow"></i>Aura
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <div class="navbar-nav ms-auto">
-                    <a class="nav-link" href="#features">Features</a>
-                    <a class="nav-link" href="#demo">Demo</a>
-                    <a class="nav-link" href="#how-it-works">How It Works</a>
-                    <a class="btn btn-hero" href="{{ url_for('auth.register') }}">
-                        <i class="fas fa-rocket me-2"></i>Get Started
-                    </a>
+    <!-- Main Content Container -->
+    <div class="main-content">
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+            <div class="container">
+                <a class="navbar-brand fw-900" href="{{ url_for('landing.index') }}">
+                    <i class="fas fa-leaf me-2 glow"></i>Aura
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <div class="navbar-nav ms-auto">
+                        <a class="nav-link" href="#features">Features</a>
+                        <a class="nav-link" href="#demo">Demo</a>
+                        <a class="nav-link" href="#demo">How It Works</a>
+                        <a class="btn btn-hero" href="{{ url_for('auth.register') }}">
+                            <i class="fas fa-rocket me-2"></i>Get Started
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
-    </nav>
+        </nav>
 
-    <!-- Hero Section -->
-    <section class="landing-hero d-flex align-items-center">
-        <div class="floating-elements">
-            <div class="floating-element"></div>
-            <div class="floating-element"></div>
-            <div class="floating-element"></div>
-            <div class="floating-element"></div>
-            <div class="floating-element"></div>
-        </div>
-        
-        <div class="container hero-content">
-            <div class="row align-items-center">
-                <div class="col-lg-6">
-                    <h1 class="display-2 fw-black mb-4">
-                        Track Your 
-                        <span class="text-gradient typewriter">Carbon Footprint</span> 
-                        🌱
-                    </h1>
-                    <p class="lead mb-4 text-light fs-5">
-                        Discover the environmental impact of everyday products. 
-                        Scan, analyze, and make sustainable choices with AI-powered insights that matter.
-                    </p>
-                    <div class="d-flex flex-wrap gap-3 mb-5">
-                        <a href="{{ url_for('auth.register') }}" class="btn btn-hero">
-                            <i class="fas fa-rocket me-2"></i>Start Your Journey
-                        </a>
-                        <a href="#demo" class="btn btn-outline-light btn-lg">
-                            <i class="fas fa-play me-2"></i>Live Demo
-                        </a>
-                    </div>
+        <!-- Hero Section -->
+        <section class="landing-hero">
+            <div class="container hero-content">
+                <div class="row align-items-center">
+                    <div class="col-lg-6">
+                        <h1 class="display-2 fw-black mb-4">
+                            <span class="track-your-text">Track Your</span> 
+                            <span class="text-gradient typewriter">Carbon Footprint</span> 
+                            🌱
+                        </h1>
+                        <p class="lead mb-4 text-light fs-5">
+                            Discover the environmental impact of everyday products. 
+                            Scan, analyze, and make sustainable choices with AI-powered insights that matter.
+                        </p>
+                        <div class="d-flex flex-wrap gap-3 mb-5">
+                            <a href="{{ url_for('auth.register') }}" class="btn btn-hero">
+                                <i class="fas fa-rocket me-2"></i>Start Your Journey
+                            </a>
+                            <a href="#demo" class="btn btn-outline-light btn-lg">
+                                <i class="fas fa-play me-2"></i>Live Demo
+                            </a>
+                        </div>
 
-                    <!-- Enhanced Stats -->
-                    <div class="row mt-5">
-                        <div class="col-4 text-center">
-                            <div class="stats-counter" data-target="{{ total_users }}">0</div>
-                            <small class="text-light">Eco Warriors</small>
-                        </div>
-                        <div class="col-4 text-center">
-                            <div class="stats-counter" data-target="{{ total_analyses }}">0</div>
-                            <small class="text-light">Products Analyzed</small>
-                        </div>
-                        <div class="col-4 text-center">
-                            <div class="stats-counter" data-target="{{ carbon_saved }}">0</div>
-                            <small class="text-light">KG CO₂ Saved</small>
+                        <!-- Enhanced Stats -->
+                        <div class="row mt-5">
+                            <div class="col-4 text-center">
+                                <div class="stats-counter" data-target="{{ total_users }}">0</div>
+                                <small class="text-light">Eco Warriors</small>
+                            </div>
+                            <div class="col-4 text-center">
+                                <div class="stats-counter" data-target="{{ total_analyses }}">0</div>
+                                <small class="text-light">Products Analyzed</small>
+                            </div>
+                            <div class="col-4 text-center">
+                                <div class="stats-counter" data-target="{{ carbon_saved }}">0</div>
+                                <small class="text-light">KG CO₂ Saved</small>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="hero-visual">
-                        <div class="hero-phone-mockup">
-                            <div class="phone-screen">
-                                <div class="text-center p-4">
-                                    <div class="pulse-animation mb-3">
-                                        <i class="fas fa-leaf fa-3x text-success"></i>
+                    <div class="col-lg-6">
+                        <div class="hero-visual">
+                            <div class="hero-phone-mockup">
+                                <div class="phone-screen">
+                                    <div class="text-center p-4">
+                                        <div class="pulse-animation mb-3">
+                                            <i class="fas fa-leaf fa-3x text-success"></i>
+                                        </div>
+                                        <h5 class="text-light mb-2">Product Analysis</h5>
+                                        <div class="rating-badge rating-friendly mb-3">🌿 Friendly</div>
+                                        <p class="text-muted small">Instant environmental impact assessment</p>
+                                        <div class="progress mb-2" style="height: 8px;">
+                                            <div class="progress-bar bg-success" style="width: 85%"></div>
+                                        </div>
+                                        <small class="text-muted">85% Eco-Score</small>
                                     </div>
-                                    <h5 class="text-light mb-2">Product Analysis</h5>
-                                    <div class="rating-badge rating-friendly mb-3">🌿 Friendly</div>
-                                    <p class="text-muted small">Instant environmental impact assessment</p>
-                                    <div class="progress mb-2" style="height: 8px;">
-                                        <div class="progress-bar bg-success" style="width: 85%"></div>
-                                    </div>
-                                    <small class="text-muted">85% Eco-Score</small>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Features Section -->
-    <section id="features" class="py-5" style="background: rgba(15, 23, 42, 0.8);">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="display-3 fw-bold mb-3">Why Choose <span class="text-gradient">Aura</span>?</h2>
-                <p class="lead text-light">Revolutionary features designed for the eco-conscious consumer</p>
+        <!-- Features Section -->
+        <section id="features" class="py-5">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="display-3 fw-bold mb-3">Why Choose <span class="text-gradient">Aura</span>?</h2>
+                    <p class="lead text-light">Revolutionary features designed for the eco-conscious consumer</p>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                            <h4 class="text-light mb-3">Smart OCR Scanning</h4>
+                            <p class="text-muted">Advanced optical character recognition that instantly extracts ingredient lists from product labels with 99% accuracy.</p>
+                            <div class="mt-3">
+                                <span class="badge bg-info">AI-Powered</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <h4 class="text-light mb-3">Intelligent AI Analysis</h4>
+                            <p class="text-muted">Our cutting-edge AI evaluates environmental impact across multiple dimensions and suggests sustainable alternatives.</p>
+                            <div class="mt-3">
+                                <span class="badge bg-success">Real-time</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <h4 class="text-light mb-3">Progress Tracking</h4>
+                            <p class="text-muted">Beautiful dashboards and insights to monitor your environmental impact reduction journey with detailed analytics.</p>
+                            <div class="mt-3">
+                                <span class="badge bg-warning">Interactive</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </section>
 
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-camera"></i>
-                        </div>
-                        <h4 class="text-light mb-3">Smart OCR Scanning</h4>
-                        <p class="text-muted">Advanced optical character recognition that instantly extracts ingredient lists from product labels with 99% accuracy.</p>
-                        <div class="mt-3">
-                            <span class="badge bg-info">AI-Powered</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-robot"></i>
-                        </div>
-                        <h4 class="text-light mb-3">Intelligent AI Analysis</h4>
-                        <p class="text-muted">Our cutting-edge AI evaluates environmental impact across multiple dimensions and suggests sustainable alternatives.</p>
-                        <div class="mt-3">
-                            <span class="badge bg-success">Real-time</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                        <h4 class="text-light mb-3">Progress Tracking</h4>
-                        <p class="text-muted">Beautiful dashboards and insights to monitor your environmental impact reduction journey with detailed analytics.</p>
-                        <div class="mt-3">
-                            <span class="badge bg-warning">Interactive</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Interactive Demo -->
-    <section id="demo" class="py-5">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6">
-                    <h2 class="display-4 fw-bold mb-4">See It In <span class="text-gradient">Action</span></h2>
-                    <p class="text-light mb-4 fs-5">Experience the power of Aura with our interactive demo. See how we transform ingredient lists into environmental insights.</p>
-                    
-                    <div class="interactive-demo">
-                        <h5 class="text-light mb-3"><i class="fas fa-flask me-2"></i>Live Analysis Demo</h5>
-                        <textarea class="form-control-modern mb-3" id="demoIngredients" rows="4" 
-                                  placeholder="Try: Water, Organic Aloe Vera, Citric Acid, Natural Preservatives
-Or: Sodium Laureth Sulfate, Cocamidopropyl Betaine, Synthetic Fragrance"></textarea>
-                        <button class="btn btn-hero w-100" onclick="analyzeDemo()">
-                            <i class="fas fa-search me-2"></i>Analyze Environmental Impact
-                        </button>
+        <!-- Interactive Demo -->
+        <section id="demo" class="py-5">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6">
+                        <h2 class="display-4 fw-bold mb-4">See It In <span class="text-gradient">Action</span></h2>
+                        <p class="text-light mb-4 fs-5">Experience the power of Aura with our interactive demo. See how we transform ingredient lists into environmental insights.</p>
                         
-                        <div class="demo-result" id="demoResult">
-                            <!-- Results will be populated by JavaScript -->
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="glass-card p-4">
-                        <h4 class="text-light mb-4"><i class="fas fa-cogs me-2"></i>How It Works</h4>
-                        <div class="timeline">
-                            <div class="timeline-item">
-                                <div class="timeline-icon">
-                                    <i class="fas fa-camera"></i>
-                                </div>
-                                <div class="timeline-content">
-                                    <h6 class="text-light">1. Capture Ingredients</h6>
-                                    <p class="text-muted small">Snap a photo or enter ingredients manually</p>
-                                </div>
-                            </div>
-                            <div class="timeline-item">
-                                <div class="timeline-icon">
-                                    <i class="fas fa-robot"></i>
-                                </div>
-                                <div class="timeline-content">
-                                    <h6 class="text-light">2. AI Analysis</h6>
-                                    <p class="text-muted small">Advanced algorithms assess environmental impact</p>
-                                </div>
-                            </div>
-                            <div class="timeline-item">
-                                <div class="timeline-icon">
-                                    <i class="fas fa-chart-pie"></i>
-                                </div>
-                                <div class="timeline-content">
-                                    <h6 class="text-light">3. Get Insights</h6>
-                                    <p class="text-muted small">Detailed ratings and eco-friendly alternatives</p>
-                                </div>
-                            </div>
-                            <div class="timeline-item">
-                                <div class="timeline-icon">
-                                    <i class="fas fa-trophy"></i>
-                                </div>
-                                <div class="timeline-content">
-                                    <h6 class="text-light">4. Earn Rewards</h6>
-                                    <p class="text-muted small">Gain points and climb the sustainability leaderboard</p>
-                                </div>
+                        <div class="interactive-demo">
+                            <h5 class="text-light mb-3"><i class="fas fa-flask me-2"></i>Live Analysis Demo</h5>
+                            <textarea class="form-control-modern mb-3" id="demoIngredients" rows="4" 
+                                      placeholder="Try: Water, Organic Aloe Vera, Citric Acid, Natural Preservatives
+Or: Sodium Laureth Sulfate, Cocamidopropyl Betaine, Synthetic Fragrance"></textarea>
+                            <button class="btn btn-hero w-100" onclick="analyzeDemo()">
+                                <i class="fas fa-search me-2"></i>Analyze Environmental Impact
+                            </button>
+                            
+                            <div class="demo-result" id="demoResult">
+                                <!-- Results will be populated by JavaScript -->
                             </div>
                         </div>
                     </div>
+                    <div class="col-lg-6">
+                        <div class="glass-card p-4">
+                            <h4 class="text-light mb-4"><i class="fas fa-cogs me-2"></i>How It Works</h4>
+                            <div class="timeline">
+                                <div class="timeline-item">
+                                    <div class="timeline-icon">
+                                        <i class="fas fa-camera"></i>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <h6 class="text-light">1. Capture Ingredients</h6>
+                                        <p class="text-muted small">Snap a photo or enter ingredients manually</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-icon">
+                                        <i class="fas fa-robot"></i>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <h6 class="text-light">2. AI Analysis</h6>
+                                        <p class="text-muted small">Advanced algorithms assess environmental impact</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-icon">
+                                        <i class="fas fa-chart-pie"></i>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <h6 class="text-light">3. Get Insights</h6>
+                                        <p class="text-muted small">Detailed ratings and eco-friendly alternatives</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-icon">
+                                        <i class="fas fa-trophy"></i>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <h6 class="text-light">4. Earn Rewards</h6>
+                                        <p class="text-muted small">Gain points and climb the sustainability leaderboard</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- CTA Section -->
-    <section class="py-5">
-        <div class="container">
-            <div class="cta-section">
-                <h2 class="display-3 fw-bold mb-3">Ready to Make a <span class="text-gradient">Difference</span>?</h2>
-                <p class="lead text-light mb-4 fs-4">Join thousands of eco-conscious users transforming their shopping habits and reducing their carbon footprint.</p>
-                <div class="d-flex flex-wrap justify-content-center gap-3">
-                    <a href="{{ url_for('auth.register') }}" class="btn btn-hero btn-lg">
-                        <i class="fas fa-user-plus me-2"></i>Start Free Today
-                    </a>
-                    <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-lg">
-                        <i class="fas fa-sign-in-alt me-2"></i>Existing User
-                    </a>
+        <!-- CTA Section -->
+        <section class="py-5">
+            <div class="container">
+                <div class="cta-section">
+                    <h2 class="display-3 fw-bold mb-3">Ready to Make a <span class="text-gradient">Difference</span>?</h2>
+                    <p class="lead text-light mb-4 fs-4">Join thousands of eco-conscious users transforming their shopping habits and reducing their carbon footprint.</p>
+                    <div class="d-flex flex-wrap justify-content-center gap-3">
+                        <a href="{{ url_for('auth.register') }}" class="btn btn-hero btn-lg">
+                            <i class="fas fa-user-plus me-2"></i>Start Free Today
+                        </a>
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-sign-in-alt me-2"></i>Existing User
+                        </a>
+                    </div>
+                    <p class="text-muted mt-3 small">No credit card required • 30-second setup • Instant access</p>
                 </div>
-                <p class="text-muted mt-3 small">No credit card required • 30-second setup • Instant access</p>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Footer -->
-    <footer class="py-5" style="background: rgba(15, 23, 42, 0.9);">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6">
-                    <h5 class="text-light mb-3">
-                        <i class="fas fa-leaf me-2 text-success"></i>Aura
-                    </h5>
-                    <p class="text-muted">
-                        Making sustainability accessible to everyone. Join the movement towards a greener future.
-                    </p>
-                </div>
-                <div class="col-lg-6 text-lg-end">
-                    <p class="text-muted mb-0">
-                        &copy; 2024 Aura - Carbon Footprint Tracker. 
-                        <br>Built with ❤️ for our planet.
-                    </p>
+        <!-- Footer -->
+        <footer class="py-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <h5 class="text-light mb-3">
+                            <i class="fas fa-leaf me-2 text-success"></i>Aura
+                        </h5>
+                        <p class="text-muted">
+                            Making sustainability accessible to everyone. Join the movement towards a greener future.
+                        </p>
+                    </div>
+                    <div class="col-lg-6 text-lg-end">
+                        <p class="text-muted mb-0">
+                            &copy; 2024 Aura - Carbon Footprint Tracker. 
+                            <br>Built with ❤️ for our planet.
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </footer>
+        </footer>
+    </div>
+
+    <!-- CSRF Token (Hidden) -->
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script>
+        // Create animated bubbles for the entire page
+        function createBubbles() {
+            const bubblesContainer = document.getElementById('bubbles');
+            const bubbleCount = 15;
+            
+            for (let i = 0; i < bubbleCount; i++) {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                
+                // Random size between 50px and 200px
+                const size = Math.random() * 150 + 50;
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                
+                // Random position
+                bubble.style.left = `${Math.random() * 100}%`;
+                bubble.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation delay and duration
+                bubble.style.animationDelay = `${Math.random() * 15}s`;
+                bubble.style.animationDuration = `${Math.random() * 10 + 15}s`;
+                
+                bubblesContainer.appendChild(bubble);
+            }
+        }
+
         // Enhanced Demo Analysis
         function analyzeDemo() {
             const ingredients = document.getElementById('demoIngredients').value.trim();
@@ -924,33 +1069,16 @@ Or: Sodium Laureth Sulfate, Cocamidopropyl Betaine, Synthetic Fragrance"></texta
             }, 30);
         }
 
-        // Particle background
-        function createParticles() {
-            const container = document.getElementById('particles');
-            for (let i = 0; i < 50; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.cssText = `
-                    width: ${Math.random() * 5 + 2}px;
-                    height: ${Math.random() * 5 + 2}px;
-                    left: ${Math.random() * 100}%;
-                    animation-delay: ${Math.random() * 15}s;
-                    animation-duration: ${Math.random() * 10 + 10}s;
-                `;
-                container.appendChild(particle);
-            }
-        }
-
         // Initialize everything
         document.addEventListener('DOMContentLoaded', function() {
+            // Create animated bubbles
+            createBubbles();
+
             // Animate counters
             document.querySelectorAll('.stats-counter').forEach(counter => {
                 const target = parseInt(counter.getAttribute('data-target'));
                 animateCounter(counter, target);
             });
-
-            // Create particle background
-            createParticles();
 
             // Add scroll animations
             const observerOptions = {
