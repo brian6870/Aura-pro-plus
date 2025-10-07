@@ -5,7 +5,7 @@ from config import Config
 class OCRService:
     def __init__(self):
         # Get API key from environment variables via Config
-        self.api_key = Config.OCR_SPACE_API_KEY   # Fallback to free tier key
+        self.api_key = Config.OCR_SPACE_API_KEY    
         self.endpoint = 'https://api.ocr.space/parse/image'
         self.last_request_time = 0
         self.min_interval = 1  # 1 second between requests

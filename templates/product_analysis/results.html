@@ -1,81 +1,83 @@
 {% extends "layouts/base.html" %}
 
 {% block content %}
-<div class="container mt-4">
+<div class="container mt-3 mt-md-4">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-12 col-md-8">
             <!-- Results Header -->
-            <div class="glass-card mb-4">
-                <div class="card-body text-center">
-                    <h2 class="mb-3">Analysis Results</h2>
+            <div class="glass-card mb-3 mb-md-4">
+                <div class="card-body text-center px-2 px-md-3">
+                    <h2 class="h4 h2-md mb-2 mb-md-3">Analysis Results</h2>
                     
                     {% if analysis.product_name %}
-                    <h4 class="text-light mb-3">"{{ analysis.product_name }}"</h4>
+                    <h4 class="h6 h4-md text-light mb-2 mb-md-3">"{{ analysis.product_name }}"</h4>
                     {% endif %}
                     
                     <!-- Rating Badge -->
-                    <div class="mb-3">
-                        <span class="rating-badge rating-{{ analysis.environmental_rating }} fs-5 p-3">
-                            <i class="fas fa-{% if analysis.environmental_rating == 'friendly' %}leaf{% elif analysis.environmental_rating == 'moderate' %}balance-scale{% elif analysis.environmental_rating == 'harmful' %}exclamation-triangle{% else %}radiation{% endif %} me-2"></i>
+                    <div class="mb-2 mb-md-3">
+                        <span class="rating-badge rating-{{ analysis.environmental_rating }} fs-6 fs-md-5 p-2 p-md-3 d-inline-block">
+                            <i class="fas fa-{% if analysis.environmental_rating == 'friendly' %}leaf{% elif analysis.environmental_rating == 'moderate' %}balance-scale{% elif analysis.environmental_rating == 'harmful' %}exclamation-triangle{% else %}radiation{% endif %} me-1 me-md-2"></i>
                             {{ analysis.environmental_rating|upper }}
                         </span>
                     </div>
                     
-                    <p class="lead">{{ rating_description }}</p>
+                    <p class="lead small lead-md">{{ rating_description }}</p>
                     
                     <!-- Points Awarded -->
-                    <div class="alert alert-info">
-                        <h4 class="alert-heading">
-                            <i class="fas fa-trophy me-2"></i>{{ analysis.points_awarded }} Points Awarded!
+                    <div class="alert alert-info p-2 p-md-3">
+                        <h4 class="h6 h4-md alert-heading mb-1 mb-md-2">
+                            <i class="fas fa-trophy me-1 me-md-2"></i>{{ analysis.points_awarded }} Points Awarded!
                         </h4>
-                        <p class="mb-0">Your total points: {{ current_user.get_total_points() }}</p>
+                        <p class="mb-0 small">Your total points: {{ current_user.get_total_points() }}</p>
                     </div>
                 </div>
             </div>
 
             <!-- Detailed Analysis -->
-            <div class="glass-card mb-4">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Environmental Impact Analysis</h5>
+            <div class="glass-card mb-3 mb-md-4">
+                <div class="card-header px-2 px-md-3 py-2 py-md-3">
+                    <h5 class="h6 h5-md mb-0"><i class="fas fa-chart-bar me-1 me-md-2"></i>Environmental Impact Analysis</h5>
                 </div>
-                <div class="card-body">
-                    <p class="mb-0">{{ analysis.analysis_result }}</p>
+                <div class="card-body px-2 px-md-3 py-2 py-md-3">
+                    <p class="mb-0 small small-md">{{ analysis.analysis_result }}</p>
                 </div>
             </div>
 
             <!-- Alternative Suggestions -->
-            <div class="glass-card mb-4">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="fas fa-lightbulb me-2"></i>Eco-Friendly Alternatives</h5>
+            <div class="glass-card mb-3 mb-md-4">
+                <div class="card-header px-2 px-md-3 py-2 py-md-3">
+                    <h5 class="h6 h5-md mb-0"><i class="fas fa-lightbulb me-1 me-md-2"></i>Eco-Friendly Alternatives</h5>
                 </div>
-                <div class="card-body">
-                    <p class="mb-0">{{ analysis.alternative_suggestions }}</p>
+                <div class="card-body px-2 px-md-3 py-2 py-md-3">
+                    <p class="mb-0 small small-md">{{ analysis.alternative_suggestions }}</p>
                 </div>
             </div>
 
             <!-- Ingredients Reviewed -->
-            <div class="glass-card mb-4">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="fas fa-list me-2"></i>Ingredients Reviewed</h5>
+            <div class="glass-card mb-3 mb-md-4">
+                <div class="card-header px-2 px-md-3 py-2 py-md-3">
+                    <h5 class="h6 h5-md mb-0"><i class="fas fa-list me-1 me-md-2"></i>Ingredients Reviewed</h5>
                 </div>
-                <div class="card-body">
-                    <div class="ingredients-text bg-dark p-3 rounded">
+                <div class="card-body px-2 px-md-3 py-2 py-md-3">
+                    <div class="ingredients-text bg-dark p-2 p-md-3 rounded small">
                         {{ analysis.ingredients_text|replace('\n', '<br>')|safe }}
                     </div>
                 </div>
             </div>
 
             <!-- Action Buttons -->
-            <div class="text-center">
-                <a href="{{ url_for('analysis.input_form') }}" class="btn btn-modern me-2">
-                    <i class="fas fa-search me-2"></i>Analyze Another Product
-                </a>
-                <a href="{{ url_for('analysis.history') }}" class="btn btn-modern me-2">
-                    <i class="fas fa-history me-2"></i>View History
-                </a>
-                <a href="{{ url_for('dashboard.index') }}" class="btn btn-outline-light">
-                    <i class="fas fa-home me-2"></i>Back to Dashboard
-                </a>
+            <div class="text-center px-2 px-md-0">
+                <div class="d-grid gap-2 d-md-block">
+                    <a href="{{ url_for('analysis.input_form') }}" class="btn btn-modern me-md-2 mb-2 mb-md-0 w-100 w-md-auto">
+                        <i class="fas fa-search me-1 me-md-2"></i>Analyze Another Product
+                    </a>
+                    <a href="{{ url_for('analysis.history') }}" class="btn btn-modern me-md-2 mb-2 mb-md-0 w-100 w-md-auto">
+                        <i class="fas fa-history me-1 me-md-2"></i>View History
+                    </a>
+                    <a href="{{ url_for('dashboard.index') }}" class="btn btn-outline-light w-100 w-md-auto">
+                        <i class="fas fa-home me-1 me-md-2"></i>Back to Dashboard
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -91,9 +93,60 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <style>
+/* Mobile-specific responsive styles */
+@media (max-width: 767.98px) {
+    .container {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+    
+    .glass-card {
+        margin-bottom: 16px;
+        border-radius: 12px;
+    }
+    
+    .card-body {
+        padding: 16px;
+    }
+    
+    .ingredients-text {
+        font-size: 0.85em;
+        line-height: 1.3;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+    
+    .rating-badge {
+        font-size: 0.9rem !important;
+        padding: 10px 16px !important;
+    }
+    
+    .btn {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+    }
+    
+    .alert {
+        padding: 12px 16px;
+    }
+    
+    .lead {
+        font-size: 1rem;
+    }
+}
+
+/* Tablet and desktop styles */
+@media (min-width: 768px) {
+    .h2-md { font-size: 2rem; }
+    .h4-md { font-size: 1.5rem; }
+    .h5-md { font-size: 1.25rem; }
+    .h6-md { font-size: 1rem; }
+    .lead-md { font-size: 1.25rem; }
+    .small-md { font-size: 1rem; }
+}
+
 .ingredients-text {
     font-family: 'Courier New', monospace;
-    font-size: 0.9em;
     line-height: 1.4;
     color: #e2e8f0;
     background: rgba(0, 0, 0, 0.3) !important;
@@ -108,6 +161,44 @@ document.addEventListener('DOMContentLoaded', function() {
     background: rgba(255, 255, 255, 0.1);
     border-color: rgba(255, 255, 255, 0.5);
     color: white;
+}
+
+/* Ensure proper spacing on all devices */
+.d-grid.gap-2 {
+    gap: 12px !important;
+}
+
+/* Improve touch targets on mobile */
+@media (max-width: 767.98px) {
+    .btn {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .rating-badge {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+/* Prevent horizontal scrolling */
+.container {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.col-12 {
+    padding-left: 0;
+    padding-right: 0;
 }
 </style>
 {% endblock %}
