@@ -633,8 +633,7 @@ env/
 ENV/
 
 # Environment variables
-.env
-.env.production
+
 .env.local
 .env.*.local
 

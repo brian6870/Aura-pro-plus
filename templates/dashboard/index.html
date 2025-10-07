@@ -1,375 +1,335 @@
 {% extends "layouts/base.html" %}
 
 {% block content %}
-<div class="container mt-4">
-    <!-- Welcome Section - Compact with Fixed Width -->
-    <div class="row mb-4 fade-in-up">
-        <div class="col-lg-8 position-relative">
-            <div class="glass-card p-3 welcome-banner">
-                <div class="row align-items-center">
-                    <div class="col-md-10">
-                        <h4 class="fw-bold mb-1">Welcome back, {{ current_user.username }}! 🌱</h4>
-                        <p class="mb-0 text-light small">Your sustainability journey is making a difference.</p>
-                    </div>
-                    <div class="col-md-2 text-center">
-                        <!-- Streak Flame - Compact -->
-                        <div class="streak-compact">
-                            <div class="fire-container-sm">
-                                <div class="fire-sm"></div>
-                            </div>
-                            <div class="text-center">
-                                <div class="fw-bold text-white" style="font-size: 1.2rem; text-shadow: 0 2px 8px rgba(0,0,0,0.7);">{{ current_streak }}</div>
-                                <small class="text-light" style="text-shadow: 0 1px 4px rgba(0,0,0,0.7); font-size: 0.8rem;">Day Streak</small>
-                            </div>
-                        </div>
-                    </div>
+<div class="dashboard-container">
+    <!-- Compact Header Section -->
+    <div class="dashboard-header">
+        <div class="welcome-section">
+            <div class="user-info">
+                <h4 class="welcome-text">Welcome back, {{ current_user.username }}! 🌱</h4>
+                <p class="subtitle">Your sustainability journey is making a difference.</p>
+            </div>
+            <div class="streak-section">
+                <div class="streak-flame">
+                    <div class="fire"></div>
+                </div>
+                <div class="streak-count">
+                    <span class="count">{{ current_streak }}</span>
+                    <span class="label">Day Streak</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row">
-        <!-- Left Column - Stats, Charts, Recent Analyses -->
-        <div class="col-lg-8">
-            <!-- Stats Overview -->
-            <div class="dashboard-grid mb-4">
-                <div class="glow-card">
-                    <i class="fas fa-trophy fa-2x mb-2 text-warning"></i>
-                    <div class="stat-number">{{ total_points }}</div>
-                    <small class="text-light">Total Points</small>
-                </div>
-                
-                <div class="glow-card">
-                    <i class="fas fa-search fa-2x mb-2 text-info"></i>
-                    <div class="stat-number">{{ total_analyses }}</div>
-                    <small class="text-light">Products Analyzed</small>
-                </div>
-                
-                <div class="glow-card">
-                    <i class="fas fa-fire fa-2x mb-2 text-danger"></i>
-                    <div class="stat-number">{{ current_streak }}</div>
-                    <small class="text-light">Current Streak</small>
-                </div>
-                
-                <div class="glow-card">
-                    <i class="fas fa-chart-line fa-2x mb-2 text-success"></i>
-                    <div class="stat-number">{{ recent_points }}</div>
-                    <small class="text-light">Recent Points (30d)</small>
-                </div>
-            </div>
+    <!-- Stats Grid - Reorganized for Mobile -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon trophy">🏆</div>
+            <div class="stat-value">{{ total_points }}</div>
+            <div class="stat-label">Total Points</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon search">🔍</div>
+            <div class="stat-value">{{ total_analyses }}</div>
+            <div class="stat-label">Products Analyzed</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon fire">🔥</div>
+            <div class="stat-value">{{ current_streak }}</div>
+            <div class="stat-label">Current Streak</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon chart">📈</div>
+            <div class="stat-value">{{ recent_points }}</div>
+            <div class="stat-label">Recent Points (30d)</div>
+        </div>
+    </div>
 
+    <!-- Main Content - Reorganized for Mobile -->
+    <div class="dashboard-content">
+        <!-- Left Column - Charts & Recent Activity -->
+        <div class="content-left">
             <!-- Rating Distribution Chart -->
-            <div class="row">
-                <div class="col-12">
-                    <div class="chart-container fade-in-up">
-                        <h5 class="mb-3"><i class="fas fa-chart-bar me-2 text-info"></i>Product Rating Distribution</h5>
-                        
-                        {% set rating_counts = {'friendly': 0, 'moderate': 0, 'harmful': 0, 'hazardous': 0} %}
-                        {% for rating, count in rating_distribution %}
-                            {% if rating_counts.update({rating: count}) %}{% endif %}
-                        {% endfor %}
-                        
-                        {% set max_count = [rating_counts.friendly, rating_counts.moderate, rating_counts.harmful, rating_counts.hazardous] | max %}
-                        
-                        <div class="chart-bar">
-                            <div class="chart-label">🌿 Friendly</div>
-                            <div class="chart-bar-inner">
-                                <div class="chart-fill chart-friendly" style="width: {{ (rating_counts.friendly / max_count * 100) if max_count > 0 else 0 }}%;"></div>
-                            </div>
-                            <div class="chart-count">{{ rating_counts.friendly }}</div>
+            <div class="chart-section glass-card">
+                <h5 class="section-title">
+                    <span class="icon">📊</span>
+                    Product Rating Distribution
+                </h5>
+                
+                {% set rating_counts = {'friendly': 0, 'moderate': 0, 'harmful': 0, 'hazardous': 0} %}
+                {% for rating, count in rating_distribution %}
+                    {% if rating_counts.update({rating: count}) %}{% endif %}
+                {% endfor %}
+                
+                {% set max_count = [rating_counts.friendly, rating_counts.moderate, rating_counts.harmful, rating_counts.hazardous] | max %}
+                
+                <div class="chart-bars">
+                    <div class="chart-bar">
+                        <div class="bar-label">🌿 Friendly</div>
+                        <div class="bar-container">
+                            <div class="bar-fill friendly" style="width: {{ (rating_counts.friendly / max_count * 100) if max_count > 0 else 0 }}%"></div>
                         </div>
-                        
-                        <div class="chart-bar">
-                            <div class="chart-label">⚖️ Moderate</div>
-                            <div class="chart-bar-inner">
-                                <div class="chart-fill chart-moderate" style="width: {{ (rating_counts.moderate / max_count * 100) if max_count > 0 else 0 }}%;"></div>
-                            </div>
-                            <div class="chart-count">{{ rating_counts.moderate }}</div>
+                        <div class="bar-count">{{ rating_counts.friendly }}</div>
+                    </div>
+                    
+                    <div class="chart-bar">
+                        <div class="bar-label">⚖️ Moderate</div>
+                        <div class="bar-container">
+                            <div class="bar-fill moderate" style="width: {{ (rating_counts.moderate / max_count * 100) if max_count > 0 else 0 }}%"></div>
                         </div>
-                        
-                        <div class="chart-bar">
-                            <div class="chart-label">⚠️ Harmful</div>
-                            <div class="chart-bar-inner">
-                                <div class="chart-fill chart-harmful" style="width: {{ (rating_counts.harmful / max_count * 100) if max_count > 0 else 0 }}%;"></div>
-                            </div>
-                            <div class="chart-count">{{ rating_counts.harmful }}</div>
+                        <div class="bar-count">{{ rating_counts.moderate }}</div>
+                    </div>
+                    
+                    <div class="chart-bar">
+                        <div class="bar-label">⚠️ Harmful</div>
+                        <div class="bar-container">
+                            <div class="bar-fill harmful" style="width: {{ (rating_counts.harmful / max_count * 100) if max_count > 0 else 0 }}%"></div>
                         </div>
-                        
-                        <div class="chart-bar">
-                            <div class="chart-label">🚫 Hazardous</div>
-                            <div class="chart-bar-inner">
-                                <div class="chart-fill chart-hazardous" style="width: {{ (rating_counts.hazardous / max_count * 100) if max_count > 0 else 0 }}%;"></div>
-                            </div>
-                            <div class="chart-count">{{ rating_counts.hazardous }}</div>
+                        <div class="bar-count">{{ rating_counts.harmful }}</div>
+                    </div>
+                    
+                    <div class="chart-bar">
+                        <div class="bar-label">🚫 Hazardous</div>
+                        <div class="bar-container">
+                            <div class="bar-fill hazardous" style="width: {{ (rating_counts.hazardous / max_count * 100) if max_count > 0 else 0 }}%"></div>
                         </div>
+                        <div class="bar-count">{{ rating_counts.hazardous }}</div>
                     </div>
                 </div>
             </div>
 
             <!-- Recent Analyses -->
-            <div class="row mt-4">
-                <div class="col-12">
-                    <div class="glass-card p-4 h-100">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h5 class="mb-0"><i class="fas fa-clock me-2 text-info"></i>Recent Analyses</h5>
-                            <a href="{{ url_for('analysis.history') }}" class="btn btn-sm btn-modern">View All</a>
-                        </div>
-                        {% if recent_analyses %}
-                            {% for analysis in recent_analyses %}
-                            <div class="leaderboard-item">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="d-flex align-items-center">
-                                        <span class="rating-badge rating-{{ analysis.environmental_rating }} me-3">
-                                            {{ analysis.environmental_rating|title }}
-                                        </span>
-                                        <small class="text-muted">{{ analysis.created_at.strftime('%b %d') }}</small>
-                                    </div>
-                                    <span class="badge bg-success fs-6">{{ analysis.points_awarded }} pts</span>
-                                </div>
-                            </div>
-                            {% endfor %}
-                        {% else %}
-                            <div class="text-center py-3">
-                                <i class="fas fa-search fa-2x text-muted mb-2"></i>
-                                <p class="text-muted mb-2">No analyses yet</p>
-                                <a href="{{ url_for('analysis.input_form') }}" class="btn btn-modern btn-sm">Analyze First Product</a>
-                            </div>
-                        {% endif %}
-                    </div>
+            <div class="recent-section glass-card">
+                <div class="section-header">
+                    <h5 class="section-title">
+                        <span class="icon">🕒</span>
+                        Recent Analyses
+                    </h5>
+                    <a href="{{ url_for('analysis.history') }}" class="view-all-btn">View All</a>
                 </div>
+                
+                {% if recent_analyses %}
+                    <div class="analyses-list">
+                        {% for analysis in recent_analyses %}
+                        <div class="analysis-item">
+                            <div class="analysis-rating rating-{{ analysis.environmental_rating }}">
+                                {{ analysis.environmental_rating|title }}
+                            </div>
+                            <div class="analysis-date">{{ analysis.created_at.strftime('%b %d') }}</div>
+                            <div class="analysis-points">{{ analysis.points_awarded }} pts</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-icon">🔍</div>
+                        <p class="empty-text">No analyses yet</p>
+                        <a href="{{ url_for('analysis.input_form') }}" class="action-btn">Analyze First Product</a>
+                    </div>
+                {% endif %}
             </div>
         </div>
 
         <!-- Right Column - Leaderboard -->
-        <div class="col-lg-4">
-            <!-- Podium Leaderboard -->
-            <div class="glass-card p-3 h-100">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="mb-0"><i class="fas fa-trophy me-2 text-warning"></i>Top Contributors</h5>
-                    <span class="badge bg-primary">Global</span>
+        <div class="content-right">
+            <div class="leaderboard-section glass-card">
+                <div class="section-header">
+                    <h5 class="section-title">
+                        <span class="icon">🏆</span>
+                        Global Leaderboard
+                    </h5>
+                    <span class="global-badge">Global</span>
                 </div>
                 
                 {% if leaderboard %}
-                <div class="podium-container">
+                <!-- Podium Section - Compact for Mobile -->
+                <div class="podium-section">
                     {% if leaderboard|length >= 3 %}
                         <!-- 2nd Place -->
-                        <div class="podium-item" data-user="{{ leaderboard[1].username }}" data-points="{{ leaderboard[1].total_points }}">
-                            <div class="podium-rank podium-2">
-                                <i class="fas fa-trophy"></i>
-                                <div class="podium-number">2</div>
-                            </div>
+                        <div class="podium-item second">
+                            <div class="podium-rank">2</div>
                             <div class="podium-avatar">
                                 {% if leaderboard[1].avatar_url and leaderboard[1].avatar_url != '/static/images/avatars/default.png' %}
-                                <img src="{{ leaderboard[1].avatar_url }}" alt="{{ leaderboard[1].username }}" class="rounded-circle">
+                                <img src="{{ leaderboard[1].avatar_url }}" alt="{{ leaderboard[1].username }}" class="avatar-img" loading="lazy">
                                 {% else %}
                                 <div class="avatar-fallback">{{ leaderboard[1].username[0]|upper }}</div>
                                 {% endif %}
                             </div>
-                            <div class="podium-user">{{ leaderboard[1].username }}</div>
+                            <div class="podium-name">{{ leaderboard[1].username }}</div>
                             <div class="podium-points">{{ leaderboard[1].total_points }} pts</div>
                         </div>
                         
                         <!-- 1st Place -->
-                        <div class="podium-item" data-user="{{ leaderboard[0].username }}" data-points="{{ leaderboard[0].total_points }}">
-                            <div class="podium-rank podium-1">
-                                <i class="fas fa-crown"></i>
-                                <div class="podium-number">1</div>
-                            </div>
+                        <div class="podium-item first">
+                            <div class="podium-rank">1</div>
                             <div class="podium-avatar">
                                 {% if leaderboard[0].avatar_url and leaderboard[0].avatar_url != '/static/images/avatars/default.png' %}
-                                <img src="{{ leaderboard[0].avatar_url }}" alt="{{ leaderboard[0].username }}" class="rounded-circle">
+                                <img src="{{ leaderboard[0].avatar_url }}" alt="{{ leaderboard[0].username }}" class="avatar-img" loading="lazy">
                                 {% else %}
                                 <div class="avatar-fallback">{{ leaderboard[0].username[0]|upper }}</div>
                                 {% endif %}
                             </div>
-                            <div class="podium-user">{{ leaderboard[0].username }}</div>
+                            <div class="podium-name">{{ leaderboard[0].username }}</div>
                             <div class="podium-points">{{ leaderboard[0].total_points }} pts</div>
                         </div>
                         
                         <!-- 3rd Place -->
-                        <div class="podium-item" data-user="{{ leaderboard[2].username }}" data-points="{{ leaderboard[2].total_points }}">
-                            <div class="podium-rank podium-3">
-                                <i class="fas fa-medal"></i>
-                                <div class="podium-number">3</div>
-                            </div>
+                        <div class="podium-item third">
+                            <div class="podium-rank">3</div>
                             <div class="podium-avatar">
                                 {% if leaderboard[2].avatar_url and leaderboard[2].avatar_url != '/static/images/avatars/default.png' %}
-                                <img src="{{ leaderboard[2].avatar_url }}" alt="{{ leaderboard[2].username }}" class="rounded-circle">
+                                <img src="{{ leaderboard[2].avatar_url }}" alt="{{ leaderboard[2].username }}" class="avatar-img" loading="lazy">
                                 {% else %}
                                 <div class="avatar-fallback">{{ leaderboard[2].username[0]|upper }}</div>
                                 {% endif %}
                             </div>
-                            <div class="podium-user">{{ leaderboard[2].username }}</div>
+                            <div class="podium-name">{{ leaderboard[2].username }}</div>
                             <div class="podium-points">{{ leaderboard[2].total_points }} pts</div>
                         </div>
                     
                     {% elif leaderboard|length == 2 %}
                         <!-- Only 2 users -->
-                        <div class="podium-item" data-user="{{ leaderboard[1].username }}" data-points="{{ leaderboard[1].total_points }}">
-                            <div class="podium-rank podium-2">
-                                <i class="fas fa-trophy"></i>
-                                <div class="podium-number">2</div>
-                            </div>
+                        <div class="podium-item second">
+                            <div class="podium-rank">2</div>
                             <div class="podium-avatar">
                                 {% if leaderboard[1].avatar_url and leaderboard[1].avatar_url != '/static/images/avatars/default.png' %}
-                                <img src="{{ leaderboard[1].avatar_url }}" alt="{{ leaderboard[1].username }}" class="rounded-circle">
+                                <img src="{{ leaderboard[1].avatar_url }}" alt="{{ leaderboard[1].username }}" class="avatar-img" loading="lazy">
                                 {% else %}
                                 <div class="avatar-fallback">{{ leaderboard[1].username[0]|upper }}</div>
                                 {% endif %}
                             </div>
-                            <div class="podium-user">{{ leaderboard[1].username }}</div>
+                            <div class="podium-name">{{ leaderboard[1].username }}</div>
                             <div class="podium-points">{{ leaderboard[1].total_points }} pts</div>
                         </div>
                         
-                        <div class="podium-item" data-user="{{ leaderboard[0].username }}" data-points="{{ leaderboard[0].total_points }}">
-                            <div class="podium-rank podium-1">
-                                <i class="fas fa-crown"></i>
-                                <div class="podium-number">1</div>
-                            </div>
+                        <div class="podium-item first">
+                            <div class="podium-rank">1</div>
                             <div class="podium-avatar">
                                 {% if leaderboard[0].avatar_url and leaderboard[0].avatar_url != '/static/images/avatars/default.png' %}
-                                <img src="{{ leaderboard[0].avatar_url }}" alt="{{ leaderboard[0].username }}" class="rounded-circle">
+                                <img src="{{ leaderboard[0].avatar_url }}" alt="{{ leaderboard[0].username }}" class="avatar-img" loading="lazy">
                                 {% else %}
                                 <div class="avatar-fallback">{{ leaderboard[0].username[0]|upper }}</div>
                                 {% endif %}
                             </div>
-                            <div class="podium-user">{{ leaderboard[0].username }}</div>
+                            <div class="podium-name">{{ leaderboard[0].username }}</div>
                             <div class="podium-points">{{ leaderboard[0].total_points }} pts</div>
                         </div>
                         
                         <!-- Empty 3rd place -->
-                        <div class="podium-item">
-                            <div class="podium-rank" style="background: rgba(255,255,255,0.1); color: #666; height: 70px;">
-                                <i class="fas fa-user"></i>
-                            </div>
+                        <div class="podium-item empty">
+                            <div class="podium-rank">-</div>
                             <div class="podium-avatar">
                                 <div class="avatar-fallback">?</div>
                             </div>
-                            <div class="podium-user" style="color: #666;">Waiting...</div>
-                            <div class="podium-points" style="color: #666;">0 pts</div>
+                            <div class="podium-name">Waiting...</div>
+                            <div class="podium-points">0 pts</div>
                         </div>
                     
                     {% elif leaderboard|length == 1 %}
                         <!-- Only 1 user -->
-                        <div class="podium-item">
-                            <div class="podium-rank" style="background: rgba(255,255,255,0.1); color: #666; height: 70px;">
-                                <i class="fas fa-user"></i>
-                            </div>
+                        <div class="podium-item empty">
+                            <div class="podium-rank">-</div>
                             <div class="podium-avatar">
                                 <div class="avatar-fallback">?</div>
                             </div>
-                            <div class="podium-user" style="color: #666;">Waiting...</div>
-                            <div class="podium-points" style="color: #666;">0 pts</div>
+                            <div class="podium-name">Waiting...</div>
+                            <div class="podium-points">0 pts</div>
                         </div>
                         
-                        <div class="podium-item" data-user="{{ leaderboard[0].username }}" data-points="{{ leaderboard[0].total_points }}">
-                            <div class="podium-rank podium-1">
-                                <i class="fas fa-crown"></i>
-                                <div class="podium-number">1</div>
-                            </div>
+                        <div class="podium-item first">
+                            <div class="podium-rank">1</div>
                             <div class="podium-avatar">
                                 {% if leaderboard[0].avatar_url and leaderboard[0].avatar_url != '/static/images/avatars/default.png' %}
-                                <img src="{{ leaderboard[0].avatar_url }}" alt="{{ leaderboard[0].username }}" class="rounded-circle">
+                                <img src="{{ leaderboard[0].avatar_url }}" alt="{{ leaderboard[0].username }}" class="avatar-img" loading="lazy">
                                 {% else %}
                                 <div class="avatar-fallback">{{ leaderboard[0].username[0]|upper }}</div>
                                 {% endif %}
                             </div>
-                            <div class="podium-user">{{ leaderboard[0].username }}</div>
+                            <div class="podium-name">{{ leaderboard[0].username }}</div>
                             <div class="podium-points">{{ leaderboard[0].total_points }} pts</div>
                         </div>
                         
                         <!-- Empty 3rd place -->
-                        <div class="podium-item">
-                            <div class="podium-rank" style="background: rgba(255,255,255,0.1); color: #666; height: 70px;">
-                                <i class="fas fa-user"></i>
-                            </div>
+                        <div class="podium-item empty">
+                            <div class="podium-rank">-</div>
                             <div class="podium-avatar">
                                 <div class="avatar-fallback">?</div>
                             </div>
-                            <div class="podium-user" style="color: #666;">Waiting...</div>
-                            <div class="podium-points" style="color: #666;">0 pts</div>
+                            <div class="podium-name">Waiting...</div>
+                            <div class="podium-points">0 pts</div>
                         </div>
-                    
                     {% endif %}
                 </div>
                 
-                <!-- Full Leaderboard List -->
-                <div class="leaderboard-full mt-3">
-                    <h6 class="mb-2 text-center">Global Rankings</h6>
-                    
-                    <!-- Current User's Rank (if not in top 3) -->
-                    {% set current_user_rank = namespace(found=false) %}
-                    {% for user in leaderboard %}
-                        {% if user.username == current_user.username %}
-                            {% set current_user_rank.found = true %}
-                            <div class="leaderboard-item current-user-rank" style="background: rgba(16, 185, 129, 0.2); border-color: rgba(16, 185, 129, 0.5);">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="d-flex align-items-center">
-                                        <div class="rank-badge rank-current me-2">
-                                            {{ loop.index }}
-                                        </div>
-                                        <div class="d-flex align-items-center">
+                <!-- Full Leaderboard List with Scroll -->
+                <div class="leaderboard-list-container">
+                    <h6 class="list-title">Global Rankings</h6>
+                    <div class="leaderboard-scroll">
+                        <!-- Current User's Rank (if not in top 3) -->
+                        {% set current_user_rank = namespace(found=false) %}
+                        {% for user in leaderboard %}
+                            {% if user.username == current_user.username %}
+                                {% set current_user_rank.found = true %}
+                                <div class="leaderboard-item current-user">
+                                    <div class="rank-number">{{ loop.index }}</div>
+                                    <div class="user-info">
+                                        <div class="user-avatar">
                                             {% if current_user.avatar_url and current_user.avatar_url != '/static/images/avatars/default.png' %}
-                                            <img src="{{ current_user.avatar_url }}" alt="{{ current_user.username }}" class="rounded-circle me-2" width="28" height="28">
+                                            <img src="{{ current_user.avatar_url }}" alt="{{ current_user.username }}" class="avatar-img" loading="lazy">
                                             {% else %}
-                                            <div class="avatar-fallback-small me-2">{{ current_user.username[0]|upper }}</div>
+                                            <div class="avatar-fallback-small">{{ current_user.username[0]|upper }}</div>
                                             {% endif %}
-                                            <div>
-                                                <strong style="font-size: 0.9rem;">You</strong>
-                                                <br>
-                                                <small class="text-muted" style="font-size: 0.7rem;">{{ current_user.username }}</small>
-                                            </div>
+                                        </div>
+                                        <div class="user-details">
+                                            <div class="username">You</div>
+                                            <div class="user-handle">{{ current_user.username }}</div>
                                         </div>
                                     </div>
-                                    <span class="badge bg-success" style="font-size: 0.8rem;">{{ user.total_points }} pts</span>
+                                    <div class="user-points">{{ user.total_points }} pts</div>
                                 </div>
-                            </div>
-                        {% endif %}
-                    {% endfor %}
-                    
-                    <!-- Other Users (excluding current user if already shown) -->
-                    {% for user in leaderboard %}
-                        {% if user.username != current_user.username or not current_user_rank.found %}
-                            {% if loop.index > 3 or leaderboard|length <= 3 %}
-                            <div class="leaderboard-item">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="d-flex align-items-center">
-                                        <div class="rank-badge rank-{{ loop.index }} me-2">
-                                            {{ loop.index }}
-                                        </div>
-                                        <div class="d-flex align-items-center">
-                                            {% if user.avatar_url and user.avatar_url != '/static/images/avatars/default.png' %}
-                                            <img src="{{ user.avatar_url }}" alt="{{ user.username }}" class="rounded-circle me-2" width="28" height="28">
-                                            {% else %}
-                                            <div class="avatar-fallback-small me-2">{{ user.username[0]|upper }}</div>
-                                            {% endif %}
-                                            <div>
-                                                <strong style="font-size: 0.9rem;">{{ user.username }}</strong>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <span class="badge bg-success" style="font-size: 0.8rem;">{{ user.total_points }} pts</span>
-                                </div>
-                            </div>
                             {% endif %}
+                        {% endfor %}
+                        
+                        <!-- Other Users (excluding current user if already shown) -->
+                        {% for user in leaderboard %}
+                            {% if user.username != current_user.username or not current_user_rank.found %}
+                                {% if loop.index > 3 or leaderboard|length <= 3 %}
+                                <div class="leaderboard-item">
+                                    <div class="rank-number">{{ loop.index }}</div>
+                                    <div class="user-info">
+                                        <div class="user-avatar">
+                                            {% if user.avatar_url and user.avatar_url != '/static/images/avatars/default.png' %}
+                                            <img src="{{ user.avatar_url }}" alt="{{ user.username }}" class="avatar-img" loading="lazy">
+                                            {% else %}
+                                            <div class="avatar-fallback-small">{{ user.username[0]|upper }}</div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="user-details">
+                                            <div class="username">{{ user.username }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="user-points">{{ user.total_points }} pts</div>
+                                </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if leaderboard|length == 0 %}
+                            <div class="empty-state">
+                                <div class="empty-icon">👥</div>
+                                <p class="empty-text">Be the first to join the leaderboard!</p>
+                                <p class="empty-subtext">Analyze products to earn points.</p>
+                            </div>
                         {% endif %}
-                    {% endfor %}
-                    
-                    {% if leaderboard|length == 0 %}
-                        <div class="text-center py-3">
-                            <i class="fas fa-users fa-2x text-muted mb-2"></i>
-                            <p class="text-muted small mb-1">Be the first to join the leaderboard!</p>
-                            <p class="text-muted small">Analyze products to earn points.</p>
-                        </div>
-                    {% endif %}
+                    </div>
                 </div>
                 
                 {% else %}
                 <!-- No leaderboard data at all -->
-                <div class="text-center py-3">
-                    <i class="fas fa-users fa-2x text-muted mb-2"></i>
-                    <p class="text-muted small">No users on the leaderboard yet</p>
-                    <p class="text-muted small">Be the first to analyze products!</p>
+                <div class="empty-state">
+                    <div class="empty-icon">👥</div>
+                    <p class="empty-text">No users on the leaderboard yet</p>
+                    <p class="empty-subtext">Be the first to analyze products!</p>
                 </div>
                 {% endif %}
             </div>
@@ -377,66 +337,844 @@
     </div>
 </div>
 
+<style>
+/* Base Styles */
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 16px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    /* Removed dark background - will use base.html background */
+}
+
+/* Glass Card Effect */
+.glass-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    color: white;
+}
+
+/* Header Section */
+.dashboard-header {
+    margin-bottom: 20px;
+}
+
+.welcome-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.8) 100%);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 16px;
+    padding: 20px;
+    color: white;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.welcome-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+    animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.welcome-text {
+    margin: 0 0 8px 0;
+    font-weight: 700;
+    font-size: 1.25rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.subtitle {
+    margin: 0;
+    opacity: 0.9;
+    font-size: 0.9rem;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.streak-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    z-index: 2;
+}
+
+.streak-flame {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    z-index: 10;
+}
+
+.fire {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, #ff9500, #ffcc00, #ff4500);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    animation: flame 1.5s ease-in-out infinite alternate;
+    box-shadow: 
+        0 0 20px #ff9500,
+        0 0 40px #ff4500,
+        0 0 60px #ff0000;
+    filter: brightness(1.2) contrast(1.5);
+    position: relative;
+    z-index: 5;
+}
+
+@keyframes flame {
+    0% { 
+        transform: scale(1) rotate(-2deg);
+        box-shadow: 
+            0 0 20px #ff9500,
+            0 0 40px #ff4500,
+            0 0 60px #ff0000;
+    }
+    100% { 
+        transform: scale(1.1) rotate(2deg);
+        box-shadow: 
+            0 0 25px #ffcc00,
+            0 0 50px #ff9500,
+            0 0 75px #ff4500;
+    }
+}
+
+.streak-count {
+    text-align: center;
+    position: relative;
+    z-index: 2;
+}
+
+.count {
+    display: block;
+    font-weight: 700;
+    font-size: 1.4rem;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.label {
+    font-size: 0.8rem;
+    opacity: 0.9;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    color: white;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.stat-icon {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 8px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Main Content Layout */
+.dashboard-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+/* Chart Section - Fixed for Mobile */
+.chart-section {
+    margin-bottom: 20px;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 16px 0;
+    font-weight: 600;
+    color: white;
+}
+
+.icon {
+    font-size: 1.2rem;
+}
+
+.chart-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.chart-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 30px;
+}
+
+.bar-label {
+    width: 80px;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.9);
+    flex-shrink: 0;
+}
+
+.bar-container {
+    flex: 1;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    min-width: 0; /* Ensure flexbox respects overflow */
+}
+
+.bar-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 1s ease-in-out;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    min-width: 8px; /* Ensure bars are visible even with 0% width */
+}
+
+.bar-fill.friendly { background: linear-gradient(90deg, #48bb78, #68d391); }
+.bar-fill.moderate { background: linear-gradient(90deg, #ed8936, #f6ad55); }
+.bar-fill.harmful { background: linear-gradient(90deg, #e53e3e, #fc8181); }
+.bar-fill.hazardous { background: linear-gradient(90deg, #805ad5, #b794f4); }
+
+.bar-count {
+    width: 30px;
+    text-align: right;
+    font-weight: 600;
+    color: white;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+}
+
+/* Recent Analyses */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.view-all-btn {
+    background: rgba(102, 126, 234, 0.8);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.view-all-btn:hover {
+    background: rgba(102, 126, 234, 1);
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+}
+
+.analyses-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.analysis-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.analysis-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(4px);
+}
+
+.analysis-rating {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    backdrop-filter: blur(10px);
+}
+
+.rating-friendly { background: rgba(72, 187, 120, 0.3); color: #c6f6d5; border: 1px solid rgba(72, 187, 120, 0.5); }
+.rating-moderate { background: rgba(237, 137, 54, 0.3); color: #fed7aa; border: 1px solid rgba(237, 137, 54, 0.5); }
+.rating-harmful { background: rgba(229, 62, 62, 0.3); color: #fed7d7; border: 1px solid rgba(229, 62, 62, 0.5); }
+.rating-hazardous { background: rgba(128, 90, 213, 0.3); color: #e9d8fd; border: 1px solid rgba(128, 90, 213, 0.5); }
+
+.analysis-date {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.analysis-points {
+    font-weight: 600;
+    color: #68d391;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.empty-icon {
+    font-size: 3rem;
+    margin-bottom: 16px;
+    opacity: 0.7;
+}
+
+.empty-text {
+    margin: 0 0 8px 0;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+}
+
+.empty-subtext {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+}
+
+.action-btn {
+    display: inline-block;
+    background: rgba(102, 126, 234, 0.8);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    margin-top: 12px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+.action-btn:hover {
+    background: rgba(102, 126, 234, 1);
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+}
+
+/* Leaderboard Section */
+.global-badge {
+    background: rgba(102, 126, 234, 0.8);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Podium Section */
+.podium-section {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding: 20px 0;
+}
+
+.podium-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    max-width: 100px;
+}
+
+.podium-item.first {
+    order: 2;
+}
+
+.podium-item.second {
+    order: 1;
+}
+
+.podium-item.third {
+    order: 3;
+}
+
+.podium-item.empty {
+    opacity: 0.5;
+}
+
+.podium-rank {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    margin-bottom: 12px;
+    font-size: 1.1rem;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.podium-item.first .podium-rank {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.8), rgba(255, 237, 78, 0.8));
+    color: #805b16;
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+}
+
+.podium-item.second .podium-rank {
+    background: linear-gradient(135deg, rgba(192, 192, 192, 0.8), rgba(226, 226, 226, 0.8));
+    color: #4a5568;
+    box-shadow: 0 4px 12px rgba(192, 192, 192, 0.4);
+}
+
+.podium-item.third .podium-rank {
+    background: linear-gradient(135deg, rgba(205, 127, 50, 0.8), rgba(226, 167, 104, 0.8));
+    color: #7b341e;
+    box-shadow: 0 4px 12px rgba(205, 127, 50, 0.4);
+}
+
+.podium-item.empty .podium-rank {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.podium-avatar {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 8px;
+}
+
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.avatar-fallback {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: rgba(102, 126, 234, 0.8);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.2rem;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.avatar-fallback-small {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(102, 126, 234, 0.8);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.8rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.podium-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-align: center;
+    margin-bottom: 4px;
+    color: white;
+}
+
+.podium-points {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Leaderboard List with Scroll */
+.leaderboard-list-container {
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    padding-top: 20px;
+}
+
+.list-title {
+    text-align: center;
+    margin: 0 0 16px 0;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 600;
+}
+
+.leaderboard-scroll {
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+/* Custom scrollbar for leaderboard */
+.leaderboard-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.leaderboard-scroll::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.leaderboard-scroll::-webkit-scrollbar-thumb {
+    background: rgba(102, 126, 234, 0.6);
+    border-radius: 3px;
+}
+
+.leaderboard-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(102, 126, 234, 0.8);
+}
+
+.leaderboard-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.leaderboard-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(4px);
+}
+
+.leaderboard-item.current-user {
+    background: rgba(102, 126, 234, 0.2);
+    border: 1px solid rgba(102, 126, 234, 0.5);
+}
+
+.rank-number {
+    width: 24px;
+    text-align: center;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+    flex-shrink: 0;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+}
+
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+}
+
+.user-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.username {
+    font-weight: 600;
+    color: white;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-handle {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.7);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-points {
+    font-weight: 600;
+    color: #68d391;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+    .dashboard-container {
+        padding: 24px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+    
+    .stat-card {
+        padding: 20px;
+    }
+    
+    .stat-value {
+        font-size: 1.75rem;
+    }
+    
+    .dashboard-content {
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+    }
+    
+    .podium-section {
+        gap: 20px;
+    }
+    
+    .podium-item {
+        max-width: 120px;
+    }
+    
+    .podium-avatar {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .avatar-fallback {
+        font-size: 1.5rem;
+    }
+    
+    /* Larger chart bars on tablet/desktop */
+    .chart-bar {
+        gap: 12px;
+    }
+    
+    .bar-label {
+        width: 100px;
+        font-size: 0.9rem;
+    }
+    
+    .bar-container {
+        height: 24px;
+    }
+    
+    .bar-count {
+        width: 40px;
+        font-size: 0.9rem;
+    }
+    
+    /* Larger leaderboard scroll area */
+    .leaderboard-scroll {
+        max-height: 400px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .dashboard-content {
+        grid-template-columns: 2fr 1fr;
+    }
+}
+
+/* Performance Optimizations */
+.avatar-img {
+    will-change: transform;
+}
+
+.stat-card, .chart-section, .recent-section, .leaderboard-section {
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    .fire, .stat-card, .bar-fill, .analysis-item, .leaderboard-item {
+        animation: none;
+        transition: none;
+    }
+    
+    .welcome-section::before {
+        animation: none;
+    }
+}
+</style>
+
 <script>
-// Animate chart bars on page load
+// Performance optimized animations
 document.addEventListener('DOMContentLoaded', function() {
-    // Animate chart bars
-    setTimeout(() => {
-        const chartFills = document.querySelectorAll('.chart-fill');
+    // Use requestAnimationFrame for smoother animations
+    function animateChartBars() {
+        const chartFills = document.querySelectorAll('.bar-fill');
         chartFills.forEach(fill => {
             const currentWidth = fill.style.width;
             fill.style.width = '0%';
-            setTimeout(() => {
+            requestAnimationFrame(() => {
                 fill.style.width = currentWidth;
-            }, 100);
+            });
         });
-    }, 500);
-    
-    // Add glowing effect to stats on hover
-    const glowCards = document.querySelectorAll('.glow-card');
-    glowCards.forEach(card => {
-        card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-8px) scale(1.02)';
-        });
-        
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0) scale(1)';
-        });
-    });
-    
-    // Trigger confetti for achievements and podium
-    const currentStreak = {{ current_streak }};
-    if (currentStreak >= 7) {
-        setTimeout(() => {
-            triggerAchievementConfetti();
-        }, 2000);
     }
     
-    // Add podium interactions
-    const podiumItems = document.querySelectorAll('.podium-item[data-user]');
-    podiumItems.forEach(item => {
-        item.addEventListener('click', function() {
-            const username = this.getAttribute('data-user');
-            const points = this.getAttribute('data-points');
-            triggerPodiumConfetti();
+    // Delay animation for better perceived performance
+    setTimeout(animateChartBars, 300);
+    
+    // Optimized hover effects
+    const interactiveElements = document.querySelectorAll('.stat-card, .leaderboard-item, .analysis-item');
+    interactiveElements.forEach(element => {
+        element.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px)';
         });
         
-        item.style.cursor = 'pointer';
-        item.title = 'Click to celebrate!';
+        element.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
     });
     
-    // Auto-trigger podium confetti on page load for top 3
-    setTimeout(() => {
-        if (podiumItems.length > 0) {
-            triggerPodiumConfetti();
+    // Lazy load images that might be outside viewport
+    if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.dataset.src;
+                    img.classList.remove('lazy');
+                    imageObserver.unobserve(img);
+                }
+            });
+        });
+        
+        document.querySelectorAll('img[data-src]').forEach(img => {
+            imageObserver.observe(img);
+        });
+    }
+    
+    // Enhanced flame animation
+    function enhanceFlame() {
+        const flame = document.querySelector('.fire');
+        if (flame) {
+            setInterval(() => {
+                flame.style.filter = `brightness(${1 + Math.random() * 0.3}) contrast(${1 + Math.random() * 0.4})`;
+            }, 300);
         }
-    }, 3000);
+    }
     
-    // Add subtle animation to empty podium spots
-    const emptyPodiums = document.querySelectorAll('.podium-rank:not(.podium-1):not(.podium-2):not(.podium-3)');
-    emptyPodiums.forEach(podium => {
-        podium.style.animation = 'pulse 3s infinite';
-    });
+    enhanceFlame();
+    
+    // Simple confetti effect for achievements
+    function triggerConfetti() {
+        const confettiCount = 30;
+        const container = document.querySelector('.dashboard-container');
+        
+        for (let i = 0; i < confettiCount; i++) {
+            const confetti = document.createElement('div');
+            confetti.style.cssText = `
+                position: fixed;
+                width: 10px;
+                height: 10px;
+                background: hsl(${Math.random() * 360}, 100%, 50%);
+                top: -10px;
+                left: ${Math.random() * 100}vw;
+                border-radius: 2px;
+                pointer-events: none;
+                z-index: 1000;
+                animation: confetti-fall ${1 + Math.random() * 2}s linear forwards;
+            `;
+            
+            document.body.appendChild(confetti);
+            
+            setTimeout(() => {
+                confetti.remove();
+            }, 2000);
+        }
+        
+        // Add keyframes for animation
+        if (!document.querySelector('#confetti-styles')) {
+            const style = document.createElement('style');
+            style.id = 'confetti-styles';
+            style.textContent = `
+                @keyframes confetti-fall {
+                    to {
+                        transform: translateY(100vh) rotate(${360 + Math.random() * 360}deg);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    }
+    
+    // Trigger confetti for streak achievement
+    const currentStreak = {{ current_streak }};
+    if (currentStreak >= 7) {
+        setTimeout(triggerConfetti, 1000);
+    }
 });
 </script>
 {% endblock %}

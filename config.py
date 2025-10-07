@@ -49,6 +49,7 @@ class Config:
     
     # API Keys
     GROQ_API_KEY = os.environ.get('GROQ_API_KEY')
+    OCR_SPACE_API_KEY = os.environ.get('OCR_SPACE_API_KEY')  # Get from environment variable
     
     # Google OAuth
     GOOGLE_OAUTH_CLIENT_ID = os.environ.get('GOOGLE_OAUTH_CLIENT_ID')

@@ -4,13 +4,15 @@ from config import Config
 
 class OCRService:
     def __init__(self):
-        # OCR.Space free API key
-        self.api_key = 'helloworld'  # Free tier API key
+        # Get API key from environment variables via Config
+        self.api_key = Config.OCR_SPACE_API_KEY or "332ccf789188957"  # Fallback to free tier key
         self.endpoint = 'https://api.ocr.space/parse/image'
         self.last_request_time = 0
         self.min_interval = 1  # 1 second between requests
         self.request_count = 0
         self.daily_limit = 25000  # OCR.Space free tier limit
+        
+        print(f"🔑 OCR Service initialized with API key: {self.api_key[:8]}...")
         
     def process_image(self, image_file):
         """Process image using OCR.Space API - Return dict with success/error"""
