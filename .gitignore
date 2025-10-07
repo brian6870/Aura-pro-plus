@@ -582,7 +582,7 @@ $RECYCLE.BIN/
 # API rate limit tracking
 /rate_limits/
 /api_usage/
-
+/myenv/
 # User-generated content
 
 # Cache directories
