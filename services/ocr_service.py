@@ -30,12 +30,12 @@ class OCRService:
         try:
             # Look for tesseract-OCR folder in common locations
             possible_paths = [
-                './tesseract-OCR',
-                '../tesseract-OCR',
-                './tesseract',
-                '../tesseract',
-                '/usr/share/tesseract-ocr',
-                '/usr/local/share/tesseract-ocr',
+                './Tesseract-OCR',
+                '../Tesseract-OCR',
+                './Tesseract',
+                '../Tesseract',
+                '/usr/share/Tesseract-OCR',
+                '/usr/local/share/Tesseract-OCR',
                 'C:/Program Files/Tesseract-OCR',
                 'C:/Program Files (x86)/Tesseract-OCR'
             ]
