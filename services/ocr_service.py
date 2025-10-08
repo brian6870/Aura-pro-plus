@@ -5,6 +5,7 @@ from PIL import Image
 import io
 import cv2
 import numpy as np
+import os
 from config import Config
 
 class OCRService:
@@ -17,27 +18,123 @@ class OCRService:
         self.request_count = 0
         self.daily_limit = 25000  # OCR.Space free tier limit
         
-        # Tesseract OCR fallback
-        self.tesseract_available = self._check_tesseract()
+        # Configure Tesseract OCR to use files from tesseract-OCR folder
+        self.tesseract_available = self._setup_tesseract()
         
         print(f"🔑 OCR Service initialized with API key: {self.api_key[:8] if self.api_key else 'NOT SET'}...")
         if self.tesseract_available:
             print("🔤 Tesseract OCR fallback available")
         
-    def _check_tesseract(self):
-        """Check if Tesseract OCR is properly installed"""
+    def _setup_tesseract(self):
+        """Setup Tesseract OCR to use files from tesseract-OCR folder"""
         try:
-            # Get Tesseract version
+            # Look for tesseract-OCR folder in common locations
+            possible_paths = [
+                './tesseract-OCR',
+                '../tesseract-OCR',
+                './tesseract',
+                '../tesseract',
+                '/usr/share/tesseract-ocr',
+                '/usr/local/share/tesseract-ocr',
+                'C:/Program Files/Tesseract-OCR',
+                'C:/Program Files (x86)/Tesseract-OCR'
+            ]
+            
+            tesseract_path = None
+            tessdata_path = None
+            
+            # First, try to find tesseract-OCR folder
+            for path in possible_paths:
+                if os.path.exists(path):
+                    print(f"📁 Found Tesseract folder: {path}")
+                    tesseract_path = path
+                    
+                    # Check for tessdata within this folder
+                    tessdata_candidates = [
+                        os.path.join(path, 'tessdata'),
+                        os.path.join(path, 'tessdata', 'eng.traineddata'),
+                        path  # sometimes tessdata is in the root
+                    ]
+                    
+                    for tess_candidate in tessdata_candidates:
+                        if os.path.exists(tess_candidate):
+                            if os.path.isdir(tess_candidate):
+                                tessdata_path = tess_candidate
+                            else:
+                                tessdata_path = os.path.dirname(tess_candidate)
+                            break
+                    
+                    if tessdata_path:
+                        break
+            
+            # Set Tesseract configuration
+            if tesseract_path:
+                # Set Tesseract command if executable is in the folder
+                tesseract_cmd = None
+                possible_cmds = [
+                    os.path.join(tesseract_path, 'tesseract'),
+                    os.path.join(tesseract_path, 'tesseract.exe'),
+                    os.path.join(tesseract_path, 'bin', 'tesseract'),
+                    os.path.join(tesseract_path, 'bin', 'tesseract.exe')
+                ]
+                
+                for cmd in possible_cmds:
+                    if os.path.exists(cmd):
+                        tesseract_cmd = cmd
+                        pytesseract.pytesseract.tesseract_cmd = cmd
+                        print(f"🔧 Set Tesseract command: {cmd}")
+                        break
+                
+                # Set tessdata path
+                if tessdata_path:
+                    os.environ['TESSDATA_PREFIX'] = tessdata_path
+                    print(f"📚 Set TESSDATA_PREFIX: {tessdata_path}")
+                else:
+                    print("⚠️ Tessdata folder not found in Tesseract directory")
+            
+            # Get Tesseract version to verify setup
             version = pytesseract.get_tesseract_version()
             print(f"✅ Tesseract OCR initialized: {version}")
+            
+            # List available languages
+            try:
+                languages = pytesseract.get_languages()
+                print(f"🔤 Available languages: {languages}")
+            except:
+                print("⚠️ Could not list available languages")
+            
             return True
+            
         except Exception as e:
-            print(f"❌ Tesseract not found: {e}")
-            print("💡 Please install Tesseract OCR:")
+            print(f"❌ Tesseract setup failed: {e}")
+            print("💡 Please install Tesseract OCR or ensure tesseract-OCR folder exists:")
             print("   Windows: Download from https://github.com/UB-Mannheim/tesseract/wiki")
             print("   macOS: brew install tesseract")
             print("   Linux: sudo apt install tesseract-ocr")
+            print("   Or place Tesseract files in a 'tesseract-OCR' folder in your project")
             return False
+    
+    def _download_tesseract_files(self):
+        """Optional: Download Tesseract traineddata files if missing"""
+        tessdata_dir = os.environ.get('TESSDATA_PREFIX', './tesseract-OCR/tessdata')
+        if not os.path.exists(tessdata_dir):
+            os.makedirs(tessdata_dir, exist_ok=True)
+        
+        eng_data_path = os.path.join(tessdata_dir, 'eng.traineddata')
+        
+        if not os.path.exists(eng_data_path):
+            print("📥 Downloading English Tesseract traineddata...")
+            try:
+                url = "https://github.com/tesseract-ocr/tessdata/raw/main/eng.traineddata"
+                response = requests.get(url, timeout=60)
+                if response.status_code == 200:
+                    with open(eng_data_path, 'wb') as f:
+                        f.write(response.content)
+                    print("✅ Downloaded English traineddata")
+                else:
+                    print("❌ Failed to download English traineddata")
+            except Exception as e:
+                print(f"❌ Error downloading Tesseract files: {e}")
     
     def _tesseract_fallback(self, image_file):
         """Fallback OCR using Tesseract OCR"""
