@@ -27,3 +27,11 @@ gunicorn>=21.2.0
 
 # Session management
 Flask-Session>=0.4.0
+torch>=2.0.0
+Pillow>=10.0.0
+requests>=2.31.0
+accelerate>=0.30.0
+pytesseract>=0.3.10
+opencv-python>=4.12.1.88
+opencv-python-headless>=4.8.1.78
+numpy>=2.2.6
