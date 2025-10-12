@@ -2,7 +2,7 @@
 
 # Aura - Carbon Footprint Tracker
 
-Aura is a web application that helps users analyze the environmental impact of everyday products by scanning ingredient lists, leveraging AI-powered analysis, and tracking sustainability progress. Make eco-friendly choices and join a community of conscious consumers!
+Aura is a web application that helps users control  land degradation on the consumer  level  by analysing the environmental impact of everyday products by scanning ingredient lists, leveraging AI-powered analysis, and tracking sustainability progress. Make eco-friendly choices and join a community of conscious consumers! access it here https://aura-pro-plus.onrender.com
 
 ## Features
 
