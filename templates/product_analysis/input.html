@@ -492,15 +492,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 showMessage('OCR Error: ' + (data.error || 'Unknown error occurred'), 'error');
             }
         })
-        .catch(error => {
-            console.error('OCR Error:', error);
-            if (error.message.includes('non-JSON')) {
-                showMessage('OCR service temporarily unavailable. Please type the ingredients manually or try again later.', 'error');
-            } else if (error.message.includes('Server error')) {
-                showMessage('Server error: ' + error.message, 'error');
-            } else {
-                showMessage('Network error during OCR processing. Please check your connection and try again.', 'error');
-            }
+       
         })
         .finally(() => {
             submitBtn.disabled = false;
