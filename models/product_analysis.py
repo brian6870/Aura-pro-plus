@@ -1,19 +1,21 @@
 from app import db
 from datetime import datetime
-import json
 
 class ProductAnalysis(db.Model):
     __tablename__ = 'product_analyses'
     
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    product_name = db.Column(db.String(200), nullable=False)  # New field for product name
+    product_name = db.Column(db.String(200))
     ingredients_text = db.Column(db.Text, nullable=False)
     environmental_rating = db.Column(db.String(20), nullable=False)
     points_awarded = db.Column(db.Integer, nullable=False)
     analysis_result = db.Column(db.Text)
     alternative_suggestions = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Relationship with back_populates
+    user = db.relationship('User', back_populates='product_analyses')
     
     def to_dict(self):
         return {
@@ -25,5 +27,8 @@ class ProductAnalysis(db.Model):
             'points_awarded': self.points_awarded,
             'analysis_result': self.analysis_result,
             'alternative_suggestions': self.alternative_suggestions,
-            'created_at': self.created_at.isoformat()
+            'created_at': self.created_at.isoformat() if self.created_at else None
         }
+    
+    def __repr__(self):
+        return f'<ProductAnalysis {self.id} - {self.environmental_rating}>'

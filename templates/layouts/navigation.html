@@ -6,7 +6,7 @@
         
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon">
-                <i class="fas fa-bars text-white"></i>
+                <i class="fas fa-bars"></i>
             </span>
         </button>
         
@@ -24,6 +24,11 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link {{ 'active' if request.endpoint == 'plastic.analyze_plastic' }}" href="{{ url_for('plastic.analyze_plastic') }}">
+                        <i class="fas fa-recycle me-2"></i> Analyze Plastic
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link {{ 'active' if 'chat' in request.endpoint }}" href="{{ url_for('chat.index') }}">
                         <i class="fas fa-robot me-2"></i> AI Assistant
                     </a>
@@ -36,48 +41,47 @@
             </ul>
             <ul class="navbar-nav">
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" style="z-index: 1001;">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
                         <img src="{{ current_user.avatar_url }}" alt="Avatar" class="rounded-circle me-2" width="32" height="32" onerror="this.src='/static/images/avatars/default.png'">
                         <span>{{ current_user.username }}</span>
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end" style="
-                        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
-                        border: 1px solid rgba(255, 255, 255, 0.2) !important;
-                        border-radius: 12px !important;
-                        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
-                        padding: 0.5rem 0 !important;
-                        min-width: 200px !important;
-                        z-index: 1100 !important;
-                        backdrop-filter: none !important;
-                    ">
+                    <ul class="dropdown-menu dropdown-menu-end">
                         <li>
-                            <a class="dropdown-item text-white d-flex align-items-center" href="{{ url_for('settings.profile') }}" style="
-                                padding: 0.75rem 1rem !important;
-                                border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-                                transition: all 0.3s ease !important;
-                            ">
-                                <i class="fas fa-user me-3" style="width: 20px; text-align: center;"></i>
+                            <a class="dropdown-item d-flex align-items-center" href="{{ url_for('settings.profile') }}">
+                                <i class="fas fa-user me-3"></i>
                                 <span>Profile Settings</span>
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item text-white d-flex align-items-center" href="{{ url_for('settings.security') }}" style="
-                                padding: 0.75rem 1rem !important;
-                                border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-                                transition: all 0.3s ease !important;
-                            ">
-                                <i class="fas fa-shield-alt me-3" style="width: 20px; text-align: center;"></i>
+                            <a class="dropdown-item d-flex align-items-center" href="{{ url_for('settings.security') }}">
+                                <i class="fas fa-shield-alt me-3"></i>
                                 <span>Security</span>
                             </a>
                         </li>
-                        <li><hr class="my-2" style="border-color: rgba(255, 255, 255, 0.1) !important; margin: 0.5rem 0 !important;"></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <!-- Theme Toggle Switch -->
+                        <li class="theme-toggle-item">
+                            <div class="dropdown-item d-flex align-items-center justify-content-between theme-toggle-container">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-palette me-3"></i>
+                                    <span>Theme</span>
+                                </div>
+                                <div class="theme-toggle-switch">
+                                    <input type="checkbox" id="themeToggle" class="toggle-checkbox">
+                                    <label for="themeToggle" class="toggle-label">
+                                        <span class="toggle-handle"></span>
+                                        <span class="toggle-icons">
+                                            <i class="fas fa-sun toggle-icon-light"></i>
+                                            <i class="fas fa-moon toggle-icon-dark"></i>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
                         <li>
-                            <a class="dropdown-item text-white d-flex align-items-center" href="{{ url_for('auth.logout') }}" style="
-                                padding: 0.75rem 1rem !important;
-                                transition: all 0.3s ease !important;
-                                color: #ef4444 !important;
-                            ">
-                                <i class="fas fa-sign-out-alt me-3" style="width: 20px; text-align: center;"></i>
+                            <a class="dropdown-item d-flex align-items-center" href="{{ url_for('auth.logout') }}">
+                                <i class="fas fa-sign-out-alt me-3"></i>
                                 <span>Logout</span>
                             </a>
                         </li>
@@ -87,14 +91,38 @@
             {% else %}
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('auth.login') }}">
+                    <a class="nav-link {{ 'active' if request.endpoint == 'landing.index' }}" href="{{ url_for('landing.index') }}">
+                        <i class="fas fa-home me-2"></i>Home
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if request.endpoint == 'auth.login' }}" href="{{ url_for('auth.login') }}">
                         <i class="fas fa-sign-in-alt me-2"></i>Login
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('auth.register') }}">
+                    <a class="nav-link {{ 'active' if request.endpoint == 'auth.register' }}" href="{{ url_for('auth.register') }}">
                         <i class="fas fa-user-plus me-2"></i>Register
                     </a>
+                </li>
+                <!-- Theme Toggle for Non-Authenticated Users -->
+                <li class="nav-item theme-toggle-nav-item">
+                    <div class="nav-link theme-toggle-nav-link d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-palette me-2"></i>
+                            <span class="d-none d-md-inline">Theme</span>
+                        </div>
+                        <div class="theme-toggle-switch">
+                            <input type="checkbox" id="themeToggleNav" class="toggle-checkbox">
+                            <label for="themeToggleNav" class="toggle-label">
+                                <span class="toggle-handle"></span>
+                                <span class="toggle-icons">
+                                    <i class="fas fa-sun toggle-icon-light"></i>
+                                    <i class="fas fa-moon toggle-icon-dark"></i>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
                 </li>
             </ul>
             {% endif %}
@@ -103,64 +131,290 @@
 </nav>
 
 <style>
-/* Active state for navigation */
-.navbar-modern .nav-link.active {
-    background: var(--gradient-1);
-    color: white !important;
-    box-shadow: 0 5px 20px rgba(59, 130, 246, 0.4);
+.navbar-modern {
+    background-color: var(--surface-color);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+    padding: 1rem 0;
+    transition: all 0.3s ease;
 }
 
-/* Dropdown Hover Effects */
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--text-primary) !important;
+    transition: color 0.3s ease;
+}
+
+.navbar-brand:hover {
+    color: var(--primary-color) !important;
+}
+
+.navbar-toggler {
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.navbar-toggler:focus {
+    box-shadow: 0 0 0 2px var(--primary-color);
+}
+
+.navbar-toggler-icon i {
+    color: var(--text-primary);
+    transition: color 0.3s ease;
+}
+
+.nav-link {
+    color: var(--text-secondary) !important;
+    font-weight: 500;
+    padding: 0.5rem 1rem !important;
+    border-radius: 8px;
+    margin: 0 0.25rem;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.nav-link:hover {
+    color: var(--text-primary) !important;
+    background-color: var(--background-color);
+    transform: translateY(-1px);
+}
+
+.nav-link.active {
+    color: var(--text-primary) !important;
+    background-color: var(--primary-color);
+    font-weight: 600;
+}
+
+.nav-link.active:hover {
+    background-color: var(--primary-color);
+    transform: translateY(-1px);
+}
+
+.dropdown-menu {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 0.5rem 0;
+    margin-top: 0.5rem;
+    animation: dropdownFadeIn 0.3s ease-out;
+}
+
+.dropdown-item {
+    color: var(--text-primary);
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
 .dropdown-item:hover {
-    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
-    transform: translateX(5px) !important;
-    border-radius: 8px !important;
-    margin: 0 0.5rem !important;
+    background-color: var(--primary-color);
+    color: white;
+    transform: translateX(5px);
+    border-radius: 8px;
+    margin: 0 0.5rem;
 }
 
 .dropdown-item:active {
-    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%) !important;
+    background-color: var(--primary-color);
+    color: white;
 }
 
-/* Ensure dropdown stays above everything */
-.navbar .dropdown-menu {
-    z-index: 1100 !important;
+.dropdown-divider {
+    border-color: var(--border-color);
+    margin: 0.5rem 0;
 }
 
-/* Fix dropdown positioning */
-.dropdown-menu-end {
-    right: 0 !important;
-    left: auto !important;
+.dropdown-toggle::after {
+    margin-left: 0.5rem;
+    vertical-align: middle;
 }
 
-/* Mobile responsiveness for dropdown */
+.navbar-nav .dropdown-menu {
+    position: absolute;
+}
+
+/* Theme toggle specific styles */
+.theme-toggle-item .dropdown-item {
+    background: none !important;
+    cursor: default;
+    margin: 0 !important;
+    transform: none !important;
+}
+
+.theme-toggle-item .dropdown-item:hover {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+    transform: none !important;
+    margin: 0 !important;
+    border-radius: 8px !important;
+}
+
+.theme-toggle-item .dropdown-item:hover i {
+    color: white !important;
+}
+
+.theme-toggle-container {
+    width: 100%;
+}
+
+/* Theme Toggle Switch Styles */
+.theme-toggle-switch {
+    position: relative;
+}
+
+.toggle-checkbox {
+    display: none;
+}
+
+.toggle-label {
+    display: block;
+    width: 60px;
+    height: 30px;
+    background: var(--border-color);
+    border-radius: 15px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.toggle-label:hover {
+    background: var(--text-secondary);
+}
+
+.toggle-handle {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 24px;
+    height: 24px;
+    background: white;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    z-index: 2;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-icons {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 8px;
+}
+
+.toggle-icon-light,
+.toggle-icon-dark {
+    font-size: 12px;
+    transition: all 0.3s ease;
+    z-index: 1;
+}
+
+.toggle-icon-light {
+    color: #f59e0b;
+}
+
+.toggle-icon-dark {
+    color: #6b7280;
+}
+
+/* Light mode state */
+.toggle-checkbox:not(:checked) + .toggle-label {
+    background: linear-gradient(135deg, #f59e0b, #fbbf24);
+}
+
+.toggle-checkbox:not(:checked) + .toggle-label .toggle-handle {
+    left: 3px;
+    transform: translateX(0);
+}
+
+.toggle-checkbox:not(:checked) + .toggle-label .toggle-icon-light {
+    opacity: 1;
+}
+
+.toggle-checkbox:not(:checked) + .toggle-label .toggle-icon-dark {
+    opacity: 0.5;
+}
+
+/* Dark mode state */
+.toggle-checkbox:checked + .toggle-label {
+    background: linear-gradient(135deg, #4b5563, #6b7280);
+}
+
+.toggle-checkbox:checked + .toggle-label .toggle-handle {
+    left: calc(100% - 27px);
+    transform: translateX(0);
+}
+
+.toggle-checkbox:checked + .toggle-label .toggle-icon-light {
+    opacity: 0.5;
+}
+
+.toggle-checkbox:checked + .toggle-label .toggle-icon-dark {
+    opacity: 1;
+    color: #e5e7eb;
+}
+
+/* Styles for the non-authenticated theme toggle */
+.theme-toggle-nav-item {
+    margin-left: 0.5rem;
+}
+
+.theme-toggle-nav-link {
+    cursor: default;
+    background: none !important;
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.theme-toggle-nav-link:hover {
+    background-color: var(--background-color) !important;
+    border-color: var(--border-color);
+    transform: translateY(-1px);
+}
+
+.theme-toggle-nav-link i {
+    color: var(--text-secondary);
+}
+
 @media (max-width: 991.98px) {
     .navbar-nav .dropdown-menu {
-        position: static !important;
-        float: none !important;
-        width: auto !important;
-        margin-top: 0 !important;
-        background: rgba(15, 23, 42, 0.95) !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        position: static;
+        float: none;
+        width: auto;
+        margin-top: 0;
+        background-color: var(--surface-color);
+        border: 1px solid var(--border-color);
     }
     
-    .navbar-nav .dropdown-item {
-        padding: 0.75rem 1rem !important;
+    .nav-link {
+        margin: 0.125rem 0;
     }
-}
-
-/* Prevent text overflow in dropdown */
-.dropdown-item span {
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    max-width: 140px !important;
-    display: inline-block !important;
-}
-
-/* Smooth dropdown animations */
-.dropdown-menu {
-    animation: dropdownFadeIn 0.3s ease-out !important;
+    
+    .dropdown-item:hover {
+        margin: 0.125rem 0.5rem;
+    }
+    
+    .theme-toggle-item .dropdown-item:hover {
+        margin: 0 !important;
+    }
+    
+    .theme-toggle-nav-item {
+        margin-left: 0;
+        margin-top: 0.5rem;
+    }
+    
+    .theme-toggle-nav-link {
+        justify-content: flex-start !important;
+        gap: 1rem;
+    }
 }
 
 @keyframes dropdownFadeIn {
@@ -174,93 +428,58 @@
     }
 }
 
-/* Ensure proper spacing in dropdown */
-.dropdown-divider {
-    margin: 0.5rem 0 !important;
-    border-color: rgba(255, 255, 255, 0.1) !important;
-}
-
-/* Fix for Bootstrap dropdown arrow */
-.navbar .dropdown-toggle::after {
-    margin-left: 0.5rem !important;
-    vertical-align: middle !important;
-}
-
-/* Ensure dropdown items are properly aligned */
 .dropdown-item i {
-    width: 20px !important;
-    text-align: center !important;
-    margin-right: 0.75rem !important;
+    width: 20px;
+    text-align: center;
+    margin-right: 0.75rem;
 }
 </style>
 
 <script>
-// Enhanced dropdown functionality
 document.addEventListener('DOMContentLoaded', function() {
-    const dropdownToggle = document.querySelector('.dropdown-toggle');
-    const dropdownMenu = document.querySelector('.dropdown-menu');
+    const themeToggle = document.getElementById('themeToggle');
+    const themeToggleNav = document.getElementById('themeToggleNav');
+    const htmlElement = document.documentElement;
     
-    if (dropdownToggle && dropdownMenu) {
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(event) {
-            const isClickInside = dropdownToggle.contains(event.target) || dropdownMenu.contains(event.target);
-            if (!isClickInside) {
-                const bootstrapDropdown = bootstrap.Dropdown.getInstance(dropdownToggle);
-                if (bootstrapDropdown) {
-                    bootstrapDropdown.hide();
-                }
-            }
-        });
-        
-        // Add smooth hover effects
-        dropdownToggle.addEventListener('mouseenter', function() {
-            const bootstrapDropdown = bootstrap.Dropdown.getInstance(this);
-            if (bootstrapDropdown && window.innerWidth >= 992) { // Desktop only
-                bootstrapDropdown.show();
-            }
-        });
-        
-        // Keep dropdown open when hovering over it
-        dropdownMenu.addEventListener('mouseenter', function() {
-            const bootstrapDropdown = bootstrap.Dropdown.getInstance(dropdownToggle);
-            if (bootstrapDropdown && window.innerWidth >= 992) {
-                bootstrapDropdown.show();
-            }
-        });
-        
-        // Hide dropdown when mouse leaves both toggle and menu
-        function hideDropdown() {
-            const bootstrapDropdown = bootstrap.Dropdown.getInstance(dropdownToggle);
-            if (bootstrapDropdown && window.innerWidth >= 992) {
-                setTimeout(() => {
-                    if (!dropdownToggle.matches(':hover') && !dropdownMenu.matches(':hover')) {
-                        bootstrapDropdown.hide();
-                    }
-                }, 100);
-            }
-        }
-        
-        dropdownToggle.addEventListener('mouseleave', hideDropdown);
-        dropdownMenu.addEventListener('mouseleave', hideDropdown);
+    // Check for saved theme preference
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    htmlElement.setAttribute('data-theme', currentTheme);
+    
+    // Set toggle state based on current theme
+    if (currentTheme === 'dark') {
+        if (themeToggle) themeToggle.checked = true;
+        if (themeToggleNav) themeToggleNav.checked = true;
+    } else {
+        if (themeToggle) themeToggle.checked = false;
+        if (themeToggleNav) themeToggleNav.checked = false;
     }
     
-    // Fix dropdown on mobile
-    function handleMobileDropdown() {
-        const dropdowns = document.querySelectorAll('.navbar-nav .dropdown-menu');
-        if (window.innerWidth < 992) {
-            dropdowns.forEach(menu => {
-                menu.style.position = 'static';
-                menu.style.float = 'none';
-            });
-        } else {
-            dropdowns.forEach(menu => {
-                menu.style.position = '';
-                menu.style.float = '';
-            });
-        }
+    // Theme toggle functionality for authenticated users
+    if (themeToggle) {
+        themeToggle.addEventListener('change', function() {
+            const theme = this.checked ? 'dark' : 'light';
+            htmlElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            
+            // Sync with the other toggle if it exists
+            if (themeToggleNav) {
+                themeToggleNav.checked = this.checked;
+            }
+        });
     }
     
-    handleMobileDropdown();
-    window.addEventListener('resize', handleMobileDropdown);
+    // Theme toggle functionality for non-authenticated users
+    if (themeToggleNav) {
+        themeToggleNav.addEventListener('change', function() {
+            const theme = this.checked ? 'dark' : 'light';
+            htmlElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            
+            // Sync with the other toggle if it exists
+            if (themeToggle) {
+                themeToggle.checked = this.checked;
+            }
+        });
+    }
 });
 </script>

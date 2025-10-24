@@ -1,0 +1,160 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Plastic Info -->
+            <div class="modern-card mb-4">
+                <div class="card-body text-center">
+                    <h2 class="mb-3">Plastic Analysis Results</h2>
+                    <div class="mb-3">
+                        <h4 class="text-primary">{{ plastic_type }}</h4>
+                        <p class="text-muted">{{ description }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Environmental Impact -->
+            <div class="modern-card mb-4">
+                <div class="card-header modern-header">
+                    <h5 class="mb-0"><i class="fas fa-leaf me-2"></i>Environmental Impact Analysis</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <span class="badge fs-6 p-3" style="background-color: var(--primary-color); color: white;">
+                            {{ analysis.environmental_rating|upper }}
+                        </span>
+                        <div class="alert alert-modern mt-3 border-success">
+                            <h4 class="alert-heading mb-0">
+                                <i class="fas fa-trophy me-2"></i>{{ analysis.points_awarded }} Points Awarded!
+                            </h4>
+                        </div>
+                    </div>
+                    
+                    <h6>Detailed Analysis:</h6>
+                    <p>{{ analysis.analysis_result }}</p>
+                    
+                    <h6 class="mt-4">Sustainable Alternatives:</h6>
+                    <p>{{ analysis.alternative_suggestions }}</p>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="text-center">
+                <a href="{{ url_for('plastic.analyze_plastic') }}" class="btn modern-btn-primary me-2">
+                    <i class="fas fa-recycle me-2"></i>Analyze Another Plastic
+                </a>
+                <a href="{{ url_for('analysis.input_form') }}" class="btn modern-btn-secondary me-2">
+                    <i class="fas fa-search me-2"></i>Analyze Ingredients
+                </a>
+                <a href="{{ url_for('dashboard.index') }}" class="btn modern-btn-outline">
+                    <i class="fas fa-home me-2"></i>Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.modern-card {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+}
+
+.modern-card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.modern-header {
+    background-color: var(--background-color);
+    border-bottom: 1px solid var(--border-color);
+    padding: 1.25rem 1.5rem;
+    font-weight: 600;
+}
+
+.alert-modern {
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-primary);
+}
+
+.badge {
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.modern-btn-primary {
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.modern-btn-primary:hover {
+    background-color: #0da271;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+    color: white;
+}
+
+.modern-btn-secondary {
+    background-color: var(--secondary-color);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.modern-btn-secondary:hover {
+    background-color: #2563eb;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+    color: white;
+}
+
+.modern-btn-outline {
+    background-color: transparent;
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-primary);
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.modern-btn-outline:hover {
+    background-color: var(--background-color);
+    border-color: var(--primary-color);
+    color: var(--text-primary);
+    transform: translateY(-2px);
+}
+
+.text-muted {
+    color: var(--text-secondary) !important;
+}
+
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.border-success {
+    border-color: var(--primary-color) !important;
+}
+</style>
+{% endblock %}

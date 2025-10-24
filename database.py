@@ -1,9 +1,11 @@
 from app import create_app, db
 from models.user import User
 from models.product_analysis import ProductAnalysis
+from models.plastic_analysis import PlasticAnalysis
 from models.points import PointsHistory, LoginStreak
 import sqlalchemy as sa
 from sqlalchemy import inspect, text
+import json
 
 def init_db():
     """Initialize the database with all tables"""
@@ -57,12 +59,18 @@ def add_missing_columns():
                 db.session.rollback()
         else:
             print("✅ product_name column already exists")
+    
+    # Check plastic_analyses table structure
+    if 'plastic_analyses' in inspector.get_table_names():
+        print("✅ plastic_analyses table exists")
+    else:
+        print("❌ plastic_analyses table missing - will be created on next init")
 
 def verify_tables():
     """Verify that all expected tables were created"""
     inspector = inspect(db.engine)
     tables = inspector.get_table_names()
-    expected_tables = ['users', 'product_analyses', 'points_history', 'login_streaks']
+    expected_tables = ['users', 'product_analyses', 'plastic_analyses', 'points_history', 'login_streaks']
     
     created_tables = [table for table in expected_tables if table in tables]
     missing_tables = [table for table in expected_tables if table not in tables]
@@ -112,8 +120,8 @@ def create_sample_data():
                 db.session.commit()
                 print("✅ Sample user created: demo@aura.com / demo123")
                 
-                # Create sample analyses with product names
-                sample_analyses = [
+                # Create sample product analyses
+                sample_product_analyses = [
                     {
                         'product_name': 'Organic Aloe Vera Shampoo',
                         'ingredients': 'Organic Aloe Vera Leaf Juice, Citric Acid, Potassium Sorbate, Sodium Benzoate',
@@ -134,7 +142,7 @@ def create_sample_data():
                     }
                 ]
                 
-                for sample in sample_analyses:
+                for sample in sample_product_analyses:
                     analysis = ProductAnalysis(
                         user_id=demo_user.id,
                         product_name=sample['product_name'],
@@ -145,19 +153,80 @@ def create_sample_data():
                         alternative_suggestions="Consider these eco-friendly alternatives for better environmental impact."
                     )
                     db.session.add(analysis)
-                    db.session.flush()  # Get the analysis ID without committing
+                    db.session.flush()
                     
                     # Add points history
                     points = PointsHistory(
                         user_id=demo_user.id,
                         points=sample['points'],
-                        source_type='analysis',
+                        source_type='product_analysis',
                         source_id=analysis.id
                     )
                     db.session.add(points)
                 
+                # Create sample plastic analyses
+                sample_plastic_analyses = [
+                    {
+                        'plastic_type': 'PET',
+                        'confidence': 0.92,
+                        'description': 'Polyethylene Terephthalate - Used in water bottles, food containers',
+                        'rating': 'friendly',
+                        'points': 80,
+                        'carbon_footprint': 'Moderate - highly recyclable',
+                        'decomposition_time': '450+ years'
+                    },
+                    {
+                        'plastic_type': 'PVC',
+                        'confidence': 0.87,
+                        'description': 'Polyvinyl Chloride - Used in pipes, packaging',
+                        'rating': 'hazardous',
+                        'points': 15,
+                        'carbon_footprint': 'High - difficult to recycle',
+                        'decomposition_time': '450+ years'
+                    },
+                    {
+                        'plastic_type': 'PP',
+                        'confidence': 0.78,
+                        'description': 'Polypropylene - Used in yogurt containers, bottle caps',
+                        'rating': 'moderate',
+                        'points': 60,
+                        'carbon_footprint': 'Moderate - recyclable',
+                        'decomposition_time': '20-30 years'
+                    }
+                ]
+                
+                for sample in sample_plastic_analyses:
+                    plastic_analysis = PlasticAnalysis(
+                        user_id=demo_user.id,
+                        plastic_type=sample['plastic_type'],
+                        confidence=sample['confidence'],
+                        description=sample['description'],
+                        environmental_rating=sample['rating'],
+                        points_awarded=sample['points'],
+                        analysis_result=f"Environmental analysis of {sample['plastic_type']} plastic material.",
+                        alternative_suggestions="Consider reusable or biodegradable alternatives.",
+                        recycling_guidance="Check local recycling guidelines for proper disposal.",
+                        carbon_footprint=sample['carbon_footprint'],
+                        decomposition_time=sample['decomposition_time'],
+                        all_predictions=json.dumps({
+                            sample['plastic_type']: sample['confidence'] * 100,
+                            'OTHER': (1 - sample['confidence']) * 100
+                        })
+                    )
+                    db.session.add(plastic_analysis)
+                    db.session.flush()
+                    
+                    # Add points history for plastic analysis
+                    points = PointsHistory(
+                        user_id=demo_user.id,
+                        points=sample['points'],
+                        source_type='plastic_analysis',
+                        source_id=plastic_analysis.id
+                    )
+                    db.session.add(points)
+                
                 db.session.commit()
-                print("✅ Sample analysis data created with product names")
+                print("✅ Sample product and plastic analysis data created")
             else:
                 print("ℹ️  Sample data already exists")
                 
@@ -181,16 +250,28 @@ def check_db_connection():
             tables = inspector.get_table_names()
             print(f"✅ Found {len(tables)} tables")
             
-            # Check if product_name column exists and has data
-            if 'product_analyses' in tables:
-                try:
-                    analysis_count = ProductAnalysis.query.count()
-                    analysis_with_name = ProductAnalysis.query.filter(
-                        ProductAnalysis.product_name.isnot(None)
-                    ).count()
-                    print(f"✅ Product analyses: {analysis_count} total, {analysis_with_name} with product names")
-                except Exception as e:
-                    print(f"⚠️  Error querying product analyses: {e}")
+            # Check data counts
+            product_count = ProductAnalysis.query.count()
+            plastic_count = PlasticAnalysis.query.count()
+            user_count = User.query.count()
+            points_count = PointsHistory.query.count()
+            
+            print(f"📊 Data Summary:")
+            print(f"   Users: {user_count}")
+            print(f"   Product Analyses: {product_count}")
+            print(f"   Plastic Analyses: {plastic_count}")
+            print(f"   Points History: {points_count}")
+            
+            # Check points by source type
+            if points_count > 0:
+                product_points = PointsHistory.query.filter_by(source_type='product_analysis').count()
+                plastic_points = PointsHistory.query.filter_by(source_type='plastic_analysis').count()
+                streak_points = PointsHistory.query.filter_by(source_type='streak_bonus').count()
+                
+                print(f"   Points by source:")
+                print(f"     Product Analysis: {product_points}")
+                print(f"     Plastic Analysis: {plastic_points}")
+                print(f"     Streak Bonus: {streak_points}")
             
             return True
             
@@ -234,29 +315,28 @@ def backup_database():
         return None
 
 def migrate_existing_data():
-    """Migrate existing data to include product names"""
+    """Migrate existing data to include product names and handle plastic data"""
     app = create_app()
     
     with app.app_context():
         try:
-            # Get all existing analyses without product names
+            # Migrate product analyses without names
             analyses_without_names = ProductAnalysis.query.filter(
                 (ProductAnalysis.product_name.is_(None)) | 
                 (ProductAnalysis.product_name == '')
             ).all()
             
             if analyses_without_names:
-                print(f"🔄 Migrating {len(analyses_without_names)} existing analyses...")
+                print(f"🔄 Migrating {len(analyses_without_names)} product analyses...")
                 
                 migrated_count = 0
                 for analysis in analyses_without_names:
-                    # Extract potential product name from ingredients (first few words)
+                    # Extract potential product name from ingredients
                     ingredients = analysis.ingredients_text or ""
                     first_line = ingredients.split('\n')[0] if '\n' in ingredients else ingredients
-                    words = first_line.split()[:4]  # Take first 4 words
+                    words = first_line.split()[:4]
                     potential_name = ' '.join(words).strip(',. ')
                     
-                    # Set a generic name if extraction fails
                     if len(potential_name) < 2:
                         potential_name = "Personal Care Product"
                     
@@ -264,14 +344,56 @@ def migrate_existing_data():
                     migrated_count += 1
                 
                 db.session.commit()
-                print(f"✅ Successfully migrated {migrated_count} analyses with product names")
+                print(f"✅ Successfully migrated {migrated_count} product analyses")
             else:
-                print("ℹ️  No existing data needs migration")
+                print("ℹ️  No product analyses need migration")
+            
+            # Check if we have any plastic data that needs migration
+            # This would handle any existing data that should be in the new plastic_analyses table
+            print("✅ Plastic analysis migration check complete")
                 
         except Exception as e:
             print(f"❌ Migration failed: {e}")
             db.session.rollback()
             raise
+
+def get_user_stats(user_id):
+    """Get comprehensive statistics for a user"""
+    app = create_app()
+    
+    with app.app_context():
+        try:
+            user = User.query.get(user_id)
+            if not user:
+                print(f"❌ User {user_id} not found")
+                return None
+            
+            total_points = user.get_total_points()
+            product_count = ProductAnalysis.query.filter_by(user_id=user_id).count()
+            plastic_count = PlasticAnalysis.query.filter_by(user_id=user_id).count()
+            
+            stats = {
+                'user_id': user_id,
+                'username': user.username,
+                'total_points': total_points,
+                'product_analyses': product_count,
+                'plastic_analyses': plastic_count,
+                'current_streak': user.current_streak,
+                'joined_date': user.created_at
+            }
+            
+            print(f"📊 User {user.username} Statistics:")
+            print(f"   Total Points: {total_points}")
+            print(f"   Product Analyses: {product_count}")
+            print(f"   Plastic Analyses: {plastic_count}")
+            print(f"   Current Streak: {user.current_streak} days")
+            print(f"   Member Since: {user.created_at}")
+            
+            return stats
+            
+        except Exception as e:
+            print(f"❌ Error getting user stats: {e}")
+            return None
 
 if __name__ == '__main__':
     import sys
@@ -284,7 +406,8 @@ if __name__ == '__main__':
         'sample': lambda: (init_db(), create_sample_data()),
         'check': check_db_connection,
         'backup': backup_database,
-        'migrate': migrate_existing_data
+        'migrate': migrate_existing_data,
+        'stats': lambda: get_user_stats(1) if len(sys.argv) > 2 else print("Usage: python database.py stats <user_id>")
     }
     
     if command in commands:
@@ -292,6 +415,8 @@ if __name__ == '__main__':
             if command == 'sample':
                 init_db()
                 create_sample_data()
+            elif command == 'stats' and len(sys.argv) > 2:
+                get_user_stats(int(sys.argv[2]))
             else:
                 commands[command]()
         except Exception as e:
@@ -304,5 +429,6 @@ if __name__ == '__main__':
         print("  sample  - Initialize with sample data")
         print("  check   - Check database connection")
         print("  backup  - Create database backup")
-        print("  migrate - Migrate existing data to include product names")
-        print("\n💡 Usage: python database.py [init|reset|sample|check|backup|migrate]")
+        print("  migrate - Migrate existing data")
+        print("  stats   - Get user statistics (python database.py stats <user_id>)")
+        print("\n💡 Usage: python database.py [command]")

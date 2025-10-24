@@ -5,18 +5,18 @@
     <div class="row justify-content-center">
         <div class="col-lg-8">
             <!-- Header -->
-            <div class="glass-card p-4 mb-4">
+            <div class="modern-card p-4 mb-4">
                 <div class="row align-items-center">
                     <div class="col-md-8">
-                        <h2 class="fw-bold mb-2"><i class="fas fa-shield-alt me-2 text-success"></i>Security Settings</h2>
-                        <p class="text-light mb-0">Manage your password and account security</p>
+                        <h2 class="fw-bold mb-2"><i class="fas fa-shield-alt me-2 text-primary"></i>Security Settings</h2>
+                        <p class="mb-0">Manage your password and account security</p>
                     </div>
                     <div class="col-md-4 text-end">
-                        <div class="stat-card" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.3);">
-                            <div class="stat-number" style="font-size: 1.5rem;">
-                                <i class="fas fa-lock"></i>
+                        <div class="modern-card p-3 border-success">
+                            <div class="text-center">
+                                <i class="fas fa-lock fa-2x text-success mb-2"></i>
+                                <div class="small">Account Secure</div>
                             </div>
-                            <small class="text-light">Account Secure</small>
                         </div>
                     </div>
                 </div>
@@ -25,16 +25,16 @@
             <div class="row">
                 <!-- Left Column - Password Change -->
                 <div class="col-lg-6">
-                    <div class="glass-card p-4 h-100">
-                        <h5 class="mb-4"><i class="fas fa-key me-2 text-warning"></i>Change Password</h5>
+                    <div class="modern-card p-4 h-100">
+                        <h5 class="mb-4"><i class="fas fa-key me-2 text-primary"></i>Change Password</h5>
                         
                         <form method="POST" action="{{ url_for('settings.security') }}">
                              <!-- Add CSRF Token -->
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <div class="mb-3">
-                                <label for="current_password" class="form-label text-light">Current Password</label>
+                                <label for="current_password" class="form-label">Current Password</label>
                                 <div class="input-group">
-                                    <input type="password" class="form-control form-control-modern" id="current_password" 
+                                    <input type="password" class="form-control modern-input" id="current_password" 
                                            name="current_password" required>
                                     <span class="input-group-text bg-transparent border-start-0">
                                         <i class="fas fa-eye-slash text-muted"></i>
@@ -43,23 +43,23 @@
                             </div>
                             
                             <div class="mb-3">
-                                <label for="new_password" class="form-label text-light">New Password</label>
+                                <label for="new_password" class="form-label">New Password</label>
                                 <div class="input-group">
-                                    <input type="password" class="form-control form-control-modern" id="new_password" 
+                                    <input type="password" class="form-control modern-input" id="new_password" 
                                            name="new_password" required>
                                     <span class="input-group-text bg-transparent border-start-0">
                                         <i class="fas fa-eye-slash text-muted"></i>
                                     </span>
                                 </div>
-                                <div class="form-text text-muted">
+                                <div class="form-text">
                                     Must be at least 8 characters with uppercase, lowercase, and numbers
                                 </div>
                             </div>
                             
                             <div class="mb-4">
-                                <label for="confirm_password" class="form-label text-light">Confirm New Password</label>
+                                <label for="confirm_password" class="form-label">Confirm New Password</label>
                                 <div class="input-group">
-                                    <input type="password" class="form-control form-control-modern" id="confirm_password" 
+                                    <input type="password" class="form-control modern-input" id="confirm_password" 
                                            name="confirm_password" required>
                                     <span class="input-group-text bg-transparent border-start-0">
                                         <i class="fas fa-eye-slash text-muted"></i>
@@ -68,7 +68,7 @@
                             </div>
                             
                             <div class="d-grid">
-                                <button type="submit" class="btn btn-modern">
+                                <button type="submit" class="btn modern-btn-primary">
                                     <i class="fas fa-lock me-2"></i>Update Password
                                 </button>
                             </div>
@@ -79,8 +79,8 @@
                 <!-- Right Column - Security Info -->
                 <div class="col-lg-6">
                     <!-- Security Status -->
-                    <div class="glass-card p-4 mb-4">
-                        <h5 class="mb-3"><i class="fas fa-user-shield me-2 text-info"></i>Security Status</h5>
+                    <div class="modern-card p-4 mb-4">
+                        <h5 class="mb-3"><i class="fas fa-user-shield me-2 text-primary"></i>Security Status</h5>
                         <div class="security-status">
                             <div class="status-item status-good">
                                 <div class="status-icon">
@@ -127,8 +127,8 @@
                     </div>
 
                     <!-- Security Tips -->
-                    <div class="glass-card p-4">
-                        <h5 class="mb-3"><i class="fas fa-lightbulb me-2 text-warning"></i>Security Tips</h5>
+                    <div class="modern-card p-4">
+                        <h5 class="mb-3"><i class="fas fa-lightbulb me-2 text-primary"></i>Security Tips</h5>
                         <div class="tips-list">
                             <div class="tip-item">
                                 <div class="tip-icon">
@@ -170,8 +170,8 @@
             </div>
 
             <!-- Session Management -->
-            <div class="glass-card p-4 mt-4">
-                <h5 class="mb-3"><i class="fas fa-clock me-2 text-purple"></i>Session Management</h5>
+            <div class="modern-card p-4 mt-4">
+                <h5 class="mb-3"><i class="fas fa-clock me-2 text-primary"></i>Session Management</h5>
                 <div class="session-info">
                     <div class="row">
                         <div class="col-md-6">
@@ -188,7 +188,7 @@
                         </div>
                     </div>
                     <div class="text-center mt-3">
-                        <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-modern">
+                        <a href="{{ url_for('auth.logout') }}" class="btn modern-btn-outline">
                             <i class="fas fa-sign-out-alt me-2"></i>Log Out of All Sessions
                         </a>
                     </div>
@@ -199,8 +199,79 @@
 </div>
 
 <style>
-.text-purple {
-    color: #8b5cf6 !important;
+.modern-card {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+}
+
+.modern-card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.modern-input {
+    background-color: var(--background-color);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-primary);
+    padding: 1rem !important;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.modern-input:focus {
+    background-color: var(--background-color);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.1);
+    color: var(--text-primary);
+}
+
+.modern-btn-primary {
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.modern-btn-primary:hover {
+    background-color: #0da271;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+    color: white;
+}
+
+.modern-btn-outline {
+    background-color: transparent;
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-primary);
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.modern-btn-outline:hover {
+    background-color: var(--background-color);
+    border-color: var(--primary-color);
+    color: var(--text-primary);
+    transform: translateY(-2px);
+}
+
+.border-success {
+    border-color: var(--primary-color) !important;
+}
+
+.text-success {
+    color: var(--primary-color) !important;
+}
+
+.text-primary {
+    color: var(--primary-color) !important;
 }
 
 /* Security Status */
@@ -214,24 +285,25 @@
     align-items: center;
     padding: 1rem;
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-color);
+    background-color: var(--background-color);
 }
 
 .status-good {
-    background: rgba(16, 185, 129, 0.1);
-    border-color: rgba(16, 185, 129, 0.3);
+    border-color: var(--primary-color);
+    background-color: rgba(16, 185, 129, 0.05);
 }
 
 .status-info {
-    background: rgba(59, 130, 246, 0.1);
-    border-color: rgba(59, 130, 246, 0.3);
+    border-color: var(--secondary-color);
+    background-color: rgba(59, 130, 246, 0.05);
 }
 
 .status-icon {
     width: 40px;
     height: 40px;
     border-radius: 10px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--surface-color);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -240,13 +312,13 @@
 }
 
 .status-good .status-icon {
-    background: rgba(16, 185, 129, 0.2);
-    color: #10b981;
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--primary-color);
 }
 
 .status-info .status-icon {
-    background: rgba(59, 130, 246, 0.2);
-    color: #3b82f6;
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--secondary-color);
 }
 
 .status-info {
@@ -255,12 +327,12 @@
 
 .status-title {
     font-weight: 600;
-    color: white;
+    color: var(--text-primary);
     margin-bottom: 0.2rem;
 }
 
 .status-desc {
-    color: #94a3b8;
+    color: var(--text-secondary);
     font-size: 0.8rem;
 }
 
@@ -280,7 +352,7 @@
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    background: rgba(16, 185, 129, 0.2);
+    background: rgba(16, 185, 129, 0.1);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -290,11 +362,11 @@
 
 .tip-icon i {
     font-size: 0.7rem;
-    color: #10b981;
+    color: var(--primary-color);
 }
 
 .tip-text {
-    color: #e2e8f0;
+    color: var(--text-primary);
     font-size: 0.9rem;
 }
 
@@ -308,23 +380,32 @@
 }
 
 .info-label {
-    color: #94a3b8;
+    color: var(--text-secondary);
     font-size: 0.9rem;
     margin-bottom: 0.3rem;
 }
 
 .info-value {
-    color: white;
+    color: var(--text-primary);
     font-weight: 600;
     font-size: 1.1rem;
 }
 
 /* Password Input Groups */
 .input-group-text {
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border: 1px solid var(--border-color) !important;
     border-left: none !important;
-    color: #94a3b8 !important;
-    background: rgba(255, 255, 255, 0.1) !important;
+    color: var(--text-secondary) !important;
+    background: var(--background-color) !important;
+}
+
+.form-text {
+    color: var(--text-secondary) !important;
+}
+
+.form-label {
+    color: var(--text-primary);
+    font-weight: 500;
 }
 
 /* Responsive */
@@ -341,6 +422,14 @@
     
     .tip-item {
         padding: 0.4rem 0;
+    }
+    
+    .modern-card {
+        margin-bottom: 1rem;
+    }
+    
+    .row > .col-lg-6 {
+        margin-bottom: 1.5rem;
     }
 }
 </style>

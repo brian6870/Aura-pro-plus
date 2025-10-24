@@ -1,734 +1,147 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aura - Track Your Carbon Footprint</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --eco-gradient: linear-gradient(135deg, #10b981, #059669, #047857);
-            --hero-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #1e293b 100%);
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--hero-gradient);
-            color: white;
-            overflow-x: hidden;
-            position: relative;
-            min-height: 100vh;
-        }
-
-        /* Animated Background Bubbles */
-        .bubbles {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .bubble {
-            position: absolute;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, rgba(139, 92, 246, 0.05) 70%);
-            animation: float 15s infinite ease-in-out;
-            filter: blur(1px);
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0) translateX(0); }
-            25% { transform: translateY(-20px) translateX(10px); }
-            50% { transform: translateY(-40px) translateX(-10px); }
-            75% { transform: translateY(-20px) translateX(10px); }
-        }
-
-        /* Main Content Container */
-        .main-content {
-            position: relative;
-            z-index: 10;
-        }
-
-        /* FIXED NAVBAR STYLES */
-        .navbar {
-            background: rgba(15, 23, 42, 0.95) !important;
-            backdrop-filter: blur(30px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            padding: 0.8rem 0;
-            z-index: 1000;
-        }
-
-        .navbar-brand {
-            font-weight: 900;
-            font-size: 1.8rem;
-            background: var(--eco-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .navbar-brand::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: -100%;
-            width: 100%;
-            height: 2px;
-            background: var(--eco-gradient);
-            transition: left 0.4s ease;
-        }
-
-        .navbar-brand:hover::after {
-            left: 0;
-        }
-
-        .navbar-nav .nav-link {
-            color: rgba(255, 255, 255, 0.85) !important;
-            font-weight: 500;
-            margin: 0 0.5rem;
-            padding: 0.5rem 1rem !important;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .navbar-nav .nav-link::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.2), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .navbar-nav .nav-link:hover::before {
-            left: 100%;
-        }
-
-        .navbar-nav .nav-link:hover {
-            color: white !important;
-            background: rgba(16, 185, 129, 0.15);
-            transform: translateY(-2px);
-        }
-
-        .navbar-toggler {
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 0.4rem 0.6rem;
-        }
-
-        .navbar-toggler:focus {
-            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.5);
-        }
-
-        .navbar-toggler-icon {
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
-        }
-
-        .navbar .btn-hero {
-            padding: 0.6rem 1.5rem;
-            font-size: 0.9rem;
-            margin-left: 0.5rem;
-        }
-
-        /* Mobile Responsive Navbar */
-        @media (max-width: 991px) {
-            .navbar-collapse {
-                background: rgba(15, 23, 42, 0.95);
-                backdrop-filter: blur(30px);
-                border-radius: 15px;
-                margin-top: 1rem;
-                padding: 1.5rem;
-                border: 1px solid rgba(255, 255, 255, 0.1);
-            }
-            
-            .navbar-nav .nav-link {
-                margin: 0.3rem 0;
-                text-align: center;
-            }
-            
-            .navbar .btn-hero {
-                margin: 0.5rem 0 0 0;
-                width: 100%;
-                text-align: center;
-            }
-        }
-
-        /* Hero Section */
-        .landing-hero {
-            min-height: 100vh;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            padding: 100px 0 50px;
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 20;
-        }
-
-        /* Make "Track Your" green on mobile */
-        @media (max-width: 768px) {
-            .track-your-text {
-                color: #10b981 !important;
-                -webkit-text-fill-color: #10b981 !important;
-                background: none !important;
-            }
-        }
-
-        /* Enhanced Feature Cards */
-        .feature-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 25px;
-            padding: 2.5rem 2rem;
-            text-align: center;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            height: 100%;
-            position: relative;
-            overflow: hidden;
-            margin-bottom: 1.5rem;
-        }
-
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transition: left 0.6s ease;
-        }
-
-        .feature-card:hover::before {
-            left: 100%;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-15px) scale(1.03);
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(16, 185, 129, 0.5);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 30px rgba(16, 185, 129, 0.2);
-        }
-
-        .feature-icon {
-            font-size: 3.5rem;
-            margin-bottom: 1.5rem;
-            background: var(--eco-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            display: inline-block;
-            transition: transform 0.3s ease;
-        }
-
-        .feature-card:hover .feature-icon {
-            transform: scale(1.2) rotate(5deg);
-        }
-
-        /* Enhanced CTA Section */
-        .cta-section {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(59, 130, 246, 0.15));
-            border-radius: 35px;
-            padding: 5rem 3rem;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            margin: 3rem 0;
-        }
-
-        .cta-section::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%);
-            animation: rotate 20s linear infinite;
-        }
-
-        .stats-counter {
-            font-size: 3.5rem;
-            font-weight: 900;
-            background: var(--eco-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-family: 'Inter', sans-serif;
-        }
-
-        /* Interactive Demo Enhancements */
-        .interactive-demo {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 25px;
-            padding: 2.5rem;
-            margin: 2rem 0;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            transition: all 0.3s ease;
-        }
-
-        .interactive-demo:hover {
-            border-color: rgba(16, 185, 129, 0.3);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        .demo-result {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(59, 130, 246, 0.1));
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            border-radius: 20px;
-            padding: 2rem;
-            margin-top: 1.5rem;
-            display: none;
-            animation: slideUp 0.5s ease-out;
-        }
-
-        /* Hero Image/Illustration */
-        .hero-visual {
-            position: relative;
-            perspective: 1000px;
-        }
-
-        .hero-phone-mockup {
-            width: 300px;
-            height: 600px;
-            background: linear-gradient(135deg, #1e293b, #334155);
-            border-radius: 40px;
-            position: relative;
-            margin: 0 auto;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
-            transform: rotateY(-10deg) rotateX(5deg);
-            transition: transform 0.5s ease;
-            overflow: hidden;
-        }
-
-        .hero-phone-mockup:hover {
-            transform: rotateY(-5deg) rotateX(2deg);
-        }
-
-        .phone-screen {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            right: 20px;
-            bottom: 20px;
-            background: linear-gradient(135deg, #0f172a, #1e293b);
-            border-radius: 25px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Enhanced Animations */
-        @keyframes floatEnhanced {
-            0%, 100% { 
-                transform: translateY(0px) rotate(0deg) scale(1);
-            }
-            33% { 
-                transform: translateY(-30px) rotate(120deg) scale(1.1);
-            }
-            66% { 
-                transform: translateY(15px) rotate(240deg) scale(0.9);
-            }
-        }
-
-        @keyframes particleFloat {
-            0% {
-                transform: translateY(100vh) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-100px) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes typewriter {
-            from { width: 0; }
-            to { width: 100%; }
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
-
-        /* Text Gradients */
-        .text-gradient {
-            background: var(--eco-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            position: relative;
-        }
-
-        .text-gradient::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: var(--eco-gradient);
-            border-radius: 2px;
-        }
-
-        /* Enhanced Buttons */
-        .btn-hero {
-            background: var(--eco-gradient);
-            border: none;
-            border-radius: 15px;
-            padding: 1rem 2.5rem;
-            font-weight: 700;
-            color: white;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
-        }
-
-        .btn-hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .btn-hero:hover::before {
-            left: 100%;
-        }
-
-        .btn-hero:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
-        }
-
-        /* Timeline Enhancements */
-        .timeline {
-            position: relative;
-            padding-left: 3rem;
-        }
-
-        .timeline-item {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 2.5rem;
-            position: relative;
-            transition: transform 0.3s ease;
-        }
-
-        .timeline-item:hover {
-            transform: translateX(10px);
-        }
-
-        .timeline-item:not(:last-child)::before {
-            content: '';
-            position: absolute;
-            left: 2.2rem;
-            top: 3rem;
-            bottom: -2.5rem;
-            width: 3px;
-            background: linear-gradient(to bottom, rgba(16, 185, 129, 0.5), rgba(59, 130, 246, 0.5));
-            border-radius: 2px;
-        }
-
-        .timeline-icon {
-            width: 4rem;
-            height: 4rem;
-            background: var(--eco-gradient);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 1.5rem;
-            flex-shrink: 0;
-            color: white;
-            font-size: 1.2rem;
-            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
-            transition: transform 0.3s ease;
-        }
-
-        .timeline-item:hover .timeline-icon {
-            transform: scale(1.1) rotate(5deg);
-        }
-
-        /* Typewriter Effect */
-        .typewriter {
-            overflow: hidden;
-            border-right: 3px solid #10b981;
-            white-space: nowrap;
-            margin: 0 auto;
-            animation: typewriter 3.5s steps(40, end), blink 0.75s step-end infinite;
-        }
-
-        /* Glow Effects */
-        .glow {
-            text-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
-        }
-
-        /* Form Styling */
-        .form-control-modern {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 15px;
-            color: white;
-            padding: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .form-control-modern:focus {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(16, 185, 129, 0.5);
-            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
-            color: white;
-        }
-
-        .form-control-modern::placeholder {
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        /* Glass Card */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 25px;
-            padding: 2rem;
-        }
-
-        /* Mobile Optimizations */
-        @media (max-width: 768px) {
-            .hero-phone-mockup {
-                width: 250px;
-                height: 500px;
-                margin-top: 2rem;
-            }
-            
-            .display-2, .display-3, .display-4 {
-                font-size: 2.5rem !important;
-            }
-            
-            .stats-counter {
-                font-size: 2.5rem;
-            }
-            
-            .feature-card {
-                padding: 2rem 1.5rem;
-            }
-            
-            .cta-section {
-                padding: 3rem 1.5rem;
-            }
-            
-            .timeline {
-                padding-left: 1.5rem;
-            }
-            
-            .timeline-icon {
-                width: 3rem;
-                height: 3rem;
-                font-size: 1rem;
-            }
-            
-            .interactive-demo {
-                padding: 1.5rem;
-            }
-            
-            .btn-hero {
-                padding: 0.8rem 1.5rem;
-                width: 100%;
-                margin-bottom: 0.5rem;
-            }
-            
-            .d-flex.flex-wrap.gap-3 {
-                flex-direction: column;
-            }
-            
-            /* CHANGED: Reorder columns for mobile - text first, then phone mockup */
-            .hero-content .row .col-lg-6:first-child {
-                order: 1;
-            }
-            
-            .hero-content .row .col-lg-6:last-child {
-                order: 2;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .display-2, .display-3, .display-4 {
-                font-size: 2rem !important;
-            }
-            
-            .lead {
-                font-size: 1rem !important;
-            }
-            
-            .feature-card {
-                padding: 1.5rem 1rem;
-            }
-            
-            .cta-section {
-                padding: 2rem 1rem;
-            }
-            
-            .interactive-demo {
-                padding: 1rem;
-            }
-        }
-
-        /* Section Spacing */
-        section {
-            padding: 5rem 0;
-            position: relative;
-            z-index: 10;
-        }
-
-        section:nth-child(even) {
-            background: rgba(15, 23, 42, 0.5);
-        }
-
-        /* Footer */
-        footer {
-            background: rgba(15, 23, 42, 0.9);
-            padding: 3rem 0;
-            position: relative;
-            z-index: 10;
-        }
-    </style>
-</head>
-<body>
-    <!-- Animated Background Bubbles -->
-    <div class="bubbles" id="bubbles"></div>
-
-    <!-- Main Content Container -->
-    <div class="main-content">
-        <!-- Navigation -->
-        <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
-            <div class="container">
-                <a class="navbar-brand fw-900" href="{{ url_for('landing.index') }}">
-                    <i class="fas fa-leaf me-2 glow"></i>Aura
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <div class="navbar-nav ms-auto">
-                        <a class="nav-link" href="#features">Features</a>
-                        <a class="nav-link" href="#demo">Demo</a>
-                        <a class="nav-link" href="#demo">How It Works</a>
-                        <a class="btn btn-hero" href="{{ url_for('auth.register') }}">
-                            <i class="fas fa-rocket me-2"></i>Get Started
-                        </a>
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="landing-page">
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="hero-content text-center">
+                <div class="hero-badge modern-card mb-4">
+                    <i class="fas fa-leaf text-primary me-2"></i>
+                    <span>Sustainability Made Simple</span>
+                </div>
+                <h1 class="hero-title">
+                    Make Every Choice<br>
+                    <span class="text-primary">Count for Our Planet</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Aura empowers you to understand the environmental impact of everyday products. 
+                    Make informed decisions with AI-powered analysis and tracking.
+                </p>
+                <div class="hero-actions">
+                    <a href="{{ url_for('auth.register') }}" class="btn modern-btn-primary btn-lg me-3">
+                        <i class="fas fa-rocket me-2"></i>Start Your Journey
+                    </a>
+                    <a href="{{ url_for('auth.login') }}" class="btn modern-btn-outline btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                    </a>
+                </div>
+                <div class="hero-stats modern-card mt-5">
+                    <div class="row text-center">
+                        <div class="col-md-4">
+                            <div class="stat-value text-primary">10K+</div>
+                            <div class="stat-label">Products Analyzed</div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="stat-value text-primary">5K+</div>
+                            <div class="stat-label">Active Users</div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="stat-value text-primary">50K+</div>
+                            <div class="stat-label">CO₂ Reduced</div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </nav>
+        </div>
+    </section>
 
-        <!-- Hero Section -->
-        <section class="landing-hero">
-            <div class="container hero-content">
-                <div class="row align-items-center">
-                    <div class="col-lg-6">
-                        <h1 class="display-2 fw-black mb-4">
-                            <span class="track-your-text">Track Your</span> 
-                            <span class="text-gradient typewriter">Carbon Footprint</span> 
-                            🌱
-                        </h1>
-                        <p class="lead mb-4 text-light fs-5">
-                            Discover the environmental impact of everyday products. 
-                            Scan, analyze, and make sustainable choices with AI-powered insights that matter.
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <div class="section-header text-center mb-5">
+                <h2 class="section-title">How Aura Works</h2>
+                <p class="section-subtitle">Simple steps to make sustainable choices</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <div class="feature-card modern-card text-center">
+                        <div class="feature-number">01</div>
+                        <div class="feature-icon">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <h4>Upload & Analyze</h4>
+                        <p>Take a picture of product ingredients or plastic items for instant AI analysis</p>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="feature-card modern-card text-center">
+                        <div class="feature-number">02</div>
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <h4>Get Insights</h4>
+                        <p>Receive detailed environmental impact ratings and sustainability scores</p>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="feature-card modern-card text-center">
+                        <div class="feature-number">03</div>
+                        <div class="feature-icon">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <h4>Make Better Choices</h4>
+                        <p>Discover eco-friendly alternatives and track your environmental progress</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Showcase -->
+    <section class="showcase-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="showcase-content">
+                        <h2 class="section-title">Smart Product Analysis</h2>
+                        <p class="showcase-text">
+                            Our advanced AI technology analyzes product ingredients in seconds, 
+                            providing you with clear environmental ratings and actionable insights.
                         </p>
-                        <div class="d-flex flex-wrap gap-3 mb-5">
-                            <a href="{{ url_for('auth.register') }}" class="btn btn-hero">
-                                <i class="fas fa-rocket me-2"></i>Start Your Journey
-                            </a>
-                            <a href="#demo" class="btn btn-outline-light btn-lg">
-                                <i class="fas fa-play me-2"></i>Live Demo
-                            </a>
-                        </div>
-
-                        <!-- Enhanced Stats -->
-                        <div class="row mt-5">
-                            <div class="col-4 text-center">
-                                <div class="stats-counter" data-target="{{ total_users }}">0</div>
-                                <small class="text-light">Eco Warriors</small>
+                        <div class="showcase-features">
+                            <div class="feature-item">
+                                <i class="fas fa-bolt text-primary"></i>
+                                <div>
+                                    <h5>Instant Analysis</h5>
+                                    <p>Get results in seconds with our powerful AI engine</p>
+                                </div>
                             </div>
-                            <div class="col-4 text-center">
-                                <div class="stats-counter" data-target="{{ total_analyses }}">0</div>
-                                <small class="text-light">Products Analyzed</small>
+                            <div class="feature-item">
+                                <i class="fas fa-award text-primary"></i>
+                                <div>
+                                    <h5>Accurate Ratings</h5>
+                                    <p>Comprehensive environmental impact assessment</p>
+                                </div>
                             </div>
-                            <div class="col-4 text-center">
-                                <div class="stats-counter" data-target="{{ carbon_saved }}">0</div>
-                                <small class="text-light">KG CO₂ Saved</small>
+                            <div class="feature-item">
+                                <i class="fas fa-lightbulb text-primary"></i>
+                                <div>
+                                    <h5>Smart Suggestions</h5>
+                                    <p>Personalized eco-friendly alternatives</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6">
-                        <div class="hero-visual">
-                            <div class="hero-phone-mockup">
-                                <div class="phone-screen">
-                                    <div class="text-center p-4">
-                                        <div class="pulse-animation mb-3">
-                                            <i class="fas fa-leaf fa-3x text-success"></i>
-                                        </div>
-                                        <h5 class="text-light mb-2">Product Analysis</h5>
-                                        <div class="rating-badge rating-friendly mb-3">🌿 Friendly</div>
-                                        <p class="text-muted small">Instant environmental impact assessment</p>
-                                        <div class="progress mb-2" style="height: 8px;">
-                                            <div class="progress-bar bg-success" style="width: 85%"></div>
-                                        </div>
-                                        <small class="text-muted">85% Eco-Score</small>
+                </div>
+                <div class="col-lg-6">
+                    <div class="showcase-visual modern-card p-4">
+                        <div class="analysis-preview">
+                            <div class="preview-header modern-card p-3 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-search text-primary me-2"></i>
+                                    <span>Product Analysis</span>
+                                </div>
+                            </div>
+                            <div class="preview-content">
+                                <div class="product-rating modern-card p-3 mb-3">
+                                    <div class="rating-badge rating-friendly">Eco-Friendly</div>
+                                    <div class="product-name">Organic Shampoo</div>
+                                </div>
+                                <div class="analysis-points modern-card p-3">
+                                    <div class="points-earned">
+                                        <i class="fas fa-trophy text-primary me-2"></i>
+                                        +25 Points Earned
                                     </div>
                                 </div>
                             </div>
@@ -736,410 +149,485 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Features Section -->
-        <section id="features" class="py-5">
-            <div class="container">
-                <div class="text-center mb-5">
-                    <h2 class="display-3 fw-bold mb-3">Why Choose <span class="text-gradient">Aura</span>?</h2>
-                    <p class="lead text-light">Revolutionary features designed for the eco-conscious consumer</p>
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content modern-card text-center">
+                <h2 class="cta-title">Ready to Make a Difference?</h2>
+                <p class="cta-text">
+                    Join our community of environmentally conscious users and start your sustainability journey today.
+                </p>
+                <div class="cta-actions">
+                    <a href="{{ url_for('auth.register') }}" class="btn modern-btn-primary btn-lg">
+                        <i class="fas fa-user-plus me-2"></i>Create Free Account
+                    </a>
                 </div>
-
-                <div class="row g-4">
-                    <div class="col-md-4">
-                        <div class="feature-card">
-                            <div class="feature-icon">
-                                <i class="fas fa-camera"></i>
-                            </div>
-                            <h4 class="text-light mb-3">Smart OCR Scanning</h4>
-                            <p class="text-muted">Advanced optical character recognition that instantly extracts ingredient lists from product labels with 99% accuracy.</p>
-                            <div class="mt-3">
-                                <span class="badge bg-info">AI-Powered</span>
-                            </div>
-                        </div>
+                <div class="cta-benefits">
+                    <div class="benefit-item">
+                        <i class="fas fa-check-circle text-primary"></i>
+                        <span>No credit card required</span>
                     </div>
-                    <div class="col-md-4">
-                        <div class="feature-card">
-                            <div class="feature-icon">
-                                <i class="fas fa-robot"></i>
-                            </div>
-                            <h4 class="text-light mb-3">Intelligent AI Analysis</h4>
-                            <p class="text-muted">Our cutting-edge AI evaluates environmental impact across multiple dimensions and suggests sustainable alternatives.</p>
-                            <div class="mt-3">
-                                <span class="badge bg-success">Real-time</span>
-                            </div>
-                        </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-check-circle text-primary"></i>
+                        <span>Instant access to all features</span>
                     </div>
-                    <div class="col-md-4">
-                        <div class="feature-card">
-                            <div class="feature-icon">
-                                <i class="fas fa-chart-line"></i>
-                            </div>
-                            <h4 class="text-light mb-3">Progress Tracking</h4>
-                            <p class="text-muted">Beautiful dashboards and insights to monitor your environmental impact reduction journey with detailed analytics.</p>
-                            <div class="mt-3">
-                                <span class="badge bg-warning">Interactive</span>
-                            </div>
-                        </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-check-circle text-primary"></i>
+                        <span>Join 5,000+ eco-conscious users</span>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
+</div>
 
-        <!-- Interactive Demo -->
-        <section id="demo" class="py-5">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-lg-6">
-                        <h2 class="display-4 fw-bold mb-4">See It In <span class="text-gradient">Action</span></h2>
-                        <p class="text-light mb-4 fs-5">Experience the power of Aura with our interactive demo. See how we transform ingredient lists into environmental insights.</p>
-                        
-                        <div class="interactive-demo">
-                            <h5 class="text-light mb-3"><i class="fas fa-flask me-2"></i>Live Analysis Demo</h5>
-                            <textarea class="form-control-modern mb-3" id="demoIngredients" rows="4" 
-                                      placeholder="Try: Water, Organic Aloe Vera, Citric Acid, Natural Preservatives
-Or: Sodium Laureth Sulfate, Cocamidopropyl Betaine, Synthetic Fragrance"></textarea>
-                            <button class="btn btn-hero w-100" onclick="analyzeDemo()">
-                                <i class="fas fa-search me-2"></i>Analyze Environmental Impact
-                            </button>
-                            
-                            <div class="demo-result" id="demoResult">
-                                <!-- Results will be populated by JavaScript -->
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="glass-card p-4">
-                            <h4 class="text-light mb-4"><i class="fas fa-cogs me-2"></i>How It Works</h4>
-                            <div class="timeline">
-                                <div class="timeline-item">
-                                    <div class="timeline-icon">
-                                        <i class="fas fa-camera"></i>
-                                    </div>
-                                    <div class="timeline-content">
-                                        <h6 class="text-light">1. Capture Ingredients</h6>
-                                        <p class="text-muted small">Snap a photo or enter ingredients manually</p>
-                                    </div>
-                                </div>
-                                <div class="timeline-item">
-                                    <div class="timeline-icon">
-                                        <i class="fas fa-robot"></i>
-                                    </div>
-                                    <div class="timeline-content">
-                                        <h6 class="text-light">2. AI Analysis</h6>
-                                        <p class="text-muted small">Advanced algorithms assess environmental impact</p>
-                                    </div>
-                                </div>
-                                <div class="timeline-item">
-                                    <div class="timeline-icon">
-                                        <i class="fas fa-chart-pie"></i>
-                                    </div>
-                                    <div class="timeline-content">
-                                        <h6 class="text-light">3. Get Insights</h6>
-                                        <p class="text-muted small">Detailed ratings and eco-friendly alternatives</p>
-                                    </div>
-                                </div>
-                                <div class="timeline-item">
-                                    <div class="timeline-icon">
-                                        <i class="fas fa-trophy"></i>
-                                    </div>
-                                    <div class="timeline-content">
-                                        <h6 class="text-light">4. Earn Rewards</h6>
-                                        <p class="text-muted small">Gain points and climb the sustainability leaderboard</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+<style>
+.landing-page {
+    background: var(--background-color);
+}
 
-        <!-- CTA Section -->
-        <section class="py-5">
-            <div class="container">
-                <div class="cta-section">
-                    <h2 class="display-3 fw-bold mb-3">Ready to Make a <span class="text-gradient">Difference</span>?</h2>
-                    <p class="lead text-light mb-4 fs-4">Join thousands of eco-conscious users transforming their shopping habits and reducing their carbon footprint.</p>
-                    <div class="d-flex flex-wrap justify-content-center gap-3">
-                        <a href="{{ url_for('auth.register') }}" class="btn btn-hero btn-lg">
-                            <i class="fas fa-user-plus me-2"></i>Start Free Today
-                        </a>
-                        <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-lg">
-                            <i class="fas fa-sign-in-alt me-2"></i>Existing User
-                        </a>
-                    </div>
-                    <p class="text-muted mt-3 small">No credit card required • 30-second setup • Instant access</p>
-                </div>
-            </div>
-        </section>
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, var(--surface-color) 0%, var(--background-color) 100%);
+    padding: 120px 0 80px;
+    position: relative;
+    overflow: hidden;
+}
 
-        <!-- Footer -->
-        <footer class="py-5">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-6">
-                        <h5 class="text-light mb-3">
-                            <i class="fas fa-leaf me-2 text-success"></i>Aura
-                        </h5>
-                        <p class="text-muted">
-                            Making sustainability accessible to everyone. Join the movement towards a greener future.
-                        </p>
-                    </div>
-                    <div class="col-lg-6 text-lg-end">
-                        <p class="text-muted mb-0">
-                            &copy; 2024 Aura - Carbon Footprint Tracker. 
-                            <br>Built with ❤️ for our planet.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </footer>
-    </div>
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 30% 20%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
+}
 
-    <!-- CSRF Token (Hidden) -->
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <script>
-        // Create animated bubbles for the entire page
-        function createBubbles() {
-            const bubblesContainer = document.getElementById('bubbles');
-            const bubbleCount = 15;
-            
-            for (let i = 0; i < bubbleCount; i++) {
-                const bubble = document.createElement('div');
-                bubble.className = 'bubble';
-                
-                // Random size between 50px and 200px
-                const size = Math.random() * 150 + 50;
-                bubble.style.width = `${size}px`;
-                bubble.style.height = `${size}px`;
-                
-                // Random position
-                bubble.style.left = `${Math.random() * 100}%`;
-                bubble.style.top = `${Math.random() * 100}%`;
-                
-                // Random animation delay and duration
-                bubble.style.animationDelay = `${Math.random() * 15}s`;
-                bubble.style.animationDuration = `${Math.random() * 10 + 15}s`;
-                
-                bubblesContainer.appendChild(bubble);
-            }
-        }
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-primary) 50%, var(--primary-color) 50%, var(--primary-color) 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
 
-        // Enhanced Demo Analysis
-        function analyzeDemo() {
-            const ingredients = document.getElementById('demoIngredients').value.trim();
-            const resultDiv = document.getElementById('demoResult');
-            
-            if (!ingredients) {
-                showNotification('Please enter some ingredients to analyze!', 'warning');
+.hero-subtitle {
+    font-size: 1.3rem;
+    color: var(--text-secondary);
+    margin-bottom: 2.5rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+}
+
+.hero-stats {
+    padding: 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+/* Features Section */
+.features-section {
+    padding: 100px 0;
+    background: var(--surface-color);
+}
+
+.section-header {
+    margin-bottom: 4rem;
+}
+
+.section-title {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.section-subtitle {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+}
+
+.feature-card {
+    padding: 3rem 2rem;
+    height: 100%;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.feature-card:hover::before {
+    transform: scaleX(1);
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+}
+
+.feature-number {
+    font-size: 4rem;
+    font-weight: 800;
+    color: var(--border-color);
+    position: absolute;
+    top: 1rem;
+    right: 2rem;
+    line-height: 1;
+}
+
+.feature-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 2rem;
+    font-size: 2rem;
+    color: white;
+}
+
+.feature-card h4 {
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.feature-card p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-size: 1.1rem;
+}
+
+/* Showcase Section */
+.showcase-section {
+    padding: 100px 0;
+    background: var(--background-color);
+}
+
+.showcase-content {
+    padding-right: 3rem;
+}
+
+.showcase-text {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 3rem;
+}
+
+.showcase-features {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+}
+
+.feature-item i {
+    font-size: 1.5rem;
+    margin-top: 0.25rem;
+    flex-shrink: 0;
+}
+
+.feature-item h5 {
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.feature-item p {
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.showcase-visual {
+    height: 100%;
+}
+
+.analysis-preview {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.preview-header {
+    background: var(--background-color);
+}
+
+.rating-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    color: white;
+    display: inline-block;
+    margin-bottom: 1rem;
+}
+
+.rating-friendly {
+    background: #10b981;
+}
+
+.product-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.points-earned {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+/* CTA Section */
+.cta-section {
+    padding: 100px 0;
+    background: var(--surface-color);
+}
+
+.cta-content {
+    padding: 4rem;
+    max-width: 800px;
+    margin: 0 auto;
+    background: linear-gradient(135deg, var(--surface-color) 0%, var(--background-color) 100%);
+}
+
+.cta-title {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+}
+
+.cta-text {
+    font-size: 1.3rem;
+    color: var(--text-secondary);
+    margin-bottom: 3rem;
+    line-height: 1.6;
+}
+
+.cta-benefits {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+.benefit-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+/* Modern Components */
+.modern-card {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+}
+
+.modern-card:hover {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.modern-btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), #0da271);
+    border: none;
+    border-radius: 15px;
+    color: white;
+    padding: 1rem 2rem;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modern-btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(16, 185, 129, 0.3);
+    color: white;
+}
+
+.modern-btn-outline {
+    background: transparent;
+    border: 2px solid var(--border-color);
+    border-radius: 15px;
+    color: var(--text-primary);
+    padding: 1rem 2rem;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modern-btn-outline:hover {
+    border-color: var(--primary-color);
+    background: var(--background-color);
+    transform: translateY(-3px);
+    color: var(--text-primary);
+}
+
+.btn-lg {
+    padding: 1.25rem 2.5rem;
+    font-size: 1.1rem;
+}
+
+/* Ensure buttons are properly clickable */
+.hero-actions a,
+.cta-actions a {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Make sure buttons have proper z-index */
+.modern-btn-primary,
+.modern-btn-outline {
+    position: relative;
+    z-index: 1;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .section-title {
+        font-size: 2.2rem;
+    }
+    
+    .showcase-content {
+        padding-right: 0;
+        margin-bottom: 3rem;
+    }
+    
+    .hero-actions,
+    .cta-benefits {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .hero-actions .btn,
+    .cta-actions .btn {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .feature-number {
+        font-size: 3rem;
+    }
+    
+    .cta-content {
+        padding: 2rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-section {
+        padding: 80px 0 40px;
+    }
+    
+    .features-section,
+    .showcase-section,
+    .cta-section {
+        padding: 60px 0;
+    }
+    
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .section-title {
+        font-size: 1.8rem;
+    }
+}
+</style>
+
+<script>
+// Add click event listeners to ensure buttons work
+document.addEventListener('DOMContentLoaded', function() {
+    // Ensure all buttons are properly clickable
+    const buttons = document.querySelectorAll('.modern-btn-primary, .modern-btn-outline');
+    
+    buttons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            // If it's an anchor tag, let it work naturally
+            if (this.tagName === 'A') {
                 return;
             }
-
-            // Show loading state with animation
-            resultDiv.style.display = 'block';
-            resultDiv.innerHTML = `
-                <div class="text-center py-3">
-                    <div class="spinner-border text-success mb-3" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                    <p class="text-light mb-1">Analyzing environmental impact...</p>
-                    <small class="text-muted">Powered by AI</small>
-                </div>
-            `;
-
-            // Enhanced demo responses with more variety
-            setTimeout(() => {
-                const demoResponses = [
-                    {
-                        rating: 'friendly',
-                        analysis: 'Excellent! This product shows minimal environmental impact with natural, biodegradable ingredients that are sustainably sourced and ethically produced.',
-                        alternatives: 'Consider products with USDA Organic or Fair Trade certifications for maximum positive impact.',
-                        color: 'success',
-                        icon: '🌿',
-                        score: 92
-                    },
-                    {
-                        rating: 'moderate',
-                        analysis: 'Good choice with room for improvement. Contains some synthetic ingredients but overall demonstrates environmental consciousness in manufacturing.',
-                        alternatives: 'Look for plant-based alternatives and products with recyclable packaging to reduce your footprint.',
-                        color: 'warning',
-                        icon: '⚖️',
-                        score: 67
-                    },
-                    {
-                        rating: 'harmful',
-                        analysis: 'Significant environmental concerns detected. Contains synthetic chemicals, non-biodegradable components, and potentially harmful manufacturing processes.',
-                        alternatives: 'Switch to eco-friendly brands with natural ingredients, sustainable packaging, and transparent supply chains.',
-                        color: 'danger',
-                        icon: '⚠️',
-                        score: 35
-                    },
-                    {
-                        rating: 'hazardous',
-                        analysis: 'High environmental impact. Contains multiple synthetic chemicals, microplastics, and ingredients with known ecological toxicity.',
-                        alternatives: 'Immediate switch recommended. Choose certified organic products with minimal synthetic ingredients.',
-                        color: 'dark',
-                        icon: '🚫',
-                        score: 18
-                    }
-                ];
-
-                const response = demoResponses[Math.floor(Math.random() * demoResponses.length)];
-                
-                resultDiv.innerHTML = `
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h6 class="text-light mb-0">Analysis Complete</h6>
-                        <span class="badge bg-${response.color} fs-6">${response.icon} ${response.rating.toUpperCase()}</span>
-                    </div>
-                    <div class="progress mb-3" style="height: 10px;">
-                        <div class="progress-bar bg-${response.color}" style="width: ${response.score}%"></div>
-                    </div>
-                    <p class="text-light small mb-3">${response.analysis}</p>
-                    <div class="bg-dark rounded p-3">
-                        <h6 class="text-success mb-2"><i class="fas fa-lightbulb me-2"></i>Eco-Tip</h6>
-                        <p class="text-muted small mb-0">${response.alternatives}</p>
-                    </div>
-                    <div class="text-center mt-3">
-                        <small class="text-muted">Eco-Score: ${response.score}/100</small>
-                    </div>
-                `;
-
-                // Enhanced confetti for better ratings
-                if (response.score >= 80) {
-                    triggerCelebrationConfetti();
-                    showNotification('Great eco-choice! 🌟', 'success');
-                }
-            }, 2500);
-        }
-
-        // Enhanced confetti celebration
-        function triggerCelebrationConfetti() {
-            confetti({
-                particleCount: 150,
-                spread: 100,
-                origin: { y: 0.6 },
-                colors: ['#10b981', '#34d399', '#059669', '#a7f3d0', '#ffffff'],
-                gravity: 0.8,
-                scalar: 1.2
-            });
-        }
-
-        // Notification system
-        function showNotification(message, type = 'info') {
-            const notification = document.createElement('div');
-            notification.className = `alert alert-${type} alert-modern position-fixed`;
-            notification.style.cssText = `
-                top: 20px;
-                right: 20px;
-                z-index: 10000;
-                min-width: 300px;
-                animation: slideInRight 0.5s ease-out;
-            `;
-            notification.innerHTML = `
-                <div class="d-flex align-items-center">
-                    <i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'} me-2"></i>
-                    <span>${message}</span>
-                </div>
-            `;
             
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.style.animation = 'slideOutRight 0.5s ease-in';
-                setTimeout(() => notification.remove(), 500);
-            }, 3000);
-        }
-
-        // Enhanced counter animation
-        function animateCounter(element, target) {
-            let current = 0;
-            const increment = target / 50;
-            const timer = setInterval(() => {
-                current += increment;
-                element.textContent = Math.floor(current) + '+';
-                if (current >= target) {
-                    element.textContent = target + '+';
-                    clearInterval(timer);
-                }
-            }, 30);
-        }
-
-        // Initialize everything
-        document.addEventListener('DOMContentLoaded', function() {
-            // Create animated bubbles
-            createBubbles();
-
-            // Animate counters
-            document.querySelectorAll('.stats-counter').forEach(counter => {
-                const target = parseInt(counter.getAttribute('data-target'));
-                animateCounter(counter, target);
-            });
-
-            // Add scroll animations
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('fade-in-up');
-                    }
-                });
-            }, observerOptions);
-
-            document.querySelectorAll('.feature-card, .timeline-item').forEach(el => {
-                observer.observe(el);
-            });
-
-            // Add scroll animations CSS
-            const scrollAnimations = document.createElement('style');
-            scrollAnimations.textContent = `
-                @keyframes slideInRight {
-                    from {
-                        opacity: 0;
-                        transform: translateX(100%);
-                    }
-                    to {
-                        opacity: 1;
-                        transform: translateX(0);
-                    }
-                }
-                
-                @keyframes slideOutRight {
-                    from {
-                        opacity: 1;
-                        transform: translateX(0);
-                    }
-                    to {
-                        opacity: 0;
-                        transform: translateX(100%);
-                    }
-                }
-                
-                .fade-in-up {
-                    animation: fadeInUp 0.8s ease-out;
-                }
-            `;
-            document.head.appendChild(scrollAnimations);
-        });
-
-        // Add pulse animation for demo button
-        setInterval(() => {
-            const demoBtn = document.querySelector('.interactive-demo .btn-hero');
-            if (demoBtn) {
-                demoBtn.style.transform = 'scale(1.05)';
-                setTimeout(() => {
-                    demoBtn.style.transform = 'scale(1)';
-                }, 500);
+            // If it's a button, prevent default and handle accordingly
+            e.preventDefault();
+            const url = this.getAttribute('href') || this.closest('a')?.getAttribute('href');
+            if (url) {
+                window.location.href = url;
             }
-        }, 3000);
-    </script>
-</body>
-</html>
+        });
+    });
+});
+</script>
+{% endblock %}

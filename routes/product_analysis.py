@@ -8,6 +8,7 @@ from services.groq_client import groq_client
 from services.ocr_service import ocr_service
 from services.points_calculator import points_calculator
 import json
+from routes.plastic_analysis import PlasticAnalysis
 
 analysis_bp = Blueprint('analysis', __name__)
 
@@ -160,16 +161,27 @@ def analyze_ingredients():
 @login_required
 def history():
     page = request.args.get('page', 1, type=int)
+    tab = request.args.get('tab', 'product')
     per_page = 10
     
-    analyses = ProductAnalysis.query.filter_by(
+    # Get product analyses
+    product_analyses = ProductAnalysis.query.filter_by(
         user_id=current_user.id
     ).order_by(
         ProductAnalysis.created_at.desc()
     ).paginate(page=page, per_page=per_page)
     
-    return render_template('product_analysis/history.html', analyses=analyses)
-
+    # Get plastic analyses
+    plastic_analyses = PlasticAnalysis.query.filter_by(
+        user_id=current_user.id
+    ).order_by(
+        PlasticAnalysis.created_at.desc()
+    ).paginate(page=page, per_page=per_page)
+    
+    return render_template('product_analysis/history.html', 
+                         product_analyses=product_analyses,
+                         plastic_analyses=plastic_analyses,
+                         current_tab=tab)
 # TEMPORARY: Add backward compatibility
 @analysis_bp.route('/analysis-history')
 @login_required

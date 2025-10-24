@@ -54,6 +54,7 @@ def create_app():
         from models.user import User
         from models.product_analysis import ProductAnalysis
         from models.points import PointsHistory, LoginStreak
+        from routes.plastic_analysis import plastic_bp
     
     # Register blueprints
     from auth.routes import auth_bp
@@ -69,6 +70,7 @@ def create_app():
     app.register_blueprint(chat_bp, url_prefix='/chat')
     app.register_blueprint(settings_bp, url_prefix='/settings')
     app.register_blueprint(landing_bp)  # No prefix for landing page
+    app.register_blueprint(plastic_bp, url_prefix='/plastic')
     
     # Session management middleware
     @app.before_request

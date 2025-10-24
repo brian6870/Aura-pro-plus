@@ -5,22 +5,48 @@
     <div class="row justify-content-center">
         <div class="col-12 col-lg-10 col-xl-8">
             <!-- Chat Header -->
-            <div class="glass-card p-4 mb-4">
+            <div class="modern-card p-4 mb-4">
                 <div class="row align-items-center">
                     <div class="col-md-8">
-                        <h4 class="fw-bold mb-2"><i class="fas fa-robot me-2 text-info"></i>Environmental AI Assistant</h4>
-                        <p class="text-light mb-0 small">Ask me about carbon footprint, sustainability, and eco-friendly alternatives</p>
+                        <h4 class="fw-bold mb-2"><i class="fas fa-robot me-2 text-primary"></i>Environmental AI Assistant</h4>
+                        <p class="mb-0 small">Ask me about carbon footprint, sustainability, plastic analysis, and eco-friendly alternatives</p>
                     </div>
                     <div class="col-md-4 text-end">
-                        <button id="clearChat" class="btn btn-modern btn-sm">
+                        <button id="clearChat" class="btn modern-btn-outline btn-sm">
                             <i class="fas fa-trash me-1"></i>Clear Chat
                         </button>
                     </div>
                 </div>
             </div>
 
+            <!-- Quick Actions -->
+            <div class="modern-card p-3 mb-4">
+                <div class="row g-2">
+                    <div class="col-md-3">
+                        <button class="btn modern-btn-outline w-100 quick-action-btn" data-action="plastic-analysis">
+                            <i class="fas fa-recycle me-2"></i>Plastic Analysis
+                        </button>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn modern-btn-outline w-100 quick-action-btn" data-action="ingredient-analysis">
+                            <i class="fas fa-flask me-2"></i>Ingredients
+                        </button>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn modern-btn-outline w-100 quick-action-btn" data-action="carbon-footprint">
+                            <i class="fas fa-leaf me-2"></i>Carbon Footprint
+                        </button>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn modern-btn-outline w-100 quick-action-btn" data-action="sustainability-tips">
+                            <i class="fas fa-lightbulb me-2"></i>Sustainability Tips
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Chat Container -->
-            <div class="glass-card p-0 overflow-hidden">
+            <div class="modern-card p-0 overflow-hidden">
                 <!-- Chat Messages Area -->
                 <div id="chatMessages" class="chat-messages-container p-4">
                     <!-- Welcome Message -->
@@ -30,49 +56,81 @@
                                 <i class="fas fa-robot"></i>
                             </div>
                         </div>
-                        <h5 class="text-white mb-3">Hello! I'm your Environmental Assistant 🌱</h5>
-                        <p class="text-light mb-4">I can help you with:</p>
+                        <h5 class="mb-3">Hello! I'm your Environmental Assistant 🌱</h5>
+                        <p class="mb-4">I can help you with plastic analysis, ingredient impact, and sustainability:</p>
                         <div class="suggestion-grid">
-                            <div class="suggestion-item">
-                                <i class="fas fa-leaf text-success"></i>
-                                <span>Carbon footprint calculation</span>
+                            <div class="suggestion-item" data-suggestion="plastic-types">
+                                <i class="fas fa-recycle text-primary"></i>
+                                <span>Plastic type identification</span>
                             </div>
-                            <div class="suggestion-item">
-                                <i class="fas fa-recycle text-info"></i>
-                                <span>Sustainable product choices</span>
+                            <div class="suggestion-item" data-suggestion="plastic-impact">
+                                <i class="fas fa-chart-bar text-primary"></i>
+                                <span>Plastic environmental impact</span>
                             </div>
-                            <div class="suggestion-item">
-                                <i class="fas fa-flask text-warning"></i>
+                            <div class="suggestion-item" data-suggestion="ingredient-analysis">
+                                <i class="fas fa-flask text-primary"></i>
                                 <span>Ingredient impact analysis</span>
                             </div>
-                            <div class="suggestion-item">
-                                <i class="fas fa-lightbulb text-primary"></i>
+                            <div class="suggestion-item" data-suggestion="recycling-guide">
+                                <i class="fas fa-trash-restore text-primary"></i>
+                                <span>Recycling guidance</span>
+                            </div>
+                            <div class="suggestion-item" data-suggestion="carbon-footprint">
+                                <i class="fas fa-leaf text-primary"></i>
+                                <span>Carbon footprint calculation</span>
+                            </div>
+                            <div class="suggestion-item" data-suggestion="eco-alternatives">
+                                <i class="fas fa-seedling text-primary"></i>
                                 <span>Eco-friendly alternatives</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Plastic Types Quick Reference -->
+                        <div class="plastic-reference mt-4 p-3 rounded">
+                            <h6 class="mb-2">♻️ Common Plastic Types:</h6>
+                            <div class="row g-1 text-center">
+                                <div class="col-4 col-sm-2">
+                                    <div class="plastic-badge" data-plastic="PET">♳ PET</div>
+                                </div>
+                                <div class="col-4 col-sm-2">
+                                    <div class="plastic-badge" data-plastic="HDPE">♴ HDPE</div>
+                                </div>
+                                <div class="col-4 col-sm-2">
+                                    <div class="plastic-badge" data-plastic="PVC">♵ PVC</div>
+                                </div>
+                                <div class="col-4 col-sm-2">
+                                    <div class="plastic-badge" data-plastic="LDPE">♶ LDPE</div>
+                                </div>
+                                <div class="col-4 col-sm-2">
+                                    <div class="plastic-badge" data-plastic="PP">♷ PP</div>
+                                </div>
+                                <div class="col-4 col-sm-2">
+                                    <div class="plastic-badge" data-plastic="PS">♸ PS</div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Chat Input Area -->
-                <div class="chat-input-container p-4 border-top border-light border-opacity-10">
+                <div class="chat-input-container p-4 border-top">
                     <form id="chatForm" class="chat-form">
-                        
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <div class="input-group input-group-lg">
                             <textarea 
                                 id="messageInput" 
-                                class="form-control form-control-modern chat-textarea" 
-                                placeholder="Ask about environmental impact, sustainability, or carbon footprint..." 
+                                class="form-control modern-input chat-textarea" 
+                                placeholder="Ask about plastic types, ingredient impact, carbon footprint, or sustainability..." 
                                 rows="1"
                                 style="resize: none;"
                             ></textarea>
-                            <button type="submit" class="btn btn-modern px-4" id="sendButton">
+                            <button type="submit" class="btn modern-btn-primary px-4" id="sendButton">
                                 <i class="fas fa-paper-plane"></i>
                             </button>
                         </div>
-                        <div class="form-text text-light mt-2 small">
+                        <div class="form-text mt-2 small">
                             <i class="fas fa-info-circle me-1"></i>
-                            Ask specific questions for detailed environmental advice
+                            Ask about specific plastic types (PET, HDPE, PVC, etc.) or paste ingredients for analysis
                         </div>
                     </form>
                 </div>
@@ -82,11 +140,84 @@
 </div>
 
 <style>
+.modern-card {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+}
+
+.modern-card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.modern-btn-primary {
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.modern-btn-primary:hover {
+    background-color: #0da271;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+    color: white;
+}
+
+.modern-btn-outline {
+    background-color: transparent;
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-primary);
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.modern-btn-outline:hover {
+    background-color: var(--background-color);
+    border-color: var(--primary-color);
+    color: var(--text-primary);
+    transform: translateY(-2px);
+}
+
+.modern-btn-outline.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+.modern-input {
+    background-color: var(--background-color);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-primary);
+    padding: 1rem !important;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.modern-input:focus {
+    background-color: var(--background-color);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.1);
+    color: var(--text-primary);
+}
+
+.modern-input::placeholder {
+    color: var(--text-secondary) !important;
+    font-style: italic;
+}
+
 /* Chat Container Styles */
 .chat-messages-container {
     height: 60vh;
     overflow-y: auto;
-    background: rgba(255, 255, 255, 0.02);
+    background-color: var(--background-color);
     scroll-behavior: smooth;
 }
 
@@ -95,25 +226,26 @@
 }
 
 .chat-messages-container::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--border-color);
     border-radius: 3px;
 }
 
 .chat-messages-container::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
+    background: var(--text-secondary);
     border-radius: 3px;
 }
 
 .chat-messages-container::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.5);
+    background: var(--text-primary);
 }
 
 /* Welcome Message Styles */
 .chat-welcome {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 20px;
+    background-color: var(--surface-color);
+    border-radius: 16px;
     padding: 2rem;
     margin: 1rem 0;
+    border: 1px solid var(--border-color);
 }
 
 .ai-avatar {
@@ -125,36 +257,36 @@
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 2rem;
     color: white;
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    box-shadow: var(--shadow);
 }
 
 .suggestion-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 1rem;
     margin-top: 1.5rem;
 }
 
 .suggestion-item {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 1rem;
     text-align: center;
     transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
     cursor: pointer;
 }
 
 .suggestion-item:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background-color: var(--background-color);
     transform: translateY(-2px);
+    box-shadow: var(--shadow);
 }
 
 .suggestion-item i {
@@ -164,9 +296,40 @@
 }
 
 .suggestion-item span {
-    color: white;
     font-weight: 500;
     font-size: 0.9rem;
+}
+
+/* Plastic Reference */
+.plastic-reference {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+}
+
+.plastic-badge {
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.5rem 0.25rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.plastic-badge:hover {
+    background-color: var(--surface-color);
+    transform: scale(1.05);
+}
+
+/* Quick Actions */
+.quick-action-btn {
+    font-size: 0.85rem;
+    padding: 0.75rem 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.quick-action-btn:hover {
+    transform: translateY(-2px);
 }
 
 /* Message Styles */
@@ -195,17 +358,15 @@
 }
 
 .user-bubble {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-color: var(--primary-color);
     color: white;
     border-bottom-right-radius: 5px;
 }
 
 .ai-bubble {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
     border-bottom-left-radius: 5px;
-    backdrop-filter: blur(10px);
 }
 
 .message-content {
@@ -228,6 +389,46 @@
 
 .message-content li {
     margin-bottom: 0.25rem;
+}
+
+/* Plastic Analysis Specific Styles */
+.plastic-info {
+    background-color: var(--background-color);
+    border-radius: 10px;
+    padding: 1rem;
+    margin: 0.5rem 0;
+    border-left: 4px solid var(--primary-color);
+}
+
+.plastic-rating {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.8rem;
+    margin-right: 0.5rem;
+    color: white;
+}
+
+.rating-friendly { background-color: #10b981; }
+.rating-moderate { background-color: #f59e0b; }
+.rating-harmful { background-color: #ef4444; }
+.rating-hazardous { background-color: #7c3aed; }
+
+.recycling-tip {
+    background-color: rgba(59, 130, 246, 0.1);
+    border: 1px solid var(--secondary-color);
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin: 0.5rem 0;
+}
+
+.alternative-suggestion {
+    background-color: rgba(16, 185, 129, 0.1);
+    border: 1px solid var(--primary-color);
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin: 0.5rem 0;
 }
 
 .message-time {
@@ -261,73 +462,29 @@
     width: 25px;
     height: 25px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.9);
-    border: none;
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 0.7rem;
-    color: #333;
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
 .message-action-btn:hover {
-    background: white;
+    background-color: var(--background-color);
     transform: scale(1.1);
-}
-
-/* Edit Message Input */
-.edit-message-input {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 10px;
-    color: white;
-    padding: 0.75rem 1rem;
-    width: 100%;
-    font-size: 0.9rem;
-    resize: vertical;
-    min-height: 60px;
-}
-
-.edit-message-input:focus {
-    outline: none;
-    border-color: var(--primary-green);
-}
-
-.edit-actions {
-    display: flex;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-    justify-content: flex-end;
 }
 
 /* Chat Input Styles */
 .chat-input-container {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(20px);
+    background-color: var(--surface-color);
 }
 
 .chat-textarea {
-    background: rgba(255, 255, 255, 0.1) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    border-radius: 15px !important;
-    color: white !important;
-    padding: 1rem 1.5rem !important;
-    transition: all 0.3s ease;
     min-height: 50px;
     max-height: 120px;
-}
-
-.chat-textarea:focus {
-    background: rgba(255, 255, 255, 0.15) !important;
-    border-color: var(--primary-green) !important;
-    box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.25) !important;
-    color: white !important;
-}
-
-.chat-textarea::placeholder {
-    color: #94a3b8 !important;
 }
 
 /* Typing Indicator */
@@ -335,7 +492,6 @@
     display: flex;
     align-items: center;
     padding: 1rem 1.5rem;
-    color: #94a3b8;
     font-style: italic;
 }
 
@@ -348,7 +504,7 @@
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: #94a3b8;
+    background-color: var(--text-secondary);
     margin: 0 2px;
     animation: typing 1.4s infinite ease-in-out;
 }
@@ -387,7 +543,12 @@
     }
     
     .message-actions {
-        opacity: 1; /* Always show on mobile */
+        opacity: 1;
+    }
+    
+    .plastic-badge {
+        font-size: 0.7rem;
+        padding: 0.4rem 0.2rem;
     }
 }
 
@@ -402,10 +563,22 @@
         transform: translateY(0);
     }
 }
+
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.border-top {
+    border-top-color: var(--border-color) !important;
+}
+
+.form-text {
+    color: var(--text-secondary) !important;
+}
 </style>
 
 <script>
-// Chat functionality
+// Chat functionality with plastic analysis
 document.addEventListener('DOMContentLoaded', function() {
     const chatMessages = document.getElementById('chatMessages');
     const chatForm = document.getElementById('chatForm');
@@ -423,19 +596,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // Clean AI response text
     function cleanResponse(text) {
         return text
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Convert **bold** to <strong>
-            .replace(/\*(.*?)\*/g, '<em>$1</em>') // Convert *italic* to <em>
-            .replace(/\n\n/g, '</p><p>') // Convert double newlines to paragraphs
-            .replace(/\n/g, '<br>') // Convert single newlines to line breaks
-            .replace(/```[\s\S]*?```/g, '') // Remove code blocks
-            .replace(/`(.*?)`/g, '<code>$1</code>') // Convert inline code
-            .replace(/\#\#\# (.*?)(?:\n|$)/g, '<h3>$1</h3>') // Convert ### headers
-            .replace(/\#\# (.*?)(?:\n|$)/g, '<h2>$1</h2>') // Convert ## headers
-            .replace(/\# (.*?)(?:\n|$)/g, '<h1>$1</h1>') // Convert # headers
-            .replace(/\-\s(.*?)(?:\n|$)/g, '<li>$1</li>') // Convert bullet points
-            .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>') // Wrap lists
-            .replace(/\d+\.\s(.*?)(?:\n|$)/g, '<li>$1</li>') // Convert numbered lists
-            .replace(/(<li>.*<\/li>)/s, '<ol>$1</ol>'); // Wrap ordered lists
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            .replace(/\n\n/g, '</p><p>')
+            .replace(/\n/g, '<br>')
+            .replace(/```[\s\S]*?```/g, '')
+            .replace(/`(.*?)`/g, '<code>$1</code>')
+            .replace(/\#\#\# (.*?)(?:\n|$)/g, '<h3>$1</h3>')
+            .replace(/\#\# (.*?)(?:\n|$)/g, '<h2>$1</h2>')
+            .replace(/\# (.*?)(?:\n|$)/g, '<h1>$1</h1>')
+            .replace(/\-\s(.*?)(?:\n|$)/g, '<li>$1</li>')
+            .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
+            .replace(/\d+\.\s(.*?)(?:\n|$)/g, '<li>$1</li>')
+            .replace(/(<li>.*<\/li>)/s, '<ol>$1</ol>');
     }
 
     // Add message to chat
@@ -455,7 +628,6 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
         
-        // Add edit/delete buttons for user messages
         if (isUser) {
             messageHTML = `
                 <div class="message-bubble user-bubble">
@@ -517,8 +689,8 @@ document.addEventListener('DOMContentLoaded', function() {
         messageBubble.innerHTML = `
             <textarea class="edit-message-input">${currentContent}</textarea>
             <div class="edit-actions">
-                <button class="btn btn-sm btn-modern save-edit">Save</button>
-                <button class="btn btn-sm btn-outline-light cancel-edit">Cancel</button>
+                <button class="btn btn-sm modern-btn-primary save-edit">Save</button>
+                <button class="btn btn-sm modern-btn-outline cancel-edit">Cancel</button>
             </div>
         `;
         
@@ -532,17 +704,14 @@ document.addEventListener('DOMContentLoaded', function() {
         saveBtn.addEventListener('click', () => {
             const newContent = textarea.value.trim();
             if (newContent && newContent !== currentContent) {
-                // Update message in history
                 const messageIndex = messageHistory.findIndex(msg => msg.id === messageId);
                 if (messageIndex !== -1) {
                     messageHistory[messageIndex].content = newContent;
                 }
                 
-                // Re-render the message
                 messageDiv.remove();
                 addMessage(newContent, true, messageHistory[messageIndex].timestamp, messageId);
                 
-                // Auto-resend if it's the last message
                 const isLastMessage = messageIndex === messageHistory.length - 1;
                 if (isLastMessage) {
                     setTimeout(() => resendMessage(messageId), 500);
@@ -560,11 +729,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function resendMessage(messageId) {
         const message = messageHistory.find(msg => msg.id === messageId);
         if (message) {
-            // Remove all messages after this one
             const messageIndex = messageHistory.findIndex(msg => msg.id === messageId);
             messageHistory = messageHistory.slice(0, messageIndex + 1);
             
-            // Remove corresponding message elements from DOM
             const allMessages = document.querySelectorAll('.message');
             for (let i = allMessages.length - 1; i >= 0; i--) {
                 const msgId = allMessages[i].dataset.messageId;
@@ -573,18 +740,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
             
-            // Resend the message
             sendMessageToAI(message.content);
         }
     }
 
     // Send message to AI
     async function sendMessageToAI(messageContent) {
-        // Show typing indicator
         showTypingIndicator();
         
         try {
-            // Get CSRF token
             const csrfToken = document.querySelector('input[name="csrf_token"]').value;
             
             const response = await fetch('{{ url_for("chat.send_message") }}', {
@@ -640,6 +804,61 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Quick action buttons
+    document.querySelectorAll('.quick-action-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const action = this.dataset.action;
+            const questions = {
+                'plastic-analysis': 'Can you analyze different plastic types and their environmental impact?',
+                'ingredient-analysis': 'How do I analyze the environmental impact of product ingredients?',
+                'carbon-footprint': 'How can I calculate and reduce my carbon footprint?',
+                'sustainability-tips': 'What are some practical sustainability tips for daily life?'
+            };
+            
+            messageInput.value = questions[action] || `Tell me about ${action.replace('-', ' ')}`;
+            messageInput.focus();
+            messageInput.dispatchEvent(new Event('input'));
+        });
+    });
+
+    // Plastic badge clicks
+    document.querySelectorAll('.plastic-badge').forEach(badge => {
+        badge.addEventListener('click', function() {
+            const plasticType = this.dataset.plastic;
+            const questions = {
+                'PET': 'What is the environmental impact of PET plastic and how should it be recycled?',
+                'HDPE': 'Tell me about HDPE plastic - is it environmentally friendly?',
+                'PVC': 'Why is PVC plastic considered hazardous and what are the alternatives?',
+                'LDPE': 'How recyclable is LDPE plastic and what is its environmental impact?',
+                'PP': 'What are the environmental characteristics of PP plastic?',
+                'PS': 'Why is PS (polystyrene) problematic for the environment?'
+            };
+            
+            messageInput.value = questions[plasticType] || `Tell me about ${plasticType} plastic`;
+            messageInput.focus();
+            messageInput.dispatchEvent(new Event('input'));
+        });
+    });
+
+    // Suggestion item clicks
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('.suggestion-item')) {
+            const suggestion = e.target.closest('.suggestion-item').dataset.suggestion;
+            const questions = {
+                'plastic-types': 'What are the different types of plastic and their recycling codes?',
+                'plastic-impact': 'Which plastic types have the worst environmental impact and why?',
+                'ingredient-analysis': 'How do I analyze product ingredients for environmental impact?',
+                'recycling-guide': 'Can you provide a comprehensive guide to plastic recycling?',
+                'carbon-footprint': 'How can I calculate my personal carbon footprint?',
+                'eco-alternatives': 'What are the best eco-friendly alternatives to common plastic products?'
+            };
+            
+            messageInput.value = questions[suggestion] || `Tell me about ${suggestion.replace('-', ' ')}`;
+            messageInput.focus();
+            messageInput.dispatchEvent(new Event('input'));
+        }
+    });
+
     // Send message
     chatForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -647,19 +866,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const message = messageInput.value.trim();
         if (!message) return;
         
-        // Add user message
         const messageId = addMessage(message, true);
         messageInput.value = '';
         messageInput.style.height = 'auto';
         
-        // Disable form
         sendButton.disabled = true;
         messageInput.disabled = true;
         
-        // Send to AI
         await sendMessageToAI(message);
         
-        // Re-enable form
         sendButton.disabled = false;
         messageInput.disabled = false;
         messageInput.focus();
@@ -668,49 +883,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // Clear chat
     clearChatBtn.addEventListener('click', async () => {
         if (confirm('Clear all chat messages?')) {
-            // Clear history
             messageHistory = [];
             
-            // Remove all messages except welcome
             const messages = document.querySelectorAll('.message');
             messages.forEach(msg => msg.remove());
             
-            // Show welcome message again
             const welcomeMessage = document.querySelector('.chat-welcome');
             if (!welcomeMessage) {
                 const welcomeDiv = document.createElement('div');
                 welcomeDiv.className = 'chat-welcome';
-                welcomeDiv.innerHTML = `
-                    <div class="ai-avatar mb-3">
-                        <div class="avatar-circle">
-                            <i class="fas fa-robot"></i>
-                        </div>
-                    </div>
-                    <h5 class="text-white mb-3">Hello! I'm your Environmental Assistant 🌱</h5>
-                    <p class="text-light mb-4">I can help you with:</p>
-                    <div class="suggestion-grid">
-                        <div class="suggestion-item">
-                            <i class="fas fa-leaf text-success"></i>
-                            <span>Carbon footprint calculation</span>
-                        </div>
-                        <div class="suggestion-item">
-                            <i class="fas fa-recycle text-info"></i>
-                            <span>Sustainable product choices</span>
-                        </div>
-                        <div class="suggestion-item">
-                            <i class="fas fa-flask text-warning"></i>
-                            <span>Ingredient impact analysis</span>
-                        </div>
-                        <div class="suggestion-item">
-                            <i class="fas fa-lightbulb text-primary"></i>
-                            <span>Eco-friendly alternatives</span>
-                        </div>
-                    </div>
-                `;
+                welcomeDiv.innerHTML = document.querySelector('.chat-welcome').innerHTML;
                 chatMessages.appendChild(welcomeDiv);
             }
             
-            // Clear server-side history
             const csrfToken = document.querySelector('input[name="csrf_token"]').value;
             await fetch('{{ url_for("chat.clear_chat") }}', {
                 method: 'POST',
@@ -720,23 +905,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             
             chatMessages.scrollTop = 0;
-        }
-    });
-
-    // Quick suggestion clicks
-    document.addEventListener('click', (e) => {
-        if (e.target.closest('.suggestion-item')) {
-            const suggestionText = e.target.closest('.suggestion-item').querySelector('span').textContent;
-            const questions = {
-                'Carbon footprint calculation': 'How can I calculate my carbon footprint?',
-                'Sustainable product choices': 'What makes a product sustainable?',
-                'Ingredient impact analysis': 'How do I analyze the environmental impact of product ingredients?',
-                'Eco-friendly alternatives': 'What are some eco-friendly alternatives to common products?'
-            };
-            
-            messageInput.value = questions[suggestionText] || `Tell me about ${suggestionText.toLowerCase()}`;
-            messageInput.focus();
-            messageInput.dispatchEvent(new Event('input'));
         }
     });
 

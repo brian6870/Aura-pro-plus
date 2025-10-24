@@ -4,171 +4,394 @@
 <div class="container mt-4">
     <div class="row">
         <div class="col-12">
-            <div class="glass-card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0"><i class="fas fa-history me-2"></i>Analysis History</h4>
-                    <a href="{{ url_for('analysis.input_form') }}" class="btn btn-modern btn-sm">
-                        <i class="fas fa-plus me-1"></i>New Analysis
-                    </a>
+            <!-- Tabs for switching between Product and Plastic History -->
+            <div class="modern-card mb-4">
+                <div class="card-header modern-header">
+                    <ul class="nav nav-tabs card-header-tabs" id="historyTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="product-tab" data-bs-toggle="tab" data-bs-target="#product-history" type="button" role="tab" aria-controls="product-history" aria-selected="true">
+                                <i class="fas fa-search me-2"></i>Product Analyses
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="plastic-tab" data-bs-toggle="tab" data-bs-target="#plastic-history" type="button" role="tab" aria-controls="plastic-history" aria-selected="false">
+                                <i class="fas fa-recycle me-2"></i>Plastic Analyses
+                            </button>
+                        </li>
+                    </ul>
                 </div>
-                <div class="card-body">
-                    {% if analyses.items %}
-                        <div class="table-responsive">
-                            <table class="table table-dark table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Product</th>
-                                        <th>Rating</th>
-                                        <th>Points</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for analysis in analyses.items %}
-                                    <tr class="analysis-row" data-analysis-id="{{ analysis.id }}">
-                                        <td>{{ analysis.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
-                                        <td>
-                                            {% if analysis.product_name %}
-                                                <strong>{{ analysis.product_name }}</strong>
-                                            {% else %}
-                                                <span class="text-muted">Unnamed Product</span>
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            <span class="rating-badge rating-{{ analysis.environmental_rating }}">
-                                                {{ analysis.environmental_rating|title }}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span class="points-badge">{{ analysis.points_awarded }}</span>
-                                        </td>
-                                        <td>
-                                            <div class="btn-group" role="group">
-                                                <button class="btn btn-outline-light btn-sm view-analysis-btn" data-analysis-id="{{ analysis.id }}">
-                                                    <i class="fas fa-eye me-1"></i>View
-                                                </button>
-                                                <button class="btn btn-outline-info btn-sm" onclick="copyAnalysisLink({{ analysis.id }})" title="Copy shareable link">
-                                                    <i class="fas fa-link"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr class="analysis-details-row" id="details-{{ analysis.id }}" style="display: none;">
-                                        <td colspan="5" class="p-0">
-                                            <div class="analysis-details bg-dark border-top border-secondary">
-                                                <div class="p-4">
-                                                    <div class="row mb-4">
-                                                        <div class="col-md-6 mb-3">
-                                                            <div class="analysis-info-card bg-secondary bg-opacity-25 p-3 rounded">
-                                                                <h6 class="text-info"><i class="fas fa-star me-2"></i>Rating</h6>
-                                                                <span class="rating-badge rating-{{ analysis.environmental_rating }} large">
-                                                                    {{ analysis.environmental_rating|title }}
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6 mb-3">
-                                                            <div class="analysis-info-card bg-secondary bg-opacity-25 p-3 rounded">
-                                                                <h6 class="text-warning"><i class="fas fa-trophy me-2"></i>Points Awarded</h6>
-                                                                <span class="points-badge large">{{ analysis.points_awarded }}</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <div class="mb-4">
-                                                        <h6 class="text-primary"><i class="fas fa-chart-bar me-2"></i>Analysis</h6>
-                                                        <div class="analysis-content bg-dark border border-secondary rounded p-3">
-                                                            {{ analysis.analysis_result }}
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    {% if analysis.alternative_suggestions %}
-                                                    <div class="mb-4">
-                                                        <h6 class="text-success"><i class="fas fa-lightbulb me-2"></i>Alternative Suggestions</h6>
-                                                        <div class="analysis-content bg-dark border border-secondary rounded p-3">
-                                                            {{ analysis.alternative_suggestions }}
-                                                        </div>
-                                                    </div>
-                                                    {% endif %}
-                                                    
-                                                    <div class="mb-4">
-                                                        <h6 class="text-light"><i class="fas fa-list me-2"></i>Ingredients</h6>
-                                                        <div class="ingredients-box bg-black border border-secondary rounded p-3">
-                                                            <pre class="text-light mb-0">{{ analysis.ingredients_text }}</pre>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <div class="text-muted small">
-                                                        <i class="fas fa-clock me-1"></i>Analyzed on {{ analysis.created_at.strftime('%B %d, %Y at %H:%M') }}
-                                                    </div>
-                                                    
-                                                    <div class="mt-4 d-flex justify-content-end">
-                                                        <button class="btn btn-secondary btn-sm" onclick="closeAnalysisDetails({{ analysis.id }})">
-                                                            Close Details
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                        
-                        <!-- Pagination -->
-                        <div class="d-flex justify-content-between align-items-center mt-4">
-                            <div class="text-muted">
-                                Showing {{ analyses.items|length }} of {{ analyses.total }} analyses
-                            </div>
-                            <nav aria-label="Analysis history pagination">
-                                <ul class="pagination justify-content-center mb-0">
-                                    {% if analyses.has_prev %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="{{ url_for('analysis.history', page=analyses.prev_num ) }}">
-                                            <i class="fas fa-chevron-left"></i>
-                                        </a>
-                                    </li>
-                                    {% else %}
-                                    <li class="page-item disabled">
-                                        <span class="page-link"><i class="fas fa-chevron-left"></i></span>
-                                    </li>
-                                    {% endif %}
-                                    
-                                    {% for page_num in analyses.iter_pages(left_edge=2, left_current=2, right_current=2, right_edge=2) %}
-                                        {% if page_num %}
-                                            <li class="page-item {% if page_num == analyses.page %}active{% endif %}">
-                                                <a class="page-link" href="{{ url_for('analysis.history', page=page_num) }}">{{ page_num }}</a>
-                                            </li>
-                                        {% else %}
-                                            <li class="page-item disabled"><span class="page-link">…</span></li>
-                                        {% endif %}
-                                    {% endfor %}
-                                    
-                                    {% if analyses.has_next %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="{{ url_for('analysis.history', page=analyses.next_num ) }}">
-                                            <i class="fas fa-chevron-right"></i>
-                                        </a>
-                                    </li>
-                                    {% else %}
-                                    <li class="page-item disabled">
-                                        <span class="page-link"><i class="fas fa-chevron-right"></i></span>
-                                    </li>
-                                    {% endif %}
-                                </ul>
-                            </nav>
-                        </div>
-                    {% else %}
-                        <div class="text-center py-5">
-                            <i class="fas fa-search fa-3x text-muted mb-3"></i>
-                            <h5 class="text-muted">No analyses yet</h5>
-                            <p class="text-muted mb-4">Start by analyzing your first product to see your history here.</p>
-                            <a href="{{ url_for('analysis.input_form') }}" class="btn btn-modern">
-                                <i class="fas fa-plus me-1"></i>Analyze First Product
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content" id="historyTabsContent">
+                <!-- Product Analysis History Tab -->
+                <div class="tab-pane fade show active" id="product-history" role="tabpanel" aria-labelledby="product-tab">
+                    <div class="modern-card">
+                        <div class="card-header modern-header d-flex justify-content-between align-items-center">
+                            <h4 class="mb-0"><i class="fas fa-search me-2"></i>Product Analysis History</h4>
+                            <a href="{{ url_for('analysis.input_form') }}" class="btn modern-btn-primary btn-sm">
+                                <i class="fas fa-plus me-1"></i>New Product Analysis
                             </a>
                         </div>
-                    {% endif %}
+                        <div class="card-body">
+                            {% if product_analyses.items %}
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Product</th>
+                                                <th>Rating</th>
+                                                <th>Points</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for analysis in product_analyses.items %}
+                                            <tr class="analysis-row" data-analysis-id="{{ analysis.id }}" data-type="product">
+                                                <td>{{ analysis.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                                <td>
+                                                    {% if analysis.product_name %}
+                                                        <strong>{{ analysis.product_name }}</strong>
+                                                    {% else %}
+                                                        <span class="text-muted">Unnamed Product</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <span class="rating-badge rating-{{ analysis.environmental_rating }}">
+                                                        {{ analysis.environmental_rating|title }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="points-badge">{{ analysis.points_awarded }}</span>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group" role="group">
+                                                        <button class="btn modern-btn-outline btn-sm view-analysis-btn" data-analysis-id="{{ analysis.id }}" data-type="product">
+                                                            <i class="fas fa-eye me-1"></i>View
+                                                        </button>
+                                                        <button class="btn modern-btn-outline btn-sm" onclick="copyAnalysisLink({{ analysis.id }}, 'product')" title="Copy shareable link">
+                                                            <i class="fas fa-link"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr class="analysis-details-row" id="product-details-{{ analysis.id }}" style="display: none;">
+                                                <td colspan="5" class="p-0">
+                                                    <div class="analysis-details border-top">
+                                                        <div class="p-4">
+                                                            <div class="row mb-4">
+                                                                <div class="col-md-6 mb-3">
+                                                                    <div class="analysis-info-card p-3 rounded">
+                                                                        <h6 class="text-primary"><i class="fas fa-star me-2"></i>Rating</h6>
+                                                                        <span class="rating-badge rating-{{ analysis.environmental_rating }} large">
+                                                                            {{ analysis.environmental_rating|title }}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6 mb-3">
+                                                                    <div class="analysis-info-card p-3 rounded">
+                                                                        <h6 class="text-primary"><i class="fas fa-trophy me-2"></i>Points Awarded</h6>
+                                                                        <span class="points-badge large">{{ analysis.points_awarded }}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <div class="mb-4">
+                                                                <h6 class="text-primary"><i class="fas fa-chart-bar me-2"></i>Analysis</h6>
+                                                                <div class="analysis-content border rounded p-3">
+                                                                    {{ analysis.analysis_result }}
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            {% if analysis.alternative_suggestions %}
+                                                            <div class="mb-4">
+                                                                <h6 class="text-primary"><i class="fas fa-lightbulb me-2"></i>Alternative Suggestions</h6>
+                                                                <div class="analysis-content border rounded p-3">
+                                                                    {{ analysis.alternative_suggestions }}
+                                                                </div>
+                                                            </div>
+                                                            {% endif %}
+                                                            
+                                                            <div class="mb-4">
+                                                                <h6 class="text-primary"><i class="fas fa-list me-2"></i>Ingredients</h6>
+                                                                <div class="ingredients-box border rounded p-3">
+                                                                    <pre class="mb-0">{{ analysis.ingredients_text }}</pre>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <div class="text-muted small">
+                                                                <i class="fas fa-clock me-1"></i>Analyzed on {{ analysis.created_at.strftime('%B %d, %Y at %H:%M') }}
+                                                            </div>
+                                                            
+                                                            <div class="mt-4 d-flex justify-content-end">
+                                                                <button class="btn modern-btn-outline btn-sm" onclick="closeAnalysisDetails({{ analysis.id }}, 'product')">
+                                                                    Close Details
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <!-- Product Analysis Pagination -->
+                                <div class="d-flex justify-content-between align-items-center mt-4">
+                                    <div class="text-muted">
+                                        Showing {{ product_analyses.items|length }} of {{ product_analyses.total }} product analyses
+                                    </div>
+                                    <nav aria-label="Product analysis pagination">
+                                        <ul class="pagination justify-content-center mb-0">
+                                            {% if product_analyses.has_prev %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="{{ url_for('analysis.history', page=product_analyses.prev_num, tab='product') }}">
+                                                    <i class="fas fa-chevron-left"></i>
+                                                </a>
+                                            </li>
+                                            {% else %}
+                                            <li class="page-item disabled">
+                                                <span class="page-link"><i class="fas fa-chevron-left"></i></span>
+                                            </li>
+                                            {% endif %}
+                                            
+                                            {% for page_num in product_analyses.iter_pages(left_edge=2, left_current=2, right_current=2, right_edge=2) %}
+                                                {% if page_num %}
+                                                    <li class="page-item {% if page_num == product_analyses.page %}active{% endif %}">
+                                                        <a class="page-link" href="{{ url_for('analysis.history', page=page_num, tab='product') }}">{{ page_num }}</a>
+                                                    </li>
+                                                {% else %}
+                                                    <li class="page-item disabled"><span class="page-link">…</span></li>
+                                                {% endif %}
+                                            {% endfor %}
+                                            
+                                            {% if product_analyses.has_next %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="{{ url_for('analysis.history', page=product_analyses.next_num, tab='product') }}">
+                                                    <i class="fas fa-chevron-right"></i>
+                                                </a>
+                                            </li>
+                                            {% else %}
+                                            <li class="page-item disabled">
+                                                <span class="page-link"><i class="fas fa-chevron-right"></i></span>
+                                            </li>
+                                            {% endif %}
+                                        </ul>
+                                    </nav>
+                                </div>
+                            {% else %}
+                                <div class="text-center py-5">
+                                    <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                                    <h5 class="text-muted">No product analyses yet</h5>
+                                    <p class="text-muted mb-4">Start by analyzing your first product to see your history here.</p>
+                                    <a href="{{ url_for('analysis.input_form') }}" class="btn modern-btn-primary">
+                                        <i class="fas fa-plus me-1"></i>Analyze First Product
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Plastic Analysis History Tab -->
+                <div class="tab-pane fade" id="plastic-history" role="tabpanel" aria-labelledby="plastic-tab">
+                    <div class="modern-card">
+                        <div class="card-header modern-header d-flex justify-content-between align-items-center">
+                            <h4 class="mb-0"><i class="fas fa-recycle me-2"></i>Plastic Analysis History</h4>
+                            <a href="{{ url_for('plastic.analyze_plastic') }}" class="btn modern-btn-primary btn-sm">
+                                <i class="fas fa-plus me-1"></i>New Plastic Analysis
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            {% if plastic_analyses.items %}
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Plastic Type</th>
+                                                <th>Rating</th>
+                                                <th>Points</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for analysis in plastic_analyses.items %}
+                                            <tr class="analysis-row" data-analysis-id="{{ analysis.id }}" data-type="plastic">
+                                                <td>{{ analysis.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                                <td>
+                                                    <strong>{{ analysis.plastic_type }}</strong>
+                                                    {% if analysis.description %}
+                                                    <br><small class="text-muted">{{ analysis.description[:50] }}{% if analysis.description|length > 50 %}...{% endif %}</small>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <span class="rating-badge rating-{{ analysis.environmental_rating }}">
+                                                        {{ analysis.environmental_rating|title }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="points-badge">{{ analysis.points_awarded }}</span>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group" role="group">
+                                                        <button class="btn modern-btn-outline btn-sm view-analysis-btn" data-analysis-id="{{ analysis.id }}" data-type="plastic">
+                                                            <i class="fas fa-eye me-1"></i>View
+                                                        </button>
+                                                        <button class="btn modern-btn-outline btn-sm" onclick="copyAnalysisLink({{ analysis.id }}, 'plastic')" title="Copy shareable link">
+                                                            <i class="fas fa-link"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr class="analysis-details-row" id="plastic-details-{{ analysis.id }}" style="display: none;">
+                                                <td colspan="5" class="p-0">
+                                                    <div class="analysis-details border-top">
+                                                        <div class="p-4">
+                                                            <div class="row mb-4">
+                                                                <div class="col-md-6 mb-3">
+                                                                    <div class="analysis-info-card p-3 rounded">
+                                                                        <h6 class="text-primary"><i class="fas fa-recycle me-2"></i>Plastic Type</h6>
+                                                                        <span class="plastic-type-badge">{{ analysis.plastic_type }}</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6 mb-3">
+                                                                    <div class="analysis-info-card p-3 rounded">
+                                                                        <h6 class="text-primary"><i class="fas fa-trophy me-2"></i>Points Awarded</h6>
+                                                                        <span class="points-badge large">{{ analysis.points_awarded }}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            {% if analysis.description %}
+                                                            <div class="mb-4">
+                                                                <h6 class="text-primary"><i class="fas fa-info-circle me-2"></i>Description</h6>
+                                                                <div class="analysis-content border rounded p-3">
+                                                                    {{ analysis.description }}
+                                                                </div>
+                                                            </div>
+                                                            {% endif %}
+                                                            
+                                                            <div class="mb-4">
+                                                                <h6 class="text-primary"><i class="fas fa-chart-bar me-2"></i>Environmental Analysis</h6>
+                                                                <div class="analysis-content border rounded p-3">
+                                                                    {{ analysis.analysis_result }}
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <div class="row mb-4">
+                                                                {% if analysis.carbon_footprint and analysis.carbon_footprint != 'Not specified' %}
+                                                                <div class="col-md-6 mb-3">
+                                                                    <div class="analysis-info-card p-3 rounded">
+                                                                        <h6 class="text-primary"><i class="fas fa-smog me-2"></i>Carbon Footprint</h6>
+                                                                        <span>{{ analysis.carbon_footprint }}</span>
+                                                                    </div>
+                                                                </div>
+                                                                {% endif %}
+                                                                
+                                                                {% if analysis.decomposition_time and analysis.decomposition_time != 'Not specified' %}
+                                                                <div class="col-md-6 mb-3">
+                                                                    <div class="analysis-info-card p-3 rounded">
+                                                                        <h6 class="text-primary"><i class="fas fa-hourglass-half me-2"></i>Decomposition Time</h6>
+                                                                        <span>{{ analysis.decomposition_time }}</span>
+                                                                    </div>
+                                                                </div>
+                                                                {% endif %}
+                                                            </div>
+                                                            
+                                                            {% if analysis.alternative_suggestions %}
+                                                            <div class="mb-4">
+                                                                <h6 class="text-primary"><i class="fas fa-lightbulb me-2"></i>Alternative Materials</h6>
+                                                                <div class="analysis-content border rounded p-3">
+                                                                    {{ analysis.alternative_suggestions }}
+                                                                </div>
+                                                            </div>
+                                                            {% endif %}
+                                                            
+                                                            {% if analysis.recycling_guidance and analysis.recycling_guidance != 'Not specified' %}
+                                                            <div class="mb-4">
+                                                                <h6 class="text-primary"><i class="fas fa-recycle me-2"></i>Recycling Guidance</h6>
+                                                                <div class="analysis-content border rounded p-3">
+                                                                    {{ analysis.recycling_guidance }}
+                                                                </div>
+                                                            </div>
+                                                            {% endif %}
+                                                            
+                                                            <div class="text-muted small">
+                                                                <i class="fas fa-clock me-1"></i>Analyzed on {{ analysis.created_at.strftime('%B %d, %Y at %H:%M') }}
+                                                            </div>
+                                                            
+                                                            <div class="mt-4 d-flex justify-content-end">
+                                                                <button class="btn modern-btn-outline btn-sm" onclick="closeAnalysisDetails({{ analysis.id }}, 'plastic')">
+                                                                    Close Details
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <!-- Plastic Analysis Pagination -->
+                                <div class="d-flex justify-content-between align-items-center mt-4">
+                                    <div class="text-muted">
+                                        Showing {{ plastic_analyses.items|length }} of {{ plastic_analyses.total }} plastic analyses
+                                    </div>
+                                    <nav aria-label="Plastic analysis pagination">
+                                        <ul class="pagination justify-content-center mb-0">
+                                            {% if plastic_analyses.has_prev %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="{{ url_for('analysis.history', page=plastic_analyses.prev_num, tab='plastic') }}">
+                                                    <i class="fas fa-chevron-left"></i>
+                                                </a>
+                                            </li>
+                                            {% else %}
+                                            <li class="page-item disabled">
+                                                <span class="page-link"><i class="fas fa-chevron-left"></i></span>
+                                            </li>
+                                            {% endif %}
+                                            
+                                            {% for page_num in plastic_analyses.iter_pages(left_edge=2, left_current=2, right_current=2, right_edge=2) %}
+                                                {% if page_num %}
+                                                    <li class="page-item {% if page_num == plastic_analyses.page %}active{% endif %}">
+                                                        <a class="page-link" href="{{ url_for('analysis.history', page=page_num, tab='plastic') }}">{{ page_num }}</a>
+                                                    </li>
+                                                {% else %}
+                                                    <li class="page-item disabled"><span class="page-link">…</span></li>
+                                                {% endif %}
+                                            {% endfor %}
+                                            
+                                            {% if plastic_analyses.has_next %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="{{ url_for('analysis.history', page=plastic_analyses.next_num, tab='plastic') }}">
+                                                    <i class="fas fa-chevron-right"></i>
+                                                </a>
+                                            </li>
+                                            {% else %}
+                                            <li class="page-item disabled">
+                                                <span class="page-link"><i class="fas fa-chevron-right"></i></span>
+                                            </li>
+                                            {% endif %}
+                                        </ul>
+                                    </nav>
+                                </div>
+                            {% else %}
+                                <div class="text-center py-5">
+                                    <i class="fas fa-recycle fa-3x text-muted mb-3"></i>
+                                    <h5 class="text-muted">No plastic analyses yet</h5>
+                                    <p class="text-muted mb-4">Start by analyzing your first plastic item to see your history here.</p>
+                                    <a href="{{ url_for('plastic.analyze_plastic') }}" class="btn modern-btn-primary">
+                                        <i class="fas fa-plus me-1"></i>Analyze First Plastic
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -176,60 +399,127 @@
 </div>
 
 <style>
-.table-dark {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-    overflow: hidden;
+.modern-card {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
 }
 
-.table-dark th {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(255, 255, 255, 0.1);
+.modern-card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.modern-header {
+    background-color: var(--background-color);
+    border-bottom: 1px solid var(--border-color);
+    padding: 1.25rem 1.5rem;
     font-weight: 600;
-    padding: 1rem 0.75rem;
 }
 
-.table-dark td, .table-dark th {
-    border-color: rgba(255, 255, 255, 0.1);
-    padding: 1rem 0.75rem;
-    vertical-align: middle;
+.modern-btn-primary {
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.page-link {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #e2e8f0;
-    margin: 0 2px;
-    border-radius: 6px;
-}
-
-.page-link:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.3);
+.modern-btn-primary:hover {
+    background-color: #0da271;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
     color: white;
 }
 
-.page-item.active .page-link {
-    background: var(--gradient-1);
-    border-color: transparent;
+.modern-btn-primary.btn-sm {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.875rem;
 }
 
-pre {
-    white-space: pre-wrap;
-    font-family: 'Courier New', monospace;
-    font-size: 0.9em;
-    margin: 0;
+.modern-btn-outline {
+    background-color: transparent;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-primary);
+    padding: 0.4rem 0.8rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* Enhanced rating badges */
+.modern-btn-outline:hover {
+    background-color: var(--background-color);
+    border-color: var(--primary-color);
+    color: var(--text-primary);
+    transform: translateY(-1px);
+}
+
+.modern-btn-outline.btn-sm {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.875rem;
+}
+
+/* Tab styling */
+.nav-tabs {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.nav-tabs .nav-link {
+    color: var(--text-secondary);
+    border: none;
+    padding: 1rem 1.5rem;
+    font-weight: 600;
+    border-radius: 8px 8px 0 0;
+    transition: all 0.3s ease;
+}
+
+.nav-tabs .nav-link.active {
+    background-color: var(--surface-color);
+    border-bottom: 3px solid var(--primary-color);
+    color: var(--text-primary);
+}
+
+.nav-tabs .nav-link:hover {
+    border: none;
+    background-color: var(--background-color);
+    color: var(--text-primary);
+}
+
+/* Table styling */
+.table {
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+.table-hover tbody tr:hover {
+    background-color: var(--background-color);
+}
+
+.table thead th {
+    border-bottom: 2px solid var(--border-color);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Badge styling */
 .rating-badge {
     padding: 0.35rem 0.75rem;
     border-radius: 20px;
     font-size: 0.8rem;
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
     display: inline-block;
+    color: white;
 }
 
 .rating-badge.large {
@@ -237,110 +527,122 @@ pre {
     font-size: 0.9rem;
 }
 
-.rating-excellent {
-    background: linear-gradient(135deg, #10b981, #059669);
-    color: white;
+.rating-friendly {
+    background-color: #10b981;
 }
 
-.rating-good {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
-    color: white;
+.rating-moderate {
+    background-color: #f59e0b;
 }
 
-.rating-fair {
-    background: linear-gradient(135deg, #f59e0b, #d97706);
-    color: white;
+.rating-harmful {
+    background-color: #ef4444;
 }
 
-.rating-poor {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
-    color: white;
+.rating-hazardous {
+    background-color: #7c3aed;
 }
 
-/* Points badge */
 .points-badge {
-    display: inline-block;
+    background-color: var(--primary-color);
+    color: white;
     padding: 0.35rem 0.75rem;
-    background: rgba(255, 255, 255, 0.1);
     border-radius: 20px;
+    font-size: 0.8rem;
     font-weight: 600;
-    font-size: 0.9rem;
-    color: #ffd700;
+    display: inline-block;
 }
 
 .points-badge.large {
     padding: 0.5rem 1rem;
-    font-size: 1.1rem;
-    background: rgba(255, 255, 255, 0.15);
+    font-size: 0.9rem;
+}
+
+/* Plastic type badge */
+.plastic-type-badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: rgba(59, 130, 246, 0.1);
+    border: 1px solid var(--secondary-color);
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--secondary-color);
 }
 
 /* Analysis details styling */
 .analysis-details {
-    background: rgba(0, 0, 0, 0.3);
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
+    background-color: var(--background-color);
+    border-color: var(--border-color) !important;
 }
 
-.analysis-details-row {
-    border: none;
+.analysis-info-card {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
 }
 
-.analysis-details-row td {
-    border: none;
-    padding: 0;
+.analysis-content, .ingredients-box {
+    background-color: var(--surface-color);
+    border-color: var(--border-color) !important;
+    color: var(--text-primary);
 }
 
-.analysis-row.active {
-    background-color: rgba(255, 255, 255, 0.1);
+.ingredients-box pre {
+    color: var(--text-primary);
+    font-family: 'Courier New', monospace;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    margin: 0;
 }
 
-/* Button group improvements */
-.btn-group .btn {
-    border-radius: 6px;
+/* Pagination */
+.pagination .page-link {
+    color: var(--text-primary);
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 0.75rem;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .table-responsive {
-        font-size: 0.9rem;
-    }
-    
-    .table-dark td, .table-dark th {
-        padding: 0.75rem 0.5rem;
-    }
-    
-    .btn-group .btn {
-        padding: 0.25rem 0.5rem;
-        font-size: 0.8rem;
-    }
-    
-    .pagination {
-        margin-top: 1rem;
-    }
-    
-    .d-flex.justify-content-between {
-        flex-direction: column;
-        text-align: center;
-    }
-    
-    .d-flex.justify-content-between > div {
-        margin-bottom: 1rem;
-    }
-    
-    .analysis-details .p-4 {
-        padding: 1.5rem !important;
-    }
+.pagination .page-link:hover {
+    background-color: var(--background-color);
+    border-color: var(--primary-color);
+    color: var(--text-primary);
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: var(--text-secondary);
+    background-color: var(--surface-color);
+    border-color: var(--border-color);
+}
+
+.text-muted {
+    color: var(--text-secondary) !important;
+}
+
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.border {
+    border-color: var(--border-color) !important;
+}
+
+.border-top {
+    border-top-color: var(--border-color) !important;
 }
 </style>
 
 <script>
-function copyAnalysisLink(analysisId) {
-    // In a real implementation, this would generate a shareable link
-    const link = window.location.origin + '/analysis/' + analysisId;
+function copyAnalysisLink(analysisId, type) {
+    const link = window.location.origin + '/' + type + '/analysis/' + analysisId;
     
-    // Copy to clipboard
     navigator.clipboard.writeText(link).then(function() {
-        // Show a temporary notification
         showNotification('Analysis link copied to clipboard!');
     }).catch(function(err) {
         console.error('Failed to copy: ', err);
@@ -351,16 +653,13 @@ function copyAnalysisLink(analysisId) {
 function showNotification(message, type) {
     if (type === undefined) type = 'success';
     
-    // Create notification element
     const notification = document.createElement('div');
     notification.className = 'alert alert-' + (type === 'success' ? 'success' : 'danger') + ' position-fixed';
     notification.style.cssText = 'top: 20px; right: 20px; z-index: 1060; min-width: 250px;';
     notification.textContent = message;
     
-    // Add to page
     document.body.appendChild(notification);
     
-    // Remove after 3 seconds
     setTimeout(function() {
         if (notification.parentNode) {
             notification.remove();
@@ -368,41 +667,53 @@ function showNotification(message, type) {
     }, 3000);
 }
 
-// Dropdown functionality
+// Enhanced dropdown functionality for both product and plastic analyses
 document.addEventListener('DOMContentLoaded', function() {
     // Add click event listeners to all view buttons
     document.querySelectorAll('.view-analysis-btn').forEach(button => {
         button.addEventListener('click', function() {
             const analysisId = this.getAttribute('data-analysis-id');
-            toggleAnalysisDetails(analysisId);
+            const type = this.getAttribute('data-type');
+            toggleAnalysisDetails(analysisId, type);
         });
     });
+
+    // Handle tab persistence
+    const urlParams = new URLSearchParams(window.location.search);
+    const activeTab = urlParams.get('tab');
+    if (activeTab) {
+        const tabElement = document.getElementById(activeTab + '-tab');
+        if (tabElement) {
+            const tab = new bootstrap.Tab(tabElement);
+            tab.show();
+        }
+    }
 });
 
-function toggleAnalysisDetails(analysisId) {
-    const detailsRow = document.getElementById('details-' + analysisId);
+function toggleAnalysisDetails(analysisId, type) {
+    const detailsRow = document.getElementById(type + '-details-' + analysisId);
     const isCurrentlyVisible = detailsRow.style.display !== 'none';
     
-    // Close all other open details
-    document.querySelectorAll('.analysis-details-row').forEach(row => {
+    // Close all other open details of the same type
+    document.querySelectorAll('.analysis-details-row[id^="' + type + '-details-"]').forEach(row => {
         row.style.display = 'none';
     });
     
-    // Remove active class from all rows
-    document.querySelectorAll('.analysis-row').forEach(row => {
+    // Remove active class from all rows of the same type
+    document.querySelectorAll('.analysis-row[data-type="' + type + '"]').forEach(row => {
         row.classList.remove('active');
     });
     
     // If the clicked details weren't already visible, show them
     if (!isCurrentlyVisible) {
         detailsRow.style.display = 'table-row';
-        document.querySelector('.analysis-row[data-analysis-id="' + analysisId + '"]').classList.add('active');
+        document.querySelector('.analysis-row[data-analysis-id="' + analysisId + '"][data-type="' + type + '"]').classList.add('active');
     }
 }
 
-function closeAnalysisDetails(analysisId) {
-    document.getElementById('details-' + analysisId).style.display = 'none';
-    document.querySelector('.analysis-row[data-analysis-id="' + analysisId + '"]').classList.remove('active');
+function closeAnalysisDetails(analysisId, type) {
+    document.getElementById(type + '-details-' + analysisId).style.display = 'none';
+    document.querySelector('.analysis-row[data-analysis-id="' + analysisId + '"][data-type="' + type + '"]').classList.remove('active');
 }
 </script>
 {% endblock %}

@@ -1,78 +1,230 @@
 {% extends "layouts/base.html" %}
 
 {% block content %}
-<div class="auth-container">
-    <div class="auth-card">
-        <div class="auth-header">
-            <a class="navbar-brand" href="{{ url_for('dashboard.index') }}">
-                <i class="fas fa-leaf me-2"></i>Aura
-            </a>
-            <h4>Create Account</h4>
-        </div>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="modern-card">
+                <div class="card-body p-5">
+                    <!-- Header -->
+                    <div class="text-center mb-4">
+                        <a class="navbar-brand mb-4 d-inline-block" href="{{ url_for('dashboard.index') }}">
+                            <i class="fas fa-leaf me-2 text-primary"></i>Aura
+                        </a>
+                        <h2 class="mb-3">Create Account</h2>
+                        <p class="text-muted">Join us to start tracking your environmental impact</p>
+                    </div>
 
-        <div class="auth-body">
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="auth-alert alert-{{ 'error' if category == 'error' else category }}">
-                            <div class="d-flex align-items-center">
-                                <i class="fas fa-{% if category == 'success' %}check-circle{% elif category == 'error' %}exclamation-triangle{% else %}info-circle{% endif %} me-3"></i>
-                                <span>{{ message }}</span>
+                    <!-- Flash Messages -->
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-modern mb-4 border-{{ 'danger' if category == 'error' else 'primary' }}">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-{% if category == 'success' %}check-circle{% elif category == 'error' %}exclamation-triangle{% else %}info-circle{% endif %} me-3"></i>
+                                        <span>{{ message }}</span>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <!-- Registration Form -->
+                    <form method="POST" action="{{ url_for('auth.register') }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        
+                        <!-- Username Input -->
+                        <div class="mb-4">
+                            <label for="username" class="form-label fw-semibold">Username</label>
+                            <input type="text" class="form-control modern-input" id="username" name="username" placeholder="Choose a username" required>
+                        </div>
+
+                        <!-- Email Input -->
+                        <div class="mb-4">
+                            <label for="email" class="form-label fw-semibold">Email Address</label>
+                            <input type="email" class="form-control modern-input" id="email" name="email" placeholder="Enter your email" required>
+                        </div>
+
+                        <!-- Password Input -->
+                        <div class="mb-4">
+                            <label for="password" class="form-label fw-semibold">Password</label>
+                            <input type="password" class="form-control modern-input" id="password" name="password" placeholder="Create a password" required>
+                            <div class="form-text">
+                                Must be at least 8 characters with uppercase, lowercase, and numbers
                             </div>
                         </div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
 
-            <form method="POST" action="{{ url_for('auth.register') }}" class="auth-form">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                <div class="form-group">
-                    <label for="username" class="form-label">Username</label>
-                    <input type="text" class="form-control" id="username" name="username" placeholder="Choose a username" required>
-                </div>
+                        <!-- Confirm Password Input -->
+                        <div class="mb-4">
+                            <label for="confirm_password" class="form-label fw-semibold">Confirm Password</label>
+                            <input type="password" class="form-control modern-input" id="confirm_password" name="confirm_password" placeholder="Confirm your password" required>
+                        </div>
 
-                <div class="form-group">
-                    <label for="email" class="form-label">Email Address</label>
-                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
-                </div>
+                        <!-- Create Account Button -->
+                        <button type="submit" class="btn modern-btn-primary w-100 mb-4">
+                            <i class="fas fa-user-plus me-2"></i>Create Account
+                        </button>
+                    </form>
 
-                <div class="form-group">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" placeholder="Create a password" required>
-                    <div class="form-text">
-                        Must be at least 8 characters with uppercase, lowercase, and numbers
+                    <!-- Divider -->
+                    <div class="position-relative text-center mb-4">
+                        <hr>
+                        <span class="position-absolute top-50 start-50 translate-middle bg-surface-color px-3 text-muted small">Or sign up with</span>
+                    </div>
+
+                    <!-- Google Sign Up -->
+                    <a href="{{ url_for('auth.google_login') }}" class="btn modern-btn-outline w-100 mb-4">
+                        <i class="fab fa-google me-2"></i>Google
+                    </a>
+
+                    <!-- Sign In Link -->
+                    <div class="text-center">
+                        <span class="text-muted">Already have an account?</span>
+                        <a href="{{ url_for('auth.login') }}" class="text-primary text-decoration-none ms-1">Sign in here</a>
                     </div>
                 </div>
-
-                <div class="form-group">
-                    <label for="confirm_password" class="form-label">Confirm Password</label>
-                    <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirm your password" required>
-                </div>
-
-                <button type="submit" class="btn btn-auth">
-                    <i class="fas fa-user-plus me-2"></i>Create Account
-                </button>
-            </form>
-
-            <div class="auth-divider">
-                <span>Or sign up with</span>
-            </div>
-
-            <a href="{{ url_for('auth.google_login') }}" class="btn btn-google">
-                <i class="fab fa-google me-2"></i>Google
-            </a>
-
-            <div class="auth-text">
-                Already have an account? <a href="{{ url_for('auth.login') }}" class="auth-link">Sign in here</a>
             </div>
         </div>
     </div>
 </div>
 
 <style>
-/* Additional register-specific styles */
-.auth-container {
-    padding: 2rem 1rem;
+.modern-card {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+}
+
+.modern-card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.modern-input {
+    background-color: var(--background-color);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-primary);
+    padding: 1rem !important;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.modern-input:focus {
+    background-color: var(--background-color);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.1);
+    color: var(--text-primary);
+}
+
+.modern-btn-primary {
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    padding: 1rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.modern-btn-primary:hover {
+    background-color: #0da271;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+    color: white;
+}
+
+.modern-btn-outline {
+    background-color: transparent;
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-primary);
+    padding: 1rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.modern-btn-outline:hover {
+    background-color: var(--background-color);
+    border-color: var(--primary-color);
+    color: var(--text-primary);
+    transform: translateY(-2px);
+}
+
+.alert-modern {
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-primary);
+    padding: 1rem;
+}
+
+.border-primary {
+    border-color: var(--primary-color) !important;
+}
+
+.border-danger {
+    border-color: #ef4444 !important;
+}
+
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.text-muted {
+    color: var(--text-secondary) !important;
+}
+
+.form-text {
+    color: var(--text-secondary) !important;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+hr {
+    border-color: var(--border-color) !important;
+}
+
+.bg-surface-color {
+    background-color: var(--surface-color);
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--text-primary) !important;
+    text-decoration: none;
+}
+
+.navbar-brand:hover {
+    color: var(--primary-color) !important;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 1rem;
+    }
+    
+    .modern-card {
+        margin: 1rem 0;
+    }
+    
+    .card-body {
+        padding: 2rem !important;
+    }
+    
+    .modern-btn-primary,
+    .modern-btn-outline {
+        padding: 0.875rem 1.25rem;
+    }
+}
+
+/* Improve form spacing */
+.form-label {
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
 }
 </style>
 {% endblock %}

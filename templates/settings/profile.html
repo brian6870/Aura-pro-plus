@@ -5,42 +5,42 @@
     <div class="row justify-content-center">
         <div class="col-lg-8">
             <!-- Profile Header -->
-            <div class="glass-card p-4 mb-4 fade-in-up">
+            <div class="modern-card p-4 mb-4">
                 <div class="row align-items-center">
                     <div class="col-md-8">
                         <h4 class="fw-bold mb-2"><i class="fas fa-user-cog me-2 text-primary"></i>Profile Settings</h4>
-                        <p class="text-light mb-0">Manage your account information and preferences</p>
+                        <p class="mb-0">Manage your account information and preferences</p>
                     </div>
                     <div class="col-md-4 text-end">
                         <div class="stat-card-sm">
                             <div class="stat-number-sm">{{ current_user.get_total_points() }}</div>
-                            <small class="text-light">Total Points</small>
+                            <small>Total Points</small>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Profile Form -->
-            <div class="glass-card p-4 fade-in-up">
+            <div class="modern-card p-4">
                 <form method="POST" action="{{ url_for('settings.profile') }}" class="needs-validation" novalidate>
-                     <!-- Add CSRF Token -->
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <!-- Add CSRF Token -->
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="username" class="form-label text-light fw-semibold">
+                            <label for="username" class="form-label fw-semibold">
                                 <i class="fas fa-user me-2"></i>Username
                             </label>
-                            <input type="text" class="form-control-modern" id="username" name="username" 
+                            <input type="text" class="form-control modern-input" id="username" name="username" 
                                    value="{{ current_user.username }}" required>
                             <div class="invalid-feedback">
                                 Please choose a username.
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="email" class="form-label text-light fw-semibold">
+                            <label for="email" class="form-label fw-semibold">
                                 <i class="fas fa-envelope me-2"></i>Email Address
                             </label>
-                            <input type="email" class="form-control-modern" id="email" name="email" 
+                            <input type="email" class="form-control modern-input" id="email" name="email" 
                                    value="{{ current_user.email }}" required>
                             <div class="invalid-feedback">
                                 Please provide a valid email.
@@ -50,7 +50,7 @@
 
                     <!-- Avatar Section -->
                     <div class="mb-4">
-                        <label class="form-label text-light fw-semibold">
+                        <label class="form-label fw-semibold">
                             <i class="fas fa-image me-2"></i>Profile Avatar
                         </label>
                         <div class="d-flex align-items-center">
@@ -64,12 +64,12 @@
                                     {% if current_user.google_id %}
                                         <i class="fas fa-google text-danger me-1"></i> Avatar managed through Google OAuth
                                     {% else %}
-                                        <i class="fas fa-info-circle text-info me-1"></i> Default Aura avatar
+                                        <i class="fas fa-info-circle text-primary me-1"></i> Default Aura avatar
                                     {% endif %}
                                 </p>
                                 <div class="avatar-options">
                                     {% if not current_user.google_id %}
-                                    <button type="button" class="btn btn-modern btn-sm me-2" data-bs-toggle="modal" data-bs-target="#avatarModal">
+                                    <button type="button" class="btn modern-btn-secondary btn-sm me-2" data-bs-toggle="modal" data-bs-target="#avatarModal">
                                         <i class="fas fa-sync me-1"></i>Change Avatar
                                     </button>
                                     {% endif %}
@@ -85,7 +85,7 @@
                     <div class="stats-grid mb-4">
                         <div class="stat-item">
                             <div class="stat-icon">
-                                <i class="fas fa-calendar-alt text-info"></i>
+                                <i class="fas fa-calendar-alt text-primary"></i>
                             </div>
                             <div class="stat-content">
                                 <div class="stat-value">{{ current_user.created_at.strftime('%B %d, %Y') }}</div>
@@ -94,7 +94,7 @@
                         </div>
                         <div class="stat-item">
                             <div class="stat-icon">
-                                <i class="fas fa-sign-in-alt text-success"></i>
+                                <i class="fas fa-sign-in-alt text-primary"></i>
                             </div>
                             <div class="stat-content">
                                 <div class="stat-value">
@@ -109,7 +109,7 @@
                         </div>
                         <div class="stat-item">
                             <div class="stat-icon">
-                                <i class="fas fa-fire text-danger"></i>
+                                <i class="fas fa-fire text-primary"></i>
                             </div>
                             <div class="stat-content">
                                 <div class="stat-value">{{ current_user.current_streak }} days</div>
@@ -118,7 +118,7 @@
                         </div>
                         <div class="stat-item">
                             <div class="stat-icon">
-                                <i class="fas fa-search text-warning"></i>
+                                <i class="fas fa-search text-primary"></i>
                             </div>
                             <div class="stat-content">
                                 <div class="stat-value">
@@ -131,10 +131,10 @@
 
                     <!-- Action Buttons -->
                     <div class="d-flex gap-3">
-                        <button type="submit" class="btn btn-modern flex-fill">
+                        <button type="submit" class="btn modern-btn-primary flex-fill">
                             <i class="fas fa-save me-2"></i>Update Profile
                         </button>
-                        <a href="{{ url_for('dashboard.index') }}" class="btn btn-outline-light flex-fill">
+                        <a href="{{ url_for('dashboard.index') }}" class="btn modern-btn-outline flex-fill">
                             <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
                         </a>
                     </div>
@@ -142,20 +142,20 @@
             </div>
 
             <!-- Account Status Card -->
-            <div class="glass-card p-4 mt-4 fade-in-up">
-                <h6 class="fw-bold mb-3 text-light">
-                    <i class="fas fa-shield-alt me-2 text-success"></i>Account Status
+            <div class="modern-card p-4 mt-4">
+                <h6 class="fw-bold mb-3">
+                    <i class="fas fa-shield-alt me-2 text-primary"></i>Account Status
                 </h6>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="status-item">
                             <i class="fas fa-check-circle text-success me-2"></i>
-                            <span class="text-light">Email Verified</span>
+                            <span>Email Verified</span>
                             <span class="badge bg-success ms-2">Active</span>
                         </div>
                         <div class="status-item mt-2">
-                            <i class="fas fa-user-clock text-info me-2"></i>
-                            <span class="text-light">Account Created</span>
+                            <i class="fas fa-user-clock text-primary me-2"></i>
+                            <span>Account Created</span>
                             <span class="text-muted ms-2">{{ current_user.created_at.strftime('%Y-%m-%d') }}</span>
                         </div>
                     </div>
@@ -163,17 +163,17 @@
                         <div class="status-item">
                             {% if current_user.google_id %}
                                 <i class="fab fa-google text-danger me-2"></i>
-                                <span class="text-light">Google OAuth</span>
+                                <span>Google OAuth</span>
                                 <span class="badge bg-primary ms-2">Connected</span>
                             {% else %}
-                                <i class="fas fa-envelope text-warning me-2"></i>
-                                <span class="text-light">Email Login</span>
+                                <i class="fas fa-envelope text-primary me-2"></i>
+                                <span>Email Login</span>
                                 <span class="badge bg-secondary ms-2">Standard</span>
                             {% endif %}
                         </div>
                         <div class="status-item mt-2">
-                            <i class="fas fa-trophy text-warning me-2"></i>
-                            <span class="text-light">Global Rank</span>
+                            <i class="fas fa-trophy text-primary me-2"></i>
+                            <span>Global Rank</span>
                             <span class="badge bg-info ms-2">#{{ user_rank if user_rank else 'N/A' }}</span>
                         </div>
                     </div>
@@ -186,32 +186,117 @@
 <!-- Avatar Modal (Placeholder for future feature) -->
 <div class="modal fade" id="avatarModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content glass-card border-0">
+        <div class="modal-content modern-card border-0">
             <div class="modal-header border-0">
-                <h5 class="modal-title text-light">
+                <h5 class="modal-title">
                     <i class="fas fa-user-circle me-2"></i>Change Avatar
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body text-center">
                 <i class="fas fa-cogs fa-3x text-muted mb-3"></i>
-                <p class="text-light">Avatar customization coming soon!</p>
+                <p>Avatar customization coming soon!</p>
                 <p class="text-muted small">We're working on bringing you more avatar options in the next update.</p>
             </div>
             <div class="modal-footer border-0">
-                <button type="button" class="btn btn-modern" data-bs-dismiss="modal">Got it!</button>
+                <button type="button" class="btn modern-btn-primary" data-bs-dismiss="modal">Got it!</button>
             </div>
         </div>
     </div>
 </div>
 
 <style>
+.modern-card {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+}
+
+.modern-card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.modern-input {
+    background-color: var(--background-color);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-primary);
+    padding: 1rem !important;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.modern-input:focus {
+    background-color: var(--background-color);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.1);
+    color: var(--text-primary);
+}
+
+.modern-btn-primary {
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.modern-btn-primary:hover {
+    background-color: #0da271;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+    color: white;
+}
+
+.modern-btn-secondary {
+    background-color: var(--secondary-color);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.modern-btn-secondary:hover {
+    background-color: #2563eb;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+    color: white;
+}
+
+.modern-btn-secondary.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+.modern-btn-outline {
+    background-color: transparent;
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-primary);
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.modern-btn-outline:hover {
+    background-color: var(--background-color);
+    border-color: var(--primary-color);
+    color: var(--text-primary);
+    transform: translateY(-2px);
+}
+
 /* Profile-specific styles */
 .avatar-large {
     width: 80px;
     height: 80px;
-    border: 3px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    border: 3px solid var(--border-color);
+    box-shadow: var(--shadow);
 }
 
 .avatar-preview {
@@ -226,8 +311,8 @@
 }
 
 .stat-item {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 1rem;
     display: flex;
@@ -237,8 +322,9 @@
 }
 
 .stat-item:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background-color: var(--surface-color);
     transform: translateY(-2px);
+    box-shadow: var(--shadow);
 }
 
 .stat-icon {
@@ -248,8 +334,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.1);
+    background-color: var(--surface-color);
     border-radius: 10px;
+    color: var(--primary-color);
 }
 
 .stat-content {
@@ -258,12 +345,12 @@
 
 .stat-value {
     font-weight: 700;
-    color: white;
+    color: var(--text-primary);
     font-size: 0.9rem;
 }
 
 .stat-label {
-    color: #94a3b8;
+    color: var(--text-secondary);
     font-size: 0.8rem;
 }
 
@@ -275,10 +362,7 @@
 .stat-number-sm {
     font-size: 1.8rem;
     font-weight: 800;
-    background: var(--gradient-1);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--primary-color);
     line-height: 1;
 }
 
@@ -286,32 +370,58 @@
     display: flex;
     align-items: center;
     padding: 0.5rem 0;
+    color: var(--text-primary);
 }
 
-.btn-outline-light {
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: #e2e8f0;
-    transition: all 0.3s ease;
+.badge {
+    border-radius: 8px;
+    font-weight: 600;
 }
 
-.btn-outline-light:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.5);
-    color: white;
-    transform: translateY(-1px);
+.text-muted {
+    color: var(--text-secondary) !important;
+}
+
+.text-primary {
+    color: var(--primary-color) !important;
 }
 
 /* Form enhancements */
 .form-label {
     margin-bottom: 0.5rem;
+    color: var(--text-primary);
 }
 
-.needs-validation .form-control-modern:invalid {
+.needs-validation .modern-input:invalid {
     border-color: #ef4444 !important;
 }
 
-.needs-validation .form-control-modern:valid {
+.needs-validation .modern-input:valid {
     border-color: #10b981 !important;
+}
+
+.invalid-feedback {
+    color: #ef4444;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* Modal styling */
+.modal-content {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+}
+
+.modal-header {
+    border-bottom-color: var(--border-color);
+}
+
+.modal-footer {
+    border-top-color: var(--border-color);
+}
+
+.btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
 }
 
 /* Responsive design */
@@ -333,6 +443,15 @@
         width: 40px;
         height: 40px;
         font-size: 1.2rem;
+    }
+    
+    .d-flex.gap-3 {
+        flex-direction: column;
+    }
+    
+    .modern-btn-primary,
+    .modern-btn-outline {
+        width: 100%;
     }
 }
 </style>
@@ -382,7 +501,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Input focus effects
-    const inputs = document.querySelectorAll('.form-control-modern');
+    const inputs = document.querySelectorAll('.modern-input');
     inputs.forEach(input => {
         input.addEventListener('focus', function() {
             this.parentElement.classList.add('focused');
@@ -399,7 +518,7 @@ function copyToClipboard(text) {
     navigator.clipboard.writeText(text).then(function() {
         // Show success message
         const toast = document.createElement('div');
-        toast.className = 'alert-modern position-fixed';
+        toast.className = 'alert alert-modern position-fixed';
         toast.style.cssText = 'top: 20px; right: 20px; z-index: 10000;';
         toast.innerHTML = '<i class="fas fa-check me-2"></i>Copied to clipboard!';
         document.body.appendChild(toast);

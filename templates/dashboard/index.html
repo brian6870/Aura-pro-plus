@@ -6,1400 +6,797 @@
     <div class="dashboard-header">
         <div class="welcome-section">
             <div class="user-info">
-                <h4 class="welcome-text">Welcome back, {{ current_user.username }}! 🌱</h4>
-                <p class="subtitle">Your sustainability journey is making a difference.</p>
+                <h1 class="welcome-text">Welcome back, {{ current_user.username }}</h1>
+                <p class="subtitle">Track your environmental impact and sustainability progress</p>
             </div>
-            <div class="streak-section">
-                <div class="streak-count">
-                    <span class="count">{{ current_streak }}</span>
-                    <span class="label">Day Streak</span>
+            <div class="header-stats">
+                <div class="header-stat">
+                    <div class="stat-value">{{ current_streak }}</div>
+                    <div class="stat-label">Day Streak</div>
+                </div>
+                <div class="header-stat">
+                    <div class="stat-value">{{ total_points }}</div>
+                    <div class="stat-label">Total Points</div>
+                </div>
+                <div class="header-stat">
+                    <div class="stat-value">{{ total_analyses }}</div>
+                    <div class="stat-label">Total Analyses</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modern Call of Duty Style Leaderboard -->
-    <div class="cod-leaderboard glass-card">
-        <div class="leaderboard-header">
-            <div class="header-content">
-                <div class="title-section">
-                    <div class="cod-icon">🎯</div>
-                    <h2 class="cod-title">TOP CONTRIBUTORS</h2>
-                    <div class="rankings-badge">GLOBAL</div>
+    <!-- Main Content Area -->
+    <div class="dashboard-content">
+        <!-- Left Section - Analysis Cards -->
+        <div class="dashboard-left">
+            <!-- Analysis Breakdown -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-chart-pie me-2"></i>
+                        Analysis Breakdown
+                    </h3>
                 </div>
-                <div class="stats-overview">
-                    <div class="stat-item">
-                        <span class="stat-number">{{ leaderboard|length }}</span>
-                        <span class="stat-label">WARRIORS</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {% if leaderboard %}
-        <!-- Top 3 Players with COD Style -->
-        <div class="top-players-section">
-            <div class="top-players-grid">
-                {% if leaderboard|length >= 2 %}
-                <!-- 2nd Place -->
-                <div class="player-card silver">
-                    <div class="player-rank">2</div>
-                    <div class="player-medal">🥈</div>
-                    <div class="player-avatar">
-                        {% if leaderboard[1].avatar_url and leaderboard[1].avatar_url != '/static/images/avatars/default.png' %}
-                        <img src="{{ leaderboard[1].avatar_url }}" alt="{{ leaderboard[1].username }}" class="avatar-img" loading="lazy">
-                        {% else %}
-                        <div class="avatar-fallback">{{ leaderboard[1].username[0]|upper }}</div>
-                        {% endif %}
-                    </div>
-                    <div class="player-info">
-                        <div class="player-name">{{ leaderboard[1].username }}</div>
-                        <div class="player-points">{{ leaderboard[1].total_points }} pts</div>
-                    </div>
-                </div>
-                {% endif %}
-
-                <!-- 1st Place -->
-                <div class="player-card gold">
-                    <div class="player-rank">1</div>
-                    <div class="player-medal">🥇</div>
-                    <div class="player-avatar">
-                        {% if leaderboard[0].avatar_url and leaderboard[0].avatar_url != '/static/images/avatars/default.png' %}
-                        <img src="{{ leaderboard[0].avatar_url }}" alt="{{ leaderboard[0].username }}" class="avatar-img" loading="lazy">
-                        {% else %}
-                        <div class="avatar-fallback">{{ leaderboard[0].username[0]|upper }}</div>
-                        {% endif %}
-                    </div>
-                    <div class="player-info">
-                        <div class="player-name">{{ leaderboard[0].username }}</div>
-                        <div class="player-points">{{ leaderboard[0].total_points }} pts</div>
-                    </div>
-                </div>
-
-                {% if leaderboard|length >= 3 %}
-                <!-- 3rd Place -->
-                <div class="player-card bronze">
-                    <div class="player-rank">3</div>
-                    <div class="player-medal">🥉</div>
-                    <div class="player-avatar">
-                        {% if leaderboard[2].avatar_url and leaderboard[2].avatar_url != '/static/images/avatars/default.png' %}
-                        <img src="{{ leaderboard[2].avatar_url }}" alt="{{ leaderboard[2].username }}" class="avatar-img" loading="lazy">
-                        {% else %}
-                        <div class="avatar-fallback">{{ leaderboard[2].username[0]|upper }}</div>
-                        {% endif %}
-                    </div>
-                    <div class="player-info">
-                        <div class="player-name">{{ leaderboard[2].username }}</div>
-                        <div class="player-points">{{ leaderboard[2].total_points }} pts</div>
-                    </div>
-                </div>
-                {% endif %}
-            </div>
-        </div>
-
-        <!-- Full Leaderboard List -->
-        <div class="leaderboard-list">
-            <div class="list-header">
-                <div class="header-rank">RANK</div>
-                <div class="header-player">WARRIOR</div>
-                <div class="header-points">POINTS</div>
-            </div>
-            
-            <div class="players-list">
-                {% for user in leaderboard %}
-                    {% if loop.index > 3 %}
-                    <div class="player-row {% if user.username == current_user.username %}current-user{% endif %}">
-                        <div class="row-rank">
-                            <span class="rank-number">{{ loop.index }}</span>
-                        </div>
-                        <div class="row-player">
-                            <div class="player-avatar-small">
-                                {% if user.avatar_url and user.avatar_url != '/static/images/avatars/default.png' %}
-                                <img src="{{ user.avatar_url }}" alt="{{ user.username }}" class="avatar-img" loading="lazy">
-                                {% else %}
-                                <div class="avatar-fallback-small">{{ user.username[0]|upper }}</div>
-                                {% endif %}
+                <div class="card-body">
+                    <div class="analysis-breakdown">
+                        <div class="breakdown-card">
+                            <div class="breakdown-icon product">
+                                <i class="fas fa-search"></i>
                             </div>
-                            <div class="player-details">
-                                <div class="player-name-sm">{{ user.username }}{% if user.username == current_user.username %} <span class="you-badge">YOU</span>{% endif %}</div>
+                            <div class="breakdown-content">
+                                <div class="breakdown-value">{{ product_analyses_count }}</div>
+                                <div class="breakdown-label">Product Analyses</div>
                             </div>
                         </div>
-                        <div class="row-points">{{ user.total_points }}</div>
+                        <div class="breakdown-card">
+                            <div class="breakdown-icon plastic">
+                                <i class="fas fa-recycle"></i>
+                            </div>
+                            <div class="breakdown-content">
+                                <div class="breakdown-value">{{ plastic_analyses_count }}</div>
+                                <div class="breakdown-label">Plastic Analyses</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Environmental Rating Distribution -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-chart-pie me-2"></i>
+                        Environmental Rating Distribution
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="rating-breakdown">
+                        {% set rating_counts = {'friendly': 0, 'moderate': 0, 'harmful': 0, 'hazardous': 0} %}
+                        {% for rating, count in rating_distribution %}
+                            {% if rating_counts.update({rating: count}) %}{% endif %}
+                        {% endfor %}
+                        
+                        {% set total_analyses = rating_counts.friendly + rating_counts.moderate + rating_counts.harmful + rating_counts.hazardous %}
+                        
+                        <div class="rating-stats-grid">
+                            <div class="rating-stat friendly">
+                                <div class="rating-stat-value">{{ rating_counts.friendly }}</div>
+                                <div class="rating-stat-label">Eco-Friendly</div>
+                                <div class="rating-stat-percentage">
+                                    {{ "%.1f"|format((rating_counts.friendly / total_analyses * 100) if total_analyses > 0 else 0) }}%
+                                </div>
+                            </div>
+                            <div class="rating-stat moderate">
+                                <div class="rating-stat-value">{{ rating_counts.moderate }}</div>
+                                <div class="rating-stat-label">Moderate</div>
+                                <div class="rating-stat-percentage">
+                                    {{ "%.1f"|format((rating_counts.moderate / total_analyses * 100) if total_analyses > 0 else 0) }}%
+                                </div>
+                            </div>
+                            <div class="rating-stat harmful">
+                                <div class="rating-stat-value">{{ rating_counts.harmful }}</div>
+                                <div class="rating-stat-label">Harmful</div>
+                                <div class="rating-stat-percentage">
+                                    {{ "%.1f"|format((rating_counts.harmful / total_analyses * 100) if total_analyses > 0 else 0) }}%
+                                </div>
+                            </div>
+                            <div class="rating-stat hazardous">
+                                <div class="rating-stat-value">{{ rating_counts.hazardous }}</div>
+                                <div class="rating-stat-label">Hazardous</div>
+                                <div class="rating-stat-percentage">
+                                    {{ "%.1f"|format((rating_counts.hazardous / total_analyses * 100) if total_analyses > 0 else 0) }}%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity - Moved below Environmental Rating Distribution -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-clock me-2"></i>
+                        Recent Activity
+                    </h3>
+                    <a href="{{ url_for('analysis.history') }}" class="view-all-link">View All</a>
+                </div>
+                <div class="card-body">
+                    {% if recent_analyses %}
+                    <div class="activity-timeline scrollable-content">
+                        {% for activity in recent_analyses %}
+                        <div class="activity-item {{ activity.environmental_rating }}">
+                            <div class="activity-icon {{ activity.environmental_rating }}">
+                                <i class="{{ activity.icon }}"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">{{ activity.display_name }}</div>
+                                <div class="activity-meta">
+                                    <span class="activity-type">
+                                        {% if activity.type == 'product' %}
+                                        <i class="fas fa-search"></i> Product
+                                        {% else %}
+                                        <i class="fas fa-recycle"></i> Plastic
+                                        {% endif %}
+                                    </span>
+                                    <span class="activity-time">{{ activity.created_at.strftime('%H:%M') }}</span>
+                                    <span class="activity-date">{{ activity.created_at.strftime('%b %d') }}</span>
+                                    <span class="activity-points">+{{ activity.points_awarded }} pts</span>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-search"></i>
+                        <p>No recent activity</p>
+                        <div class="action-buttons">
+                            <a href="{{ url_for('analysis.input_form') }}" class="btn btn-primary btn-sm">Analyze Ingredients</a>
+                            <a href="{{ url_for('plastic.analyze_plastic') }}" class="btn btn-secondary btn-sm">Analyze Plastic</a>
+                        </div>
                     </div>
                     {% endif %}
-                {% endfor %}
+                </div>
             </div>
         </div>
-        {% else %}
-        <!-- Empty State -->
-        <div class="empty-leaderboard">
-            <div class="empty-icon">🎮</div>
-            <h3>Leaderboard is Empty</h3>
-            <p>Be the first to analyze products and claim the top spot!</p>
-            <a href="{{ url_for('analysis.input_form') }}" class="cod-button">START ANALYZING</a>
-        </div>
-        {% endif %}
-    </div>
 
-    <!-- Stats Grid -->
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-icon trophy">🏆</div>
-            <div class="stat-value">{{ total_points }}</div>
-            <div class="stat-label">Total Points</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon search">🔍</div>
-            <div class="stat-value">{{ total_analyses }}</div>
-            <div class="stat-label">Products Analyzed</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon calendar">📅</div>
-            <div class="stat-value">{{ current_streak }}</div>
-            <div class="stat-label">Current Streak</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon chart">📈</div>
-            <div class="stat-value">{{ recent_points }}</div>
-            <div class="stat-label">Recent Points (30d)</div>
-        </div>
-    </div>
-
-    <!-- Enhanced Product Rating Distribution -->
-    <div class="enhanced-rating-section">
-        <div class="chart-section glass-card">
-            <h5 class="section-title">
-                <span class="icon">📊</span>
-                Product Rating Distribution
-            </h5>
-            
-            {% set rating_counts = {'friendly': 0, 'moderate': 0, 'harmful': 0, 'hazardous': 0} %}
-            {% for rating, count in rating_distribution %}
-                {% if rating_counts.update({rating: count}) %}{% endif %}
-            {% endfor %}
-            
-            {% set total_analyses = rating_counts.friendly + rating_counts.moderate + rating_counts.harmful + rating_counts.hazardous %}
-            
-            <div class="rating-distribution">
-                <div class="rating-item">
-                    <div class="rating-icon friendly">🌿</div>
-                    <div class="rating-content">
-                        <div class="rating-header">
-                            <div class="rating-name">Eco-Friendly</div>
-                            <div class="rating-count">{{ rating_counts.friendly }} products</div>
-                        </div>
-                        <div class="rating-bar-container">
-                            <div class="rating-bar friendly" style="width: {{ (rating_counts.friendly / total_analyses * 100) if total_analyses > 0 else 0 }}%">
-                                <span class="rating-percentage">{{ "%.0f"|format((rating_counts.friendly / total_analyses * 100) if total_analyses > 0 else 0) }}%</span>
-                            </div>
-                        </div>
-                    </div>
+        <!-- Right Section - Leaderboard -->
+        <div class="dashboard-right">
+            <!-- Leaderboard -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-trophy me-2"></i>
+                        Top Contributors
+                    </h3>
                 </div>
-                
-                <div class="rating-item">
-                    <div class="rating-icon moderate">⚖️</div>
-                    <div class="rating-content">
-                        <div class="rating-header">
-                            <div class="rating-name">Moderate Impact</div>
-                            <div class="rating-count">{{ rating_counts.moderate }} products</div>
-                        </div>
-                        <div class="rating-bar-container">
-                            <div class="rating-bar moderate" style="width: {{ (rating_counts.moderate / total_analyses * 100) if total_analyses > 0 else 0 }}%">
-                                <span class="rating-percentage">{{ "%.0f"|format((rating_counts.moderate / total_analyses * 100) if total_analyses > 0 else 0) }}%</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="rating-item">
-                    <div class="rating-icon harmful">⚠️</div>
-                    <div class="rating-content">
-                        <div class="rating-header">
-                            <div class="rating-name">Harmful</div>
-                            <div class="rating-count">{{ rating_counts.harmful }} products</div>
-                        </div>
-                        <div class="rating-bar-container">
-                            <div class="rating-bar harmful" style="width: {{ (rating_counts.harmful / total_analyses * 100) if total_analyses > 0 else 0 }}%">
-                                <span class="rating-percentage">{{ "%.0f"|format((rating_counts.harmful / total_analyses * 100) if total_analyses > 0 else 0) }}%</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="rating-item">
-                    <div class="rating-icon hazardous">🚫</div>
-                    <div class="rating-content">
-                        <div class="rating-header">
-                            <div class="rating-name">Hazardous</div>
-                            <div class="rating-count">{{ rating_counts.hazardous }} products</div>
-                        </div>
-                        <div class="rating-bar-container">
-                            <div class="rating-bar hazardous" style="width: {{ (rating_counts.hazardous / total_analyses * 100) if total_analyses > 0 else 0 }}%">
-                                <span class="rating-percentage">{{ "%.0f"|format((rating_counts.hazardous / total_analyses * 100) if total_analyses > 0 else 0) }}%</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="rating-summary">
-                <div class="summary-item">
-                    <div class="summary-value">{{ total_analyses }}</div>
-                    <div class="summary-label">Total Products</div>
-                </div>
-                <div class="summary-item">
-                    <div class="summary-value">{{ rating_counts.friendly }}</div>
-                    <div class="summary-label">Eco-Friendly</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Recently Analyzed Section -->
-    <div class="recently-analyzed-section">
-        <div class="recent-section glass-card">
-            <div class="section-header">
-                <h5 class="section-title">
-                    <span class="icon">🕒</span>
-                    Recently Analyzed
-                </h5>
-                <a href="{{ url_for('analysis.history') }}" class="view-all-btn">View All</a>
-            </div>
-            
-            {% if recent_analyses %}
-                <div class="analyses-grid">
-                    {% for analysis in recent_analyses %}
-                    <div class="analysis-card {{ analysis.environmental_rating }}">
-                        <div class="analysis-icon">
-                            {% if analysis.environmental_rating == 'friendly' %}🌿
-                            {% elif analysis.environmental_rating == 'moderate' %}⚖️
-                            {% elif analysis.environmental_rating == 'harmful' %}⚠️
-                            {% else %}🚫{% endif %}
-                        </div>
-                        <div class="analysis-content">
-                            <div class="analysis-product">{{ analysis.product_name[:30] }}{% if analysis.product_name|length > 30 %}...{% endif %}</div>
-                            <div class="analysis-meta">
-                                <div class="analysis-date">
-                                    <span>📅</span>
-                                    {{ analysis.created_at.strftime('%b %d, %Y') }}
+                <div class="card-body">
+                    {% if leaderboard %}
+                    <div class="leaderboard scrollable-content">
+                        {% for user in leaderboard %}
+                        <div class="leaderboard-item {% if user.username == current_user.username %}current-user{% endif %}">
+                            <div class="leaderboard-rank">{{ loop.index }}</div>
+                            <div class="leaderboard-user">
+                                <div class="user-avatar">
+                                    {% if user.avatar_url and user.avatar_url != '/static/images/avatars/default.png' %}
+                                    <img src="{{ user.avatar_url }}" alt="{{ user.username }}" class="avatar-img">
+                                    {% else %}
+                                    <div class="avatar-fallback">{{ user.username[0]|upper }}</div>
+                                    {% endif %}
                                 </div>
-                                <div class="analysis-rating rating-{{ analysis.environmental_rating }}">
-                                    {{ analysis.environmental_rating|title }}
+                                <div class="user-info">
+                                    <div class="user-name">
+                                        {{ user.username }}
+                                        {% if user.username == current_user.username %}
+                                        <span class="you-badge">You</span>
+                                        {% endif %}
+                                    </div>
                                 </div>
                             </div>
+                            <div class="leaderboard-points">{{ user.total_points }} pts</div>
                         </div>
-                        <div class="analysis-points">+{{ analysis.points_awarded }}</div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
+                    {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-trophy"></i>
+                        <p>No leaderboard data available</p>
+                    </div>
+                    {% endif %}
                 </div>
-            {% else %}
-                <div class="enhanced-empty-state">
-                    <div class="enhanced-empty-icon">🔍</div>
-                    <p class="enhanced-empty-text">No analyses yet</p>
-                    <p class="enhanced-empty-subtext">Start analyzing products to track your environmental impact and earn points</p>
-                    <a href="{{ url_for('analysis.input_form') }}" class="enhanced-action-btn">Analyze First Product</a>
-                </div>
-            {% endif %}
+            </div>
         </div>
     </div>
 </div>
 
 <style>
-/* Base Styles */
 .dashboard-container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 16px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    padding: 24px;
+    min-height: calc(100vh - 80px);
 }
 
-/* Glass Card Effect */
-.glass-card {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 16px;
-    padding: 0;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    color: white;
-    overflow: hidden;
-}
-
-/* Welcome Banner */
+/* Dashboard Header */
 .dashboard-header {
-    margin-bottom: 20px;
+    margin-bottom: 32px;
 }
 
 .welcome-section {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.8) 100%);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
     border-radius: 16px;
-    padding: 20px;
-    color: white;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-    position: relative;
-    overflow: hidden;
+    padding: 32px;
+    color: var(--text-primary);
+    box-shadow: var(--shadow);
 }
 
 .welcome-text {
-    margin: 0 0 8px 0;
+    font-size: 2rem;
     font-weight: 700;
-    font-size: 1.25rem;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    margin-bottom: 8px;
 }
 
 .subtitle {
+    font-size: 1rem;
+    color: var(--text-secondary);
     margin: 0;
-    opacity: 0.9;
-    font-size: 0.9rem;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
 }
 
-.streak-section {
+.header-stats {
     display: flex;
-    align-items: center;
-    gap: 12px;
-    position: relative;
-    z-index: 2;
+    gap: 32px;
 }
 
-.streak-count {
+.header-stat {
     text-align: center;
-    position: relative;
-    z-index: 2;
 }
 
-.count {
-    display: block;
+.stat-value {
+    font-size: 2.5rem;
     font-weight: 700;
-    font-size: 1.4rem;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-}
-
-.label {
-    font-size: 0.8rem;
-    opacity: 0.9;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.3);
-}
-
-/* Call of Duty Style Leaderboard */
-.cod-leaderboard {
-    background: linear-gradient(135deg, rgba(16, 20, 40, 0.9) 0%, rgba(32, 40, 80, 0.9) 100%);
-    border: 1px solid rgba(100, 150, 255, 0.3);
-    margin-bottom: 20px;
-}
-
-.leaderboard-header {
-    background: linear-gradient(90deg, rgba(100, 150, 255, 0.2) 0%, rgba(150, 200, 255, 0.1) 100%);
-    padding: 20px;
-    border-bottom: 1px solid rgba(100, 150, 255, 0.3);
-}
-
-.header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 16px;
-}
-
-.title-section {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.cod-icon {
-    font-size: 1.8rem;
-    filter: drop-shadow(0 2px 4px rgba(100, 150, 255, 0.6));
-}
-
-.cod-title {
-    margin: 0;
-    font-size: 1.4rem;
-    font-weight: 800;
-    background: linear-gradient(135deg, #fff, #a0c0ff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.rankings-badge {
-    background: linear-gradient(135deg, #ff6b35, #ff8e53);
-    color: white;
-    padding: 6px 12px;
-    border-radius: 16px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.stats-overview {
-    display: flex;
-    gap: 20px;
-}
-
-.stat-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2px;
-}
-
-.stat-number {
-    font-size: 1.2rem;
-    font-weight: 800;
-    color: #64ffda;
+    line-height: 1;
+    margin-bottom: 4px;
+    color: var(--primary-color);
 }
 
 .stat-label {
-    font-size: 0.65rem;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.875rem;
+    color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
-/* Top Players Section */
-.top-players-section {
-    padding: 24px 20px;
-    background: rgba(0, 0, 0, 0.2);
-}
-
-.top-players-grid {
+/* Dashboard Content Layout */
+.dashboard-content {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 16px;
-    max-width: 700px;
-    margin: 0 auto;
+    grid-template-columns: 1fr 400px;
+    gap: 24px;
+    align-items: start;
 }
 
-.player-card {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    padding: 20px 16px;
-    text-align: center;
-    position: relative;
-    border: 2px solid transparent;
+.dashboard-left {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.dashboard-right {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Dashboard Cards */
+.dashboard-card {
+    background: var(--surface-color);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
     transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
 }
 
-.player-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+.dashboard-card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
 }
 
-.player-card.gold {
-    border-color: #ffd700;
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 237, 78, 0.05));
+.card-header {
+    padding: 20px 24px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
 }
 
-.player-card.silver {
-    border-color: #c0c0c0;
-    background: linear-gradient(135deg, rgba(192, 192, 192, 0.1), rgba(226, 226, 226, 0.05));
+.card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
 }
 
-.player-card.bronze {
-    border-color: #cd7f32;
-    background: linear-gradient(135deg, rgba(205, 127, 50, 0.1), rgba(226, 167, 104, 0.05));
+.card-title i {
+    color: var(--primary-color);
 }
 
-.player-rank {
-    position: absolute;
-    top: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
+.view-all-link {
+    font-size: 0.875rem;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.view-all-link:hover {
+    color: var(--secondary-color);
+    text-decoration: underline;
+}
+
+.card-body {
+    padding: 0 24px 24px;
+}
+
+/* Analysis Breakdown */
+.analysis-breakdown {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.breakdown-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: all 0.3s ease;
+}
+
+.breakdown-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.breakdown-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 800;
-    font-size: 0.8rem;
-    border: 2px solid currentColor;
+    font-size: 1.2rem;
+    color: white;
 }
 
-.player-card.gold .player-rank {
-    color: #ffd700;
+.breakdown-icon.product {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
 }
 
-.player-card.silver .player-rank {
-    color: #c0c0c0;
+.breakdown-icon.plastic {
+    background: linear-gradient(135deg, #10b981, #059669);
 }
 
-.player-card.bronze .player-rank {
-    color: #cd7f32;
+.breakdown-content {
+    flex: 1;
 }
 
-.player-medal {
-    font-size: 2.2rem;
-    margin-bottom: 10px;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+.breakdown-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1;
 }
 
-.player-avatar {
-    width: 60px;
-    height: 60px;
-    margin: 0 auto 10px;
+.breakdown-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    font-weight: 500;
+}
+
+/* Rating Distribution */
+.rating-stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.rating-stat {
+    padding: 16px;
+    border-radius: 12px;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+}
+
+.rating-stat:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.rating-stat.friendly {
+    background-color: var(--surface-color);
+    color: var(--text-primary);
+    border-left: 4px solid #10b981;
+}
+
+.rating-stat.moderate {
+    background-color: var(--surface-color);
+    color: var(--text-primary);
+    border-left: 4px solid #f59e0b;
+}
+
+.rating-stat.harmful {
+    background-color: var(--surface-color);
+    color: var(--text-primary);
+    border-left: 4px solid #ef4444;
+}
+
+.rating-stat.hazardous {
+    background-color: var(--surface-color);
+    color: var(--text-primary);
+    border-left: 4px solid #8b5cf6;
+}
+
+.rating-stat-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.rating-stat-label {
+    font-size: 0.875rem;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+}
+
+.rating-stat-percentage {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+/* Leaderboard */
+.leaderboard {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.leaderboard-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.leaderboard-item:hover {
+    background-color: var(--background-color);
+    border-color: var(--border-color);
+}
+
+.leaderboard-item.current-user {
+    background-color: rgba(16, 185, 129, 0.1);
+    border-left: 3px solid var(--primary-color);
+}
+
+.leaderboard-rank {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--border-color);
+    border-radius: 50%;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-right: 12px;
+    color: var(--text-primary);
+}
+
+.leaderboard-item:nth-child(1) .leaderboard-rank {
+    background-color: #ffd700;
+    color: var(--text-primary);
+}
+
+.leaderboard-item:nth-child(2) .leaderboard-rank {
+    background-color: #c0c0c0;
+    color: var(--text-primary);
+}
+
+.leaderboard-item:nth-child(3) .leaderboard-rank {
+    background-color: #cd7f32;
+    color: white;
+}
+
+.leaderboard-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+}
+
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--border-color);
 }
 
 .avatar-img {
     width: 100%;
     height: 100%;
-    border-radius: 50%;
     object-fit: cover;
-    border: 2px solid rgba(255, 255, 255, 0.3);
 }
 
 .avatar-fallback {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 1.2rem;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-}
-
-.player-info {
-    margin-bottom: 0;
-}
-
-.player-name {
-    font-size: 0.95rem;
-    font-weight: 700;
-    margin-bottom: 4px;
-    color: white;
-    line-height: 1.2;
-}
-
-.player-points {
-    font-size: 0.85rem;
-    color: #64ffda;
     font-weight: 600;
+    color: var(--text-secondary);
 }
 
-/* Leaderboard List */
-.leaderboard-list {
-    padding: 0 20px 20px;
-}
-
-.list-header {
-    display: grid;
-    grid-template-columns: 60px 1fr 80px;
-    gap: 12px;
-    padding: 12px 16px;
-    background: rgba(100, 150, 255, 0.1);
-    border-radius: 8px;
-    margin-bottom: 8px;
-    font-weight: 700;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #a0c0ff;
-}
-
-.players-list {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    max-height: 300px;
-    overflow-y: auto;
-}
-
-.player-row {
-    display: grid;
-    grid-template-columns: 60px 1fr 80px;
-    gap: 12px;
-    padding: 12px 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    transition: all 0.3s ease;
-    align-items: center;
-    font-size: 0.9rem;
-}
-
-.player-row:hover {
-    background: rgba(100, 150, 255, 0.1);
-    transform: translateX(2px);
-}
-
-.player-row.current-user {
-    background: rgba(100, 150, 255, 0.2);
-    border: 1px solid rgba(100, 150, 255, 0.4);
-}
-
-.row-rank {
-    text-align: center;
-}
-
-.rank-number {
-    font-weight: 800;
-    font-size: 0.95rem;
-    color: #64ffda;
-}
-
-.row-player {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.player-avatar-small {
-    width: 32px;
-    height: 32px;
-}
-
-.avatar-fallback-small {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    font-size: 0.8rem;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.player-details {
+.user-info {
     flex: 1;
 }
 
-.player-name-sm {
-    font-weight: 600;
-    color: white;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.9rem;
-}
-
-.you-badge {
-    background: #64ffda;
-    color: #1a1f36;
-    padding: 1px 6px;
-    border-radius: 3px;
-    font-size: 0.65rem;
-    font-weight: 800;
-    text-transform: uppercase;
-}
-
-.row-points {
-    font-weight: 700;
-    color: #64ffda;
-    text-align: center;
-    font-size: 0.9rem;
-}
-
-/* Empty State */
-.empty-leaderboard {
-    text-align: center;
-    padding: 40px 30px;
-}
-
-.empty-leaderboard .empty-icon {
-    font-size: 3rem;
-    margin-bottom: 16px;
-    opacity: 0.7;
-}
-
-.empty-leaderboard h3 {
-    margin: 0 0 10px 0;
-    color: white;
-    font-size: 1.3rem;
-}
-
-.empty-leaderboard p {
-    margin: 0 0 20px 0;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.9rem;
-}
-
-.cod-button {
-    background: linear-gradient(135deg, #ff6b35, #ff8e53);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: 700;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    transition: all 0.3s ease;
-    border: none;
-    cursor: pointer;
-    display: inline-block;
-}
-
-.cod-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
-    color: white;
-    text-decoration: none;
-}
-
-/* Stats Grid */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin-bottom: 20px;
-}
-
-.stat-card {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 12px;
-    padding: 16px;
-    text-align: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
-    color: white;
-}
-
-.stat-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-    background: rgba(255, 255, 255, 0.15);
-}
-
-.stat-icon {
-    width: 40px;
-    height: 40px;
-    margin: 0 auto 8px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    background: rgba(255, 255, 255, 0.2);
-}
-
-.stat-value {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 4px;
-    color: white;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-}
-
-.stat-label {
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.8);
-}
-
-/* Enhanced Product Rating Section */
-.enhanced-rating-section {
-    width: 100%;
-    margin-bottom: 20px;
-}
-
-.chart-section {
-    margin-bottom: 0;
-    width: 100%;
-    padding: 20px;
-}
-
-.section-title {
+.user-name {
+    font-weight: 500;
     display: flex;
     align-items: center;
     gap: 8px;
-    margin: 0 0 16px 0;
-    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.you-badge {
+    background-color: var(--primary-color);
     color: white;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 10px;
 }
 
-.icon {
-    font-size: 1.2rem;
+.leaderboard-points {
+    font-weight: 600;
+    color: var(--text-primary);
 }
 
-.rating-distribution {
+/* Activity Timeline */
+.activity-timeline {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
 }
 
-.rating-item {
+.activity-item {
     display: flex;
     align-items: center;
     gap: 12px;
     padding: 12px;
-    background: rgba(255, 255, 255, 0.05);
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
 }
 
-.rating-item:hover {
-    background: rgba(255, 255, 255, 0.08);
-    transform: translateX(4px);
+.activity-item:hover {
+    background-color: var(--background-color);
+    border-color: var(--border-color);
 }
 
-.rating-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
+.activity-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.2rem;
+    color: white;
     flex-shrink: 0;
 }
 
-.rating-icon.friendly { background: rgba(72, 187, 120, 0.2); border: 1px solid rgba(72, 187, 120, 0.4); }
-.rating-icon.moderate { background: rgba(237, 137, 54, 0.2); border: 1px solid rgba(237, 137, 54, 0.4); }
-.rating-icon.harmful { background: rgba(229, 62, 62, 0.2); border: 1px solid rgba(229, 62, 62, 0.4); }
-.rating-icon.hazardous { background: rgba(128, 90, 213, 0.2); border: 1px solid rgba(128, 90, 213, 0.4); }
+.activity-icon.friendly { background-color: #10b981; }
+.activity-icon.moderate { background-color: #f59e0b; }
+.activity-icon.harmful { background-color: #ef4444; }
+.activity-icon.hazardous { background-color: #8b5cf6; }
 
-.rating-content {
+.activity-content {
     flex: 1;
-    min-width: 0;
 }
 
-.rating-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 6px;
-}
-
-.rating-name {
-    font-weight: 600;
-    color: white;
-    font-size: 0.9rem;
-}
-
-.rating-count {
-    font-weight: 700;
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 0.9rem;
-}
-
-.rating-bar-container {
-    width: 100%;
-    height: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-    overflow: hidden;
-    position: relative;
-}
-
-.rating-bar {
-    height: 100%;
-    border-radius: 4px;
-    transition: width 1s ease-in-out;
-    position: relative;
-}
-
-.rating-bar.friendly { background: linear-gradient(90deg, #48bb78, #68d391); }
-.rating-bar.moderate { background: linear-gradient(90deg, #ed8936, #f6ad55); }
-.rating-bar.harmful { background: linear-gradient(90deg, #e53e3e, #fc8181); }
-.rating-bar.hazardous { background: linear-gradient(90deg, #805ad5, #b794f4); }
-
-.rating-percentage {
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: white;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-}
-
-.rating-summary {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-top: 16px;
-    padding: 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.summary-item {
-    text-align: center;
-    padding: 12px;
-}
-
-.summary-value {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: white;
-    margin-bottom: 4px;
-}
-
-.summary-label {
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.8);
+.activity-title {
     font-weight: 500;
-}
-
-/* Recently Analyzed Section */
-.recently-analyzed-section {
-    width: 100%;
-}
-
-.recent-section {
-    width: 100%;
-    height: fit-content;
-    padding: 20px;
-}
-
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-}
-
-.view-all-btn {
-    background: rgba(102, 126, 234, 0.8);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    padding: 8px 16px;
-    border-radius: 8px;
-    font-size: 0.8rem;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
-}
-
-.view-all-btn:hover {
-    background: rgba(102, 126, 234, 1);
-    color: white;
-    text-decoration: none;
-    transform: translateY(-2px);
-}
-
-.analyses-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.analysis-card {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.analysis-card:hover {
-    background: rgba(255, 255, 255, 0.08);
-    transform: translateX(4px);
-}
-
-.analysis-card::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 4px;
-}
-
-.analysis-card.friendly::before { background: linear-gradient(180deg, #48bb78, #68d391); }
-.analysis-card.moderate::before { background: linear-gradient(180deg, #ed8936, #f6ad55); }
-.analysis-card.harmful::before { background: linear-gradient(180deg, #e53e3e, #fc8181); }
-.analysis-card.hazardous::before { background: linear-gradient(180deg, #805ad5, #b794f4); }
-
-.analysis-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.3rem;
-    flex-shrink: 0;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.analysis-content {
-    flex: 1;
-    min-width: 0;
-}
-
-.analysis-product {
-    font-weight: 600;
-    color: white;
     margin-bottom: 4px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 0.95rem;
+    color: var(--text-primary);
 }
 
-.analysis-meta {
+.activity-meta {
     display: flex;
-    align-items: center;
     gap: 12px;
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.75rem;
+    color: var(--text-secondary);
 }
 
-.analysis-date {
+.activity-type {
     display: flex;
     align-items: center;
     gap: 4px;
 }
 
-.analysis-rating {
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 0.75rem;
+.activity-points {
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    color: var(--primary-color);
 }
 
-.rating-friendly { background: rgba(72, 187, 120, 0.3); color: #c6f6d5; border: 1px solid rgba(72, 187, 120, 0.5); }
-.rating-moderate { background: rgba(237, 137, 54, 0.3); color: #fed7aa; border: 1px solid rgba(237, 137, 54, 0.5); }
-.rating-harmful { background: rgba(229, 62, 62, 0.3); color: #fed7d7; border: 1px solid rgba(229, 62, 62, 0.5); }
-.rating-hazardous { background: rgba(128, 90, 213, 0.3); color: #e9d8fd; border: 1px solid rgba(128, 90, 213, 0.5); }
-
-.analysis-points {
-    font-weight: 700;
-    color: #68d391;
-    font-size: 0.95rem;
-    background: rgba(104, 211, 145, 0.1);
-    padding: 6px 10px;
-    border-radius: 8px;
-    border: 1px solid rgba(104, 211, 145, 0.3);
-    flex-shrink: 0;
+/* Scrollable Content */
+.scrollable-content {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 8px;
 }
 
-/* Enhanced Empty States */
-.enhanced-empty-state {
+/* Custom scrollbar styling */
+.scrollable-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.scrollable-content::-webkit-scrollbar-track {
+    background: var(--background-color);
+    border-radius: 3px;
+}
+
+.scrollable-content::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 3px;
+}
+
+.scrollable-content::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
+}
+
+/* Empty States */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
     text-align: center;
-    padding: 48px 24px;
+    color: var(--text-secondary);
 }
 
-.enhanced-empty-icon {
-    font-size: 4rem;
-    margin-bottom: 20px;
-    opacity: 0.7;
-    filter: grayscale(0.3);
+.empty-state i {
+    font-size: 3rem;
+    margin-bottom: 16px;
+    color: var(--border-color);
 }
 
-.enhanced-empty-text {
-    margin: 0 0 12px 0;
-    color: rgba(255, 255, 255, 0.9);
-    font-weight: 600;
-    font-size: 1.1rem;
+.empty-state p {
+    margin-bottom: 8px;
+    font-weight: 500;
 }
 
-.enhanced-empty-subtext {
-    margin: 0 0 24px 0;
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 0.9rem;
-    line-height: 1.4;
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
 }
 
-.enhanced-action-btn {
+.btn {
     display: inline-block;
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.9), rgba(118, 75, 162, 0.9));
-    color: white;
-    padding: 12px 24px;
-    border-radius: 10px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
     text-decoration: none;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
 }
 
-.enhanced-action-btn:hover {
-    background: linear-gradient(135deg, rgba(102, 126, 234, 1), rgba(118, 75, 162, 1));
+.btn-primary {
+    background-color: var(--primary-color);
     color: white;
-    text-decoration: none;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
-/* Animation Enhancements */
-@keyframes slideInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.btn-primary:hover {
+    background-color: #0da271;
+    color: white;
 }
 
-.rating-item, .analysis-card {
-    animation: slideInUp 0.5s ease-out;
+.btn-secondary {
+    background-color: var(--border-color);
+    color: var(--text-primary);
 }
 
-.rating-item:nth-child(1) { animation-delay: 0.1s; }
-.rating-item:nth-child(2) { animation-delay: 0.2s; }
-.rating-item:nth-child(3) { animation-delay: 0.3s; }
-.rating-item:nth-child(4) { animation-delay: 0.4s; }
+.btn-secondary:hover {
+    background-color: #d1d5db;
+    color: var(--text-primary);
+}
 
-.analysis-card:nth-child(1) { animation-delay: 0.1s; }
-.analysis-card:nth-child(2) { animation-delay: 0.2s; }
-.analysis-card:nth-child(3) { animation-delay: 0.3s; }
-.analysis-card:nth-child(4) { animation-delay: 0.4s; }
-.analysis-card:nth-child(5) { animation-delay: 0.5s; }
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+}
 
 /* Responsive Design */
-@media (max-width: 767px) {
-    .top-players-grid {
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 8px;
+@media (max-width: 1200px) {
+    .dashboard-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .dashboard-right {
         max-width: 100%;
     }
-    
-    .player-card {
-        padding: 12px 8px;
-        min-height: 140px;
+}
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 16px;
     }
     
-    .player-medal {
-        font-size: 1.6rem;
-        margin-bottom: 6px;
-    }
-    
-    .player-avatar {
-        width: 40px;
-        height: 40px;
-        margin: 0 auto 6px;
-    }
-    
-    .avatar-fallback {
-        font-size: 0.9rem;
-    }
-    
-    .player-name {
-        font-size: 0.8rem;
-        margin-bottom: 2px;
-    }
-    
-    .player-points {
-        font-size: 0.75rem;
-    }
-    
-    .player-rank {
-        width: 22px;
-        height: 22px;
-        font-size: 0.7rem;
-        top: -8px;
-    }
-    
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-    }
-    
-    .stat-card {
-        padding: 14px;
-    }
-    
-    .header-content {
-        flex-direction: column;
-        text-align: center;
-        gap: 12px;
-    }
-    
-    .title-section {
-        flex-direction: column;
-        gap: 10px;
-    }
-    
-    /* Mobile improvements for enhanced sections */
-    .rating-item {
-        padding: 10px;
-        gap: 10px;
-    }
-    
-    .rating-icon {
-        width: 36px;
-        height: 36px;
-        font-size: 1.1rem;
-    }
-    
-    .rating-header {
+    .welcome-section {
         flex-direction: column;
         align-items: flex-start;
-        gap: 4px;
-        margin-bottom: 8px;
+        gap: 24px;
     }
     
-    .rating-count {
-        font-size: 0.8rem;
+    .header-stats {
+        width: 100%;
+        justify-content: space-between;
     }
     
-    .analysis-card {
-        padding: 12px;
-        gap: 10px;
-    }
-    
-    .analysis-icon {
-        width: 36px;
-        height: 36px;
-        font-size: 1.1rem;
-    }
-    
-    .analysis-meta {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 6px;
-    }
-    
-    .analysis-points {
-        align-self: flex-start;
-    }
-    
-    .rating-summary {
+    .analysis-breakdown {
         grid-template-columns: 1fr;
-        gap: 8px;
-        padding: 12px;
     }
     
-    .summary-item {
-        padding: 10px;
+    .rating-stats-grid {
+        grid-template-columns: 1fr;
     }
     
-    .summary-value {
-        font-size: 1.3rem;
+    .action-buttons {
+        flex-direction: column;
     }
-}
-
-@media (min-width: 768px) {
-    .stats-grid {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 16px;
-    }
-    
-    .stat-card {
-        padding: 20px;
-    }
-    
-    .stat-value {
-        font-size: 1.75rem;
-    }
-    
-    .top-players-grid {
-        gap: 20px;
-    }
-    
-    .rating-distribution {
-        gap: 12px;
-    }
-    
-    .analyses-grid {
-        gap: 10px;
-    }
-    
-    .analysis-card {
-        padding: 14px 16px;
-    }
-}
-
-@media (min-width: 1024px) {
-    /* No changes needed for desktop layout */
 }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Leaderboard animations
-    function animateLeaderboard() {
-        const playerCards = document.querySelectorAll('.player-card');
-        const playerRows = document.querySelectorAll('.player-row');
-        
-        playerCards.forEach((card, index) => {
-            setTimeout(() => {
-                card.style.transform = 'translateY(10px)';
-                card.style.opacity = '0';
-                card.style.transition = 'all 0.4s ease';
-                
-                setTimeout(() => {
-                    card.style.transform = 'translateY(0)';
-                    card.style.opacity = '1';
-                }, 100);
-            }, index * 150);
-        });
-    }
+    // Add smooth animations
+    const cards = document.querySelectorAll('.dashboard-card');
+    cards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
+    });
 
-    // Progress bar animations
-    function animateProgressBars() {
-        const progressBars = document.querySelectorAll('.rating-bar');
-        progressBars.forEach(bar => {
-            const currentWidth = bar.style.width;
-            bar.style.width = '0%';
-            setTimeout(() => {
-                bar.style.width = currentWidth;
-            }, 300);
-        });
-    }
-
-    // Initialize animations
-    setTimeout(animateLeaderboard, 300);
-    setTimeout(animateProgressBars, 800);
-
-    // Add hover effects for interactive elements
-    const interactiveElements = document.querySelectorAll('.stat-card, .player-card, .player-row, .rating-item, .analysis-card');
+    // Add interactive hover effects
+    const interactiveElements = document.querySelectorAll('.rating-stat, .leaderboard-item, .activity-item, .breakdown-card');
     interactiveElements.forEach(element => {
         element.addEventListener('mouseenter', function() {
-            this.style.transform = this.style.transform.replace('translateY(0)', 'translateY(-2px)');
+            this.style.transform = 'translateY(-2px)';
         });
         
         element.addEventListener('mouseleave', function() {
-            this.style.transform = this.style.transform.replace('translateY(-2px)', 'translateY(0)');
+            this.style.transform = 'translateY(0)';
         });
     });
-
-    // Performance optimizations
-    if ('IntersectionObserver' in window) {
-        const lazyObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const img = entry.target;
-                    if (img.dataset.src) {
-                        img.src = img.dataset.src;
-                        img.classList.remove('lazy');
-                    }
-                    lazyObserver.unobserve(img);
-                }
-            });
-        });
-
-        document.querySelectorAll('img[data-src]').forEach(img => {
-            lazyObserver.observe(img);
-        });
-    }
 });
 </script>
 {% endblock %}

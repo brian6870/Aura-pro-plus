@@ -16,10 +16,11 @@ class User(UserMixin, db.Model):
     last_login = db.Column(db.DateTime)
     current_streak = db.Column(db.Integer, default=0)
     
-    # Relationships - use string references to avoid circular imports
-    analyses = db.relationship('ProductAnalysis', backref='user', lazy=True)
-    points_history = db.relationship('PointsHistory', backref='user', lazy=True)
-    login_streak = db.relationship('LoginStreak', backref='user', uselist=False, lazy=True)
+    # Relationships - using back_populates for clarity
+    product_analyses = db.relationship('ProductAnalysis', back_populates='user', lazy=True, cascade='all, delete-orphan')
+    plastic_analyses = db.relationship('PlasticAnalysis', back_populates='user', lazy=True, cascade='all, delete-orphan')
+    points_history = db.relationship('PointsHistory', back_populates='user', lazy=True, cascade='all, delete-orphan')
+    login_streak = db.relationship('LoginStreak', back_populates='user', uselist=False, lazy=True, cascade='all, delete-orphan')
     
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -28,17 +29,17 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
     
     def get_total_points(self):
-        from .points import PointsHistory  # Import here to avoid circular imports
+        from .points import PointsHistory
         return db.session.query(db.func.sum(PointsHistory.points)).filter(
             PointsHistory.user_id == self.id
         ).scalar() or 0
     
     def update_login_streak(self):
-        from .points import PointsHistory, LoginStreak  # Import here to avoid circular imports
+        from .points import PointsHistory, LoginStreak
         
         today = datetime.utcnow().date()
         if not self.login_streak:
-            self.login_streak = LoginStreak(user_id=self.id, total_streak_points=0)
+            self.login_streak = LoginStreak(user_id=self.id)
             db.session.add(self.login_streak)
         
         last_login = self.login_streak.last_login_date
@@ -54,7 +55,7 @@ class User(UserMixin, db.Model):
         self.login_streak.last_login_date = today
         self.current_streak = self.login_streak.streak_count
         
-        # Award streak points - ensure total_streak_points is not None
+        # Award streak points
         if self.login_streak.streak_count > 0:
             streak_points = PointsHistory(
                 user_id=self.id,
@@ -62,10 +63,6 @@ class User(UserMixin, db.Model):
                 source_type='streak_bonus'
             )
             db.session.add(streak_points)
-            
-            # Initialize total_streak_points if it's None
-            if self.login_streak.total_streak_points is None:
-                self.login_streak.total_streak_points = 0
             self.login_streak.total_streak_points += 5
         
         self.last_login = datetime.utcnow()

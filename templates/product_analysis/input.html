@@ -5,15 +5,15 @@
     <div class="row justify-content-center">
         <div class="col-lg-10">
             <!-- Header Card -->
-            <div class="glass-card p-4 mb-4 text-center">
-                <h1 class="display-6 fw-bold mb-3"><i class="fas fa-search me-3 text-info"></i>Analyze Product Ingredients</h1>
-                <p class="lead text-light mb-0">Discover the environmental impact of your products and make sustainable choices</p>
+            <div class="modern-card p-4 mb-4 text-center">
+                <h1 class="display-6 fw-bold mb-3"><i class="fas fa-search me-3 text-primary"></i>Analyze Product Ingredients</h1>
+                <p class="lead mb-0">Discover the environmental impact of your products and make sustainable choices</p>
             </div>
 
             <div class="row">
                 <!-- Main Input Card -->
                 <div class="col-lg-8 mb-4">
-                    <div class="glass-card p-4 h-100">
+                    <div class="modern-card p-4 h-100">
                         <h4 class="mb-4"><i class="fas fa-edit me-2 text-primary"></i>Enter Product Information</h4>
                         
                         <form id="analysisForm" method="POST" action="{{ url_for('analysis.analyze_ingredients') }}" enctype="multipart/form-data">
@@ -22,57 +22,57 @@
                             
                             <!-- Product Name Input -->
                             <div class="mb-4">
-                                <label for="product_name" class="form-label fw-semibold text-light mb-3">
+                                <label for="product_name" class="form-label fw-semibold mb-3">
                                     <i class="fas fa-tag me-2"></i>Product Name
                                 </label>
-                                <input type="text" class="form-control form-control-modern" id="product_name" name="product_name" 
+                                <input type="text" class="form-control modern-input" id="product_name" name="product_name" 
                                        placeholder="Enter the product name (e.g., 'Organic Shampoo', 'Eco-Friendly Cleaner')" required>
-                                <div class="form-text text-muted mt-2">
+                                <div class="form-text mt-2">
                                     <i class="fas fa-info-circle me-1"></i>This helps provide more personalized analysis results
                                 </div>
                             </div>
 
                             <!-- Text Input Section -->
                             <div class="mb-4">
-                                <label for="ingredients" class="form-label fw-semibold text-light mb-3">
+                                <label for="ingredients" class="form-label fw-semibold mb-3">
                                     <i class="fas fa-font me-2"></i>Ingredient List
                                 </label>
-                                <textarea class="form-control form-control-modern" id="ingredients" name="ingredients" rows="8" 
+                                <textarea class="form-control modern-input" id="ingredients" name="ingredients" rows="8" 
                                           placeholder="Enter or paste the list of ingredients here...&#10;&#10;Example:&#10;Water, Organic Aloe Vera Leaf Juice, Citric Acid, Potassium Sorbate, Sodium Benzoate, Natural Preservatives"></textarea>
-                                <div class="form-text text-muted mt-2">
+                                <div class="form-text mt-2">
                                     <i class="fas fa-info-circle me-1"></i>Be as detailed as possible for accurate analysis
                                 </div>
                             </div>
 
                             <!-- OR Divider -->
                             <div class="position-relative my-4">
-                                <hr class="my-4" style="border-color: rgba(255,255,255,0.2);">
-                                <div class="position-absolute top-50 start-50 translate-middle px-3">
-                                    <span class="bg-dark text-muted px-2 py-1 rounded">OR</span>
+                                <hr class="my-4">
+                                <div class="position-absolute top-50 start-50 translate-middle bg-surface-color px-3">
+                                    <span class="text-muted">OR</span>
                                 </div>
                             </div>
 
                             <!-- Image Upload Section -->
                             <div class="mb-4">
-                                <label for="imageUpload" class="form-label fw-semibold text-light mb-3">
+                                <label for="imageUpload" class="form-label fw-semibold mb-3">
                                     <i class="fas fa-camera me-2"></i>Upload Ingredient Label
                                 </label>
-                                <div class="file-upload-area glass-card p-4 text-center border-dashed">
-                                    <input class="form-control form-control-modern" type="file" id="imageUpload" name="image" accept="image/*" style="display: none;">
+                                <div class="file-upload-area modern-card p-4 text-center border-dashed">
+                                    <input class="form-control modern-input" type="file" id="imageUpload" name="image" accept="image/*" style="display: none;">
                                     <div class="upload-placeholder">
                                         <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
-                                        <h5 class="text-light">Drag & Drop or Click to Upload</h5>
-                                        <p class="text-muted mb-3">Supports JPG, PNG, GIF, BMP - Max 5MB</p>
-                                        <button type="button" class="btn btn-modern" id="chooseImageBtn">
+                                        <h5>Drag & Drop or Click to Upload</h5>
+                                        <p class="mb-3">Supports JPG, PNG, GIF, BMP - Max 5MB</p>
+                                        <button type="button" class="btn modern-btn-secondary" id="chooseImageBtn">
                                             <i class="fas fa-folder-open me-2"></i>Choose Image
                                         </button>
                                     </div>
                                     <div class="upload-preview d-none">
                                         <i class="fas fa-image fa-3x text-success mb-3"></i>
-                                        <h5 class="text-light">Image Ready for OCR</h5>
-                                        <p class="text-muted mb-3">Click analyze to process the image</p>
+                                        <h5>Image Ready for OCR</h5>
+                                        <p class="mb-3">Click analyze to process the image</p>
                                         <div class="d-flex gap-2 justify-content-center">
-                                            <button type="button" class="btn btn-outline-light btn-sm" onclick="clearImage()">
+                                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="clearImage()">
                                                 <i class="fas fa-times me-1"></i>Change
                                             </button>
                                         </div>
@@ -83,19 +83,19 @@
 
                             <!-- Extracted Text Display -->
                             <div id="extractedTextSection" class="mb-4" style="display: none;">
-                                <label class="form-label fw-semibold text-light mb-3">
+                                <label class="form-label fw-semibold mb-3">
                                     <i class="fas fa-text-height me-2"></i>Extracted Text
                                 </label>
-                                <div class="alert alert-info alert-modern mb-3">
+                                <div class="alert alert-modern mb-3">
                                     <i class="fas fa-lightbulb me-2"></i>
                                     <strong>Review & Edit:</strong> Check the extracted text and make any necessary corrections
                                 </div>
-                                <textarea class="form-control form-control-modern" id="extractedText" name="extracted_text" rows="6" placeholder="Extracted text will appear here..."></textarea>
+                                <textarea class="form-control modern-input" id="extractedText" name="extracted_text" rows="6" placeholder="Extracted text will appear here..."></textarea>
                                 <div class="d-flex gap-2 mt-3">
-                                    <button type="button" id="useExtractedText" class="btn btn-success">
+                                    <button type="button" id="useExtractedText" class="btn modern-btn-primary">
                                         <i class="fas fa-check me-2"></i>Use This Text
                                     </button>
-                                    <button type="button" id="retryOcr" class="btn btn-outline-light">
+                                    <button type="button" id="retryOcr" class="btn modern-btn-outline">
                                         <i class="fas fa-redo me-2"></i>Retry OCR
                                     </button>
                                 </div>
@@ -103,7 +103,7 @@
 
                             <!-- Submit Button -->
                             <div class="d-grid mt-4">
-                                <button type="submit" class="btn btn-modern btn-lg py-3">
+                                <button type="submit" class="btn modern-btn-primary btn-lg py-3">
                                     <i class="fas fa-leaf me-2"></i>Analyze Environmental Impact
                                 </button>
                             </div>
@@ -114,67 +114,67 @@
                 <!-- Tips & Info Sidebar -->
                 <div class="col-lg-4">
                     <!-- Tips Card -->
-                    <div class="glass-card p-4 mb-4">
-                        <h5 class="mb-3"><i class="fas fa-lightbulb me-2 text-warning"></i>Tips for Better Analysis</h5>
+                    <div class="modern-card p-4 mb-4">
+                        <h5 class="mb-3"><i class="fas fa-lightbulb me-2 text-primary"></i>Tips for Better Analysis</h5>
                         <div class="tips-list">
                             <div class="tip-item d-flex align-items-start mb-3">
                                 <i class="fas fa-tag text-primary mt-1 me-3"></i>
                                 <div>
                                     <strong>Product Name</strong>
-                                    <p class="text-muted mb-0 small">Include the specific product name for personalized results</p>
+                                    <p class="mb-0 small">Include the specific product name for personalized results</p>
                                 </div>
                             </div>
                             <div class="tip-item d-flex align-items-start mb-3">
-                                <i class="fas fa-camera text-info mt-1 me-3"></i>
+                                <i class="fas fa-camera text-primary mt-1 me-3"></i>
                                 <div>
                                     <strong>Clear Photos</strong>
-                                    <p class="text-muted mb-0 small">Take well-lit, focused pictures of ingredient labels</p>
+                                    <p class="mb-0 small">Take well-lit, focused pictures of ingredient labels</p>
                                 </div>
                             </div>
                             <div class="tip-item d-flex align-items-start mb-3">
-                                <i class="fas fa-list text-success mt-1 me-3"></i>
+                                <i class="fas fa-list text-primary mt-1 me-3"></i>
                                 <div>
                                     <strong>Complete Lists</strong>
-                                    <p class="text-muted mb-0 small">Include all ingredients for accurate assessment</p>
+                                    <p class="mb-0 small">Include all ingredients for accurate assessment</p>
                                 </div>
                             </div>
                             <div class="tip-item d-flex align-items-start">
-                                <i class="fas fa-search text-warning mt-1 me-3"></i>
+                                <i class="fas fa-search text-primary mt-1 me-3"></i>
                                 <div>
                                     <strong>Check Details</strong>
-                                    <p class="text-muted mb-0 small">Look for hidden ingredients and preservatives</p>
+                                    <p class="mb-0 small">Look for hidden ingredients and preservatives</p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- History Quick Access -->
-                    <div class="glass-card p-4">
-                        <h5 class="mb-3"><i class="fas fa-history me-2 text-info"></i>Analysis History</h5>
-                        <p class="text-muted small mb-3">View your previous product analyses and track your progress.</p>
-                        <a href="{{ url_for('analysis.history') }}" class="btn btn-outline-light w-100">
+                    <div class="modern-card p-4">
+                        <h5 class="mb-3"><i class="fas fa-history me-2 text-primary"></i>Analysis History</h5>
+                        <p class="small mb-3">View your previous product analyses and track your progress.</p>
+                        <a href="{{ url_for('analysis.history') }}" class="btn modern-btn-outline w-100">
                             <i class="fas fa-clock me-2"></i>View History
                         </a>
                     </div>
 
                     <!-- Environmental Impact Info -->
-                    <div class="glass-card p-4 mt-4">
-                        <h5 class="mb-3"><i class="fas fa-seedling me-2 text-success"></i>Why Analyze?</h5>
+                    <div class="modern-card p-4 mt-4">
+                        <h5 class="mb-3"><i class="fas fa-seedling me-2 text-primary"></i>Why Analyze?</h5>
                         <div class="impact-info">
                             <div class="impact-item d-flex align-items-center mb-2">
-                                <i class="fas fa-recycle text-success me-2"></i>
+                                <i class="fas fa-recycle text-primary me-2"></i>
                                 <span class="small">Reduce carbon footprint</span>
                             </div>
                             <div class="impact-item d-flex align-items-center mb-2">
-                                <i class="fas fa-tint text-info me-2"></i>
+                                <i class="fas fa-tint text-primary me-2"></i>
                                 <span class="small">Conserve water resources</span>
                             </div>
                             <div class="impact-item d-flex align-items-center mb-2">
-                                <i class="fas fa-wind text-warning me-2"></i>
+                                <i class="fas fa-wind text-primary me-2"></i>
                                 <span class="small">Minimize pollution</span>
                             </div>
                             <div class="impact-item d-flex align-items-center">
-                                <i class="fas fa-heart text-danger me-2"></i>
+                                <i class="fas fa-heart text-primary me-2"></i>
                                 <span class="small">Support sustainable brands</span>
                             </div>
                         </div>
@@ -186,8 +186,93 @@
 </div>
 
 <style>
+.modern-card {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+}
+
+.modern-card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.modern-input {
+    background-color: var(--background-color);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-primary);
+    padding: 1rem !important;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.modern-input:focus {
+    background-color: var(--background-color);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.1);
+    color: var(--text-primary);
+}
+
+.modern-input::placeholder {
+    color: var(--text-secondary) !important;
+    font-style: italic;
+}
+
+.modern-btn-primary {
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.modern-btn-primary:hover {
+    background-color: #0da271;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+    color: white;
+}
+
+.modern-btn-secondary {
+    background-color: var(--secondary-color);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.modern-btn-secondary:hover {
+    background-color: #2563eb;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+    color: white;
+}
+
+.modern-btn-outline {
+    background-color: transparent;
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-primary);
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.modern-btn-outline:hover {
+    background-color: var(--background-color);
+    border-color: var(--primary-color);
+    color: var(--text-primary);
+    transform: translateY(-2px);
+}
+
 .file-upload-area {
-    border: 2px dashed rgba(255, 255, 255, 0.3);
+    border: 2px dashed var(--border-color);
     border-radius: 15px;
     transition: all 0.3s ease;
     cursor: pointer;
@@ -199,12 +284,12 @@
 }
 
 .file-upload-area:hover {
-    border-color: rgba(16, 185, 129, 0.5);
+    border-color: var(--primary-color);
     background: rgba(16, 185, 129, 0.05);
 }
 
 .file-upload-area.dragover {
-    border-color: #10b981;
+    border-color: var(--primary-color);
     background: rgba(16, 185, 129, 0.1);
 }
 
@@ -214,7 +299,7 @@
 
 .tips-list .tip-item {
     padding: 0.5rem 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .tips-list .tip-item:last-child {
@@ -225,26 +310,32 @@
     padding: 0.3rem 0;
 }
 
-.form-control-modern {
-    background: rgba(255, 255, 255, 0.08) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    border-radius: 12px !important;
-    color: white !important;
-    padding: 1rem !important;
-    font-size: 1rem;
-    transition: all 0.3s ease;
+.alert-modern {
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-primary);
 }
 
-.form-control-modern:focus {
-    background: rgba(255, 255, 255, 0.12) !important;
-    border-color: #10b981 !important;
-    box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.25) !important;
-    color: white !important;
+.form-text {
+    color: var(--text-secondary) !important;
 }
 
-.form-control-modern::placeholder {
-    color: #94a3b8 !important;
-    font-style: italic;
+.text-muted {
+    color: var(--text-secondary) !important;
+}
+
+hr {
+    border-color: var(--border-color) !important;
+}
+
+/* OR Divider Fix */
+.position-relative .position-absolute {
+    z-index: 1;
+}
+
+.bg-surface-color {
+    background-color: var(--surface-color);
 }
 </style>
 
@@ -317,8 +408,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Show file info
         fileInfo.innerHTML = `
-            <div class="alert alert-success alert-modern">
-                <i class="fas fa-check-circle me-2"></i>
+            <div class="alert alert-modern border-success">
+                <i class="fas fa-check-circle me-2 text-success"></i>
                 <strong>Ready for OCR:</strong> ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)
             </div>
         `;
@@ -352,8 +443,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Show progress
         fileInfo.innerHTML = `
-            <div class="alert alert-info alert-modern">
-                <i class="fas fa-sync fa-spin me-2"></i>
+            <div class="alert alert-modern border-primary">
+                <i class="fas fa-sync fa-spin me-2 text-primary"></i>
                 <strong>Processing OCR:</strong> Extracting text from image...
             </div>
         `;
@@ -437,10 +528,11 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function showMessage(message, type) {
-        const alertClass = type === 'error' ? 'alert-danger' : 'alert-success';
+        const alertClass = type === 'error' ? 'border-danger' : 'border-success';
+        const iconClass = type === 'error' ? 'exclamation-triangle text-danger' : 'check-circle text-success';
         fileInfo.innerHTML = `
-            <div class="alert ${alertClass} alert-modern">
-                <i class="fas fa-${type === 'error' ? 'exclamation-triangle' : 'check-circle'} me-2"></i>
+            <div class="alert alert-modern ${alertClass}">
+                <i class="fas fa-${iconClass} me-2"></i>
                 ${message}
             </div>
         `;
@@ -448,7 +540,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Auto-hide success messages after 5 seconds
         if (type === 'success') {
             setTimeout(() => {
-                if (fileInfo.innerHTML.includes('alert-success')) {
+                if (fileInfo.innerHTML.includes('border-success')) {
                     fileInfo.innerHTML = '';
                 }
             }, 5000);
