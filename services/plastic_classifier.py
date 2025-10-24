@@ -14,7 +14,7 @@ load_dotenv()
 
 class RoboflowPlasticClassifier:
     def __init__(self):
-        self.api_key = os.getenv("ROBOFLOW_API_KEY", "6AezkXOvMN6P81vq0gkF")
+        self.api_key = os.getenv("ROBOFLOW_API_KEY")
         self.model_id = "plastic-type-detector-uuyyr"
         self.version = "1"
         self.api_url = f"https://detect.roboflow.com/{self.model_id}/{self.version}"

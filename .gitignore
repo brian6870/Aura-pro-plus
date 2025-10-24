@@ -743,4 +743,4 @@ dmypy.json
 *.temp
 
 # Specific to your project
-clean_env/
+clean_env/models/best_advanced_clip_model.pth
