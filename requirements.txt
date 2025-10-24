@@ -49,5 +49,4 @@ torch
 torchvision 
 clip-anytorch       
 Roboflow
-inference-sdk
 supervision
