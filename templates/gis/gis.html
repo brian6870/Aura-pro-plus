@@ -1,0 +1,181 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <!-- Main GIS Analysis Card -->
+            <div class="card modern-card">
+                <div class="card-header modern-header">
+                    <h4 class="mb-0"><i class="fas fa-seedling me-2"></i>Analyze Soil</h4>
+                </div>
+                <div class="card-body">
+                    <form id="soilForm" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                        <!-- Location Section -->
+                        <div class="mb-4">
+                            <label for="location" class="form-label">Location or Coordinates:</label>
+                            <input class="form-control modern-input" type="text" id="location" name="location" placeholder="e.g. Nairobi, Kenya or 1.2921, 36.8219" required>
+                            <div class="form-text">
+                                Enter a place name or latitude, longitude coordinates.
+                            </div>
+                        </div>
+
+                        <!-- Soil Properties Section -->
+                        <div class="mb-4">
+                            <label class="form-label">Soil Parameters (optional):</label>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <input class="form-control modern-input" type="number" step="0.1" name="ph" placeholder="pH level">
+                                </div>
+                                <div class="col-md-4">
+                                    <input class="form-control modern-input" type="number" step="0.1" name="moisture" placeholder="Moisture (%)">
+                                </div>
+                                <div class="col-md-4">
+                                    <input class="form-control modern-input" type="number" step="0.1" name="nitrogen" placeholder="Nitrogen (mg/kg)">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn modern-btn-primary btn-lg">
+                                <i class="fas fa-search me-2"></i>Analyze Soil
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="resultsSection" class="mt-4" style="display: none;">
+                        <div class="card modern-card">
+                            <div class="card-header modern-header">
+                                <h5 class="mb-0">Soil Analysis Results</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="soilResults"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Soil Info Guide -->
+            <div class="card modern-card mt-4">
+                <div class="card-header modern-header">
+                    <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Soil Type Guide</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><strong>Clay Soil:</strong> Rich in nutrients but drains slowly.</li>
+                        <li class="mb-2"><strong>Sandy Soil:</strong> Drains quickly, low in nutrients.</li>
+                        <li class="mb-2"><strong>Loamy Soil:</strong> Balanced, ideal for most crops.</li>
+                        <li class="mb-2"><strong>Silty Soil:</strong> Smooth and retains water moderately.</li>
+                        <li class="mb-2"><strong>Peaty Soil:</strong> High in organic matter, slightly acidic.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.modern-card {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+}
+
+.modern-card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.modern-header {
+    background-color: var(--background-color);
+    border-bottom: 1px solid var(--border-color);
+    padding: 1.25rem 1.5rem;
+    font-weight: 600;
+}
+
+.modern-input {
+    background-color: var(--background-color);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-primary);
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.modern-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.1);
+}
+
+.modern-btn-primary {
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    padding: 1rem 2rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.modern-btn-primary:hover {
+    background-color: #0da271;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+}
+
+.list-unstyled li {
+    color: var(--text-primary);
+}
+</style>
+
+<script>
+// Handle form submission
+document.getElementById('soilForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Analyzing...';
+
+    try {
+        const response = await fetch('{{ url_for("gis_bp.gis_analyze") }}', {
+            method: 'POST',
+            body: formData
+        });
+        const data = await response.json();
+
+        if (data.error) {
+            alert('Error: ' + data.error);
+            return;
+        }
+
+        document.getElementById('soilResults').innerHTML = `
+            <div class="results-content">
+                <h4 class="text-success mb-3">${data.soil_type}</h4>
+                <p class="lead mb-3">${data.description}</p>
+                <div class="alert alert-info mb-3">
+                    <strong>pH:</strong> ${data.ph || 'N/A'} |
+                    <strong>Moisture:</strong> ${data.moisture || 'N/A'}% |
+                    <strong>Nitrogen:</strong> ${data.nitrogen || 'N/A'} mg/kg
+                </div>
+            </div>
+        `;
+
+        document.getElementById('resultsSection').style.display = 'block';
+        document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (err) {
+        console.error('Error analyzing soil:', err);
+        alert('Error analyzing soil: ' + err.message);
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-search me-2"></i>Analyze Soil';
+    }
+});
+</script>
+{% endblock %}

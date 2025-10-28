@@ -1,0 +1,78 @@
+/* static/gis/gis.css */
+
+.gis-container {
+  max-width: 600px;
+  margin: 40px auto;
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  text-align: center;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.gis-container h2 {
+  margin-bottom: 20px;
+  color: #2d3e50;
+  font-size: 24px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+input[type="file"] {
+  border: 1px solid #ccc;
+  padding: 8px;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+  width: 80%;
+  cursor: pointer;
+}
+
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+#result {
+  margin-top: 25px;
+  padding: 15px;
+  background: #f7f7f7;
+  border-radius: 8px;
+  text-align: left;
+  display: none;
+}
+
+.result-card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+.result-card h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+.error {
+  color: red;
+  font-weight: 500;
+}
